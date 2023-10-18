@@ -2,26 +2,55 @@ import sys, os
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject
 import time
+from datetime import datetime
 
 from MQTT_interface import *
 
 
 class BurnIn_Monitor(QObject):
 
-	def __init__(self,configDict,logger):
+	def __init__(self,configDict,logger, MonitorTags):
 	
 		super(BurnIn_Monitor,self).__init__();
 		self.configDict=configDict
 		self.logger = logger
-		self.logger.info("Monitoring class initialized")
+		self.logger.info("MONITOR: Monitoring class initialized")
 		
 		self.MQTT =  MQTT_interface(configDict,logger)
+		self.MonitorTags = MonitorTags
 
 	def run(self):
-		self.logger.info("Monitoring thread started")
+		self.logger.info("MONITOR: Monitoring thread started")
+		self.logger.info("MONITOR: Attempting first connection to MQTT server...")
 		self.MQTT.connect()
+		if self.MQTT.is_connected :
+			self.MonitorTags[1].setStyleSheet("color: rgb(0, 170, 0);");
+			self.MonitorTags[1].setText("Connected")
+			
+			
 		
 		while(1):
-			self.logger.debug("Monitoring cycle done")
-			time.sleep(1)
+			self.MonitorTags[0].setStyleSheet("");
+			self.MonitorTags[0].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+			
+			#MQTT cycle
+			if not self.MQTT.is_subscribed:
+				self.logger.info("MONITOR: Attempting first connection to MQTT server...")
+				self.MQTT.connect()
+				if self.MQTT.is_connected :
+					self.MonitorTags[1].setStyleSheet("color: rgb(0, 170, 0);");
+					self.MonitorTags[1].setText("Connected")
+			else:
+				if self.MQTT.is_connected :
+					self.MonitorTags[1].setStyleSheet("color: rgb(0, 170, 0);");
+					self.MonitorTags[1].setText("Connected")
+				else:
+					self.MonitorTags[1].setStyleSheet("color: rgb(255, 0, 0);");
+					self.MonitorTags[1].setText("Disconnected")
+			
+			self.MonitorTags[4].setText(self.MQTT.LastMessageTS)
+			self.MonitorTags[5].setText(self.MQTT.LastMessage)
+			self.MonitorTags[6].setText(self.MQTT.LastSource)
 		
+		
+			self.logger.debug("MONITOR: Monitoring cycle done")

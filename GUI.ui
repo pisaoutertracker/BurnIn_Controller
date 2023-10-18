@@ -24,8 +24,13 @@
    <layout class="QVBoxLayout" name="verticalLayout_5">
     <item>
      <widget class="QTabWidget" name="tabWidget">
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -36,7 +41,7 @@
          <widget class="QLabel" name="label_6">
           <property name="font">
            <font>
-            <pointsize>72</pointsize>
+            <pointsize>48</pointsize>
            </font>
           </property>
           <property name="text">
@@ -46,9 +51,231 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="Monitor_tab">
+       <attribute name="title">
+        <string>Monitor</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <widget class="QLabel" name="label_7">
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Last monitor cycle: </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="LastMonitor_tag">
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 0, 0);</string>
+            </property>
+            <property name="text">
+             <string>Never</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::AutoText</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_4">
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="title">
+           <string>Connection status</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>JULABO:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLabel" name="MQTTConn_tag">
+             <property name="styleSheet">
+              <string notr="true">color: rgb(255, 0, 0);</string>
+             </property>
+             <property name="text">
+              <string>Disconnected</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>MQTT server:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>CAEN server:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLabel" name="CAENConn_tag">
+             <property name="styleSheet">
+              <string notr="true">color: rgb(255, 0, 0);</string>
+             </property>
+             <property name="text">
+              <string>Disconnected</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLabel" name="JULABOConn_tag">
+             <property name="accessibleDescription">
+              <string>color: rgb(255, 0, 0);</string>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">color: rgb(255, 0, 0);</string>
+             </property>
+             <property name="text">
+              <string>Disconnected</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <widget class="QGroupBox" name="groupBox_7">
+            <property name="title">
+             <string>MQTT readings</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_2">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_11">
+               <property name="text">
+                <string>Last message timestamp: </string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>Last msg(DEBUG):</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="LastMQTTMessage_tag">
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="text">
+                <string>NEVER</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_14">
+               <property name="text">
+                <string>Last msg source (DEBUG)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="LastMQTTSource_tag">
+               <property name="text">
+                <string>None</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="LastMQTTMsg_tag">
+               <property name="text">
+                <string>Waiting...</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_6">
+            <property name="title">
+             <string>JULABO readings</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_9">
+             <item>
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>WORK IN PROGRESS</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="Test_tab">
        <attribute name="title">
-        <string>Test Operation</string>
+        <string>Test Operation (UNSAFE)</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
@@ -216,7 +443,7 @@
      <x>0</x>
      <y>0</y>
      <width>1006</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
@@ -263,6 +490,7 @@
    </property>
   </action>
  </widget>
+ <layoutdefault spacing="7" margin="11"/>
  <resources/>
  <connections>
   <connection>

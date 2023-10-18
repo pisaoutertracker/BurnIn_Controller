@@ -2,12 +2,21 @@
 
 import sys, time
 from paho.mqtt import client as mqtt_client
+from datetime import datetime
 
 class MQTT_interface():
 
 	def __init__(self,configDict,logger):
 	
 		super(MQTT_interface,self).__init__();
+		self.is_connected = False
+		self.is_subscribed = False
+		
+		self.LastMessage = ""
+		self.LastSource = "None"
+		self.LastMessageTS = "NEVER"
+		
+		
 		self.configDict=configDict
 		self.logger = logger
 		self.Addr = configDict.get(("MQTT","Addr"),"NOKEY")
@@ -28,8 +37,39 @@ class MQTT_interface():
 			self.logger.warning("MQTT CAENTopic parameter not found. Using default")
 			
 		self.client = mqtt_client.Client(self.ClientId)
+		self.client.on_connect = self.on_connect
+		self.client.on_message = self.on_message
 		self.logger.info("MQTT class initialized")
+	
+	def on_connect(self,client, userdata, flags, rc):
+		self.logger.info("MQTT client: Connected to MQTT Broker!")
+		self.is_connected = True
+		
+	def on_disconnect(self, client, userdata, rc):
+		if rc != 0:
+			self.logger.info("MQTT client: DISConnected to MQTT Broker!")
+			self.is_connected = False
+			
+	def on_message(self, client, userdata, msg):
+		self.logger.info(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+		self.LastMessage = msg.payload.decode()
+		self.LastSource = msg.topic
+		self.LastMessageTS = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 		
 	def connect(self):
-		#self.client.connect(self.Addr, int(self.Port))
-		time.sleep(10)
+		
+		try:
+			self.client.connect(self.Addr, int(self.Port))
+			self.client.on_disconnect = self.on_discconnect
+			self.client.subscribe(self.CAENTopic)
+			self.is_subscribed = True
+			self.client.loop_start()
+			return True
+		except Exception as e: 
+			self.logger.error(e)
+			return False
+		
+		
+		
+		
+		
