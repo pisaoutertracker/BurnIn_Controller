@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<configParam>
+	<Julabo>
+		<TcpPORT>5050</TcpPORT>
+		<IPAddr>169.254.218.204</IPAddr>
+	</Julabo>
+</configParam>
