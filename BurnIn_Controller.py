@@ -27,7 +27,7 @@ def parseConfigParam(XMLName):
 	XMLroot = XMLtree.getroot()
 	for XMLchild in XMLroot:
 		for XMLparam in  XMLchild:
-			configDict[XMLparam.tag]=XMLparam.text
+			configDict[(XMLchild.tag,XMLparam.tag)]=XMLparam.text
 			
 # Main body
 if __name__ == '__main__':

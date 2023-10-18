@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <configParam>
 	<Julabo>
-		<TcpPORT>5050</TcpPORT>
+		<PORT>5050</PORT>
 		<IPAddr>169.254.218.204</IPAddr>
 	</Julabo>
+	<MQTT>
+		<Port>1883</Port>
+		<Addr>192.168.0.45</Addr>
+		<ClientId>BurnIn_Controller</ClientId>
+		<CAENTopic>/caenstatus/full</CAENTopic>
+	</MQTT>
 </configParam>
