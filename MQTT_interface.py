@@ -39,10 +39,12 @@ class MQTT_interface():
 		self.client = mqtt_client.Client(self.ClientId)
 		self.client.on_connect = self.on_connect
 		self.client.on_message = self.on_message
+		self.client.on_disconnect = self.on_disconnect
 		self.logger.info("MQTT class initialized")
 	
 	def on_connect(self,client, userdata, flags, rc):
 		self.logger.info("MQTT client: Connected to MQTT Broker!")
+		self.client.subscribe(self.CAENTopic)
 		self.is_connected = True
 		
 	def on_disconnect(self, client, userdata, rc):
@@ -60,8 +62,6 @@ class MQTT_interface():
 		
 		try:
 			self.client.connect(self.Addr, int(self.Port))
-			self.client.on_disconnect = self.on_discconnect
-			self.client.subscribe(self.CAENTopic)
 			self.is_subscribed = True
 			self.client.loop_start()
 			return True

@@ -54,3 +54,4 @@ class BurnIn_Monitor(QObject):
 		
 		
 			self.logger.debug("MONITOR: Monitoring cycle done")
+			time.sleep(1)

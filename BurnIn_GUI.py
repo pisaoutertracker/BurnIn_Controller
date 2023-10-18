@@ -1,6 +1,6 @@
 import sys, os
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import QThread, pyqtSlot, pyqtSignal
 
 
 from Julabo import *
@@ -11,11 +11,15 @@ from BurnIn_Monitor import *
 
 class BurnIn_GUI(QtWidgets.QMainWindow):
 
+	
+	SendJulaboCmd_sig = pyqtSignal(str)
+
 	def __init__(self,configDict,logger):
 		super(BurnIn_GUI,self).__init__()
 		self.is_expert=False
 		self.logger=logger
 		self.configDict=configDict
+		
 		
 		self.initUI()
 		
@@ -25,9 +29,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		uic.loadUi('GUI.ui', self) # Load the .ui file
 		self.show() # Show the GUI
 		
-		
-		self.actionExit.triggered.connect(self.close)
-		self.actionExpert.triggered.connect(self.expert)
+		self.Julabo = Julabo(self.configDict,self.logger)
 		
 		#packing monitor tag
 		self.MonitorTags = []
@@ -38,6 +40,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MonitorTags.append(self.LastMQTTMessage_tag)
 		self.MonitorTags.append(self.LastMQTTMsg_tag)
 		self.MonitorTags.append(self.LastMQTTSource_tag)
+
+
+		
 		
 		# start monitoring function in QThread
 		self.MonitorThread = QThread()
@@ -49,11 +54,19 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		# start GUI worker in QThread
 		self.WorkerThread = QThread()
-		self.Worker = BurnIn_Worker(self.configDict,self.logger)
+		self.Worker = BurnIn_Worker(self.configDict,self.logger, self.Julabo)
 		self.Worker.moveToThread(self.WorkerThread)
 		self.WorkerThread.start()	
 		
+		self.SendJulaboCmd_sig.connect(self.Worker.SendJulaboCmd)
+		self.JulaboTestCmd_btn.clicked.connect(self.SendJulaboCmd)	
+		#connecting slots
+		self.actionExit.triggered.connect(self.close)
+		self.actionExpert.triggered.connect(self.expert)
 		self.statusBar().showMessage("System ready")
+		
+	def SendJulaboCmd(self):
+		self.SendJulaboCmd_sig.emit(self.JulaboTestCmd_line.text())
 		
 		
 	def expert(self):

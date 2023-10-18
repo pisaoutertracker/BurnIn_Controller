@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <configParam>
 	<Julabo>
-		<PORT>5050</PORT>
-		<IPAddr>169.254.218.204</IPAddr>
+		<Addr>169.254.218.204</Addr>
+		<Port>5050</Port>
 	</Julabo>
 	<MQTT>
 		<Port>1883</Port>
 		<Addr>192.168.0.45</Addr>
 		<ClientId>BurnIn_Controller</ClientId>
-		<CAENTopic>/caenstatus/full</CAENTopic>
+		<CAENTopic>#</CAENTopic>
 	</MQTT>
+	<FNALBox>
+		<Port>1883</Port>
+		<Addr>192.168.0.45</Addr>
+	</FNALBox>
 </configParam>
