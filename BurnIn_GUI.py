@@ -36,17 +36,20 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MonitorTags.append(self.LastMonitor_tag)
 		self.MonitorTags.append(self.MQTTConn_tag)
 		self.MonitorTags.append(self.JULABOConn_tag)
-		self.MonitorTags.append(self.CAENConn_tag)
-		self.MonitorTags.append(self.LastMQTTMessage_tag)
+		self.MonitorTags.append(self.FNALConn_tag)
+		self.MonitorTags.append(self.LastMQTTMsgTS_tag)
 		self.MonitorTags.append(self.LastMQTTMsg_tag)
 		self.MonitorTags.append(self.LastMQTTSource_tag)
+		self.MonitorTags.append(self.LastJulaboMsgTS_tag)
+		self.MonitorTags.append(self.LastJulaboStatus_tag)
+		self.MonitorTags.append(self.LastJulaboSP1_tag)
 
 
 		
 		
 		# start monitoring function in QThread
 		self.MonitorThread = QThread()
-		self.Monitor = BurnIn_Monitor(self.configDict,self.logger, self.MonitorTags)
+		self.Monitor = BurnIn_Monitor(self.configDict,self.logger, self.MonitorTags, self.Julabo)
 		self.Monitor.moveToThread(self.MonitorThread)
 		self.MonitorThread.started.connect(self.Monitor.run)
 		self.MonitorThread.start()	

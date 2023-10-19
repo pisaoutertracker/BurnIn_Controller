@@ -3,13 +3,16 @@ import sys
 import socket
 import argparse
 import time
+from threading import Lock
+
 from select import select
 
 class Julabo():
 
 	def __init__(self,configDict,logger): 
 		super(Julabo, self).__init__()
-		self.is_connected=False           
+		self.is_connected=False 
+		self.lock = Lock()	
 		self.interfaces = []
 		
 		self.configDict=configDict
@@ -27,22 +30,22 @@ class Julabo():
 	def connect(self):
 			
 		if self.is_connected:
-			sys.stdwar.write("device already connected\n")
+			self.logger.warning("JULABO: device already connected\n")
 		else:
 			try:
-				sys.stdout.write("Connecting to JULABO device..."+"\n")
+				self.logger.info("Connecting to JULABO device...")
 				self.TCPSock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 				self.TCPSock.connect((self.Addr,int(self.Port)))           
 				self.interfaces.Append(self.TCPSock)       # [self.UDPSock,self.TCPSock]
 				self.is_connected = True
 				
 			except socket.error as e:
-				sys.stderr.write("Device connection error:"+str(e)+"\n")        
+				self.logger.error("JULABO: Device connection error:"+str(e))        
 				self.is_connected = False
 				
 	def close(self):
 		if not self.is_connected:
-			sys.stderr.write("No connection to be closed\n")  
+			self.logger.warning("JULABO: No connection to be closed")  
 			return
 		self.TCPSock.close()
 		self.is_connected = False
@@ -54,7 +57,7 @@ class Julabo():
 				self.buffer = self.readTCP(2048)
 				return self.buffer
 			else:
-				sys.stderr.write("UNKNOWN SOCKET TYPE")
+				self.logger.error("JULABO: UNKNOWN SOCKET TYPE")
 				return "TCP error"
 		return "None"   
 		
@@ -63,7 +66,7 @@ class Julabo():
 			self.TCPSock.send(message+"\r")
 			time.sleep(0.250) #as per datasheet
 		else:
-			sys.stderr.write("No device connected!")
+			self.logger.error("JULABO: can't send command, No device connected!")
 		
 	def readTCP(self,nByte = 20, peek = False):
 		data,ip = self.TCPSock.recvfrom(nByte,peek * socket.MSG_PEEK)

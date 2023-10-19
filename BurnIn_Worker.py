@@ -18,11 +18,11 @@ class BurnIn_Worker(QObject):
 	
 	@pyqtSlot(str)
 	def SendJulaboCmd(self,cmd):
-		try:
-			self.logger.debug("Attempting to send command to Julabo: " + cmd)
+		self.Julabo.lock.acquire()
+		self.logger.info("Sending Julabo cmd "+cmd)
+		if not self.Julabo.is_connected :
 			self.Julabo.connect()
-			self.Julabo.sendTCP(str(cmd))
-			self.logger.debug(self.Julabo.receive())
-			self.Julabo.close()
-		except Exception as e:
-			self.logger.error(e)
+		if self.Julabo.is_connected :
+			self.Julabo.sendTCP(cmd)
+			self.logger.info(self.Julabo.receive())
+		self.Julabo.lock.release()

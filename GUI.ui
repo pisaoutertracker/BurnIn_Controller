@@ -35,7 +35,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -159,12 +159,12 @@
            <item row="2" column="0">
             <widget class="QLabel" name="label_10">
              <property name="text">
-              <string>CAEN server:</string>
+              <string>FNAL box:</string>
              </property>
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="QLabel" name="CAENConn_tag">
+            <widget class="QLabel" name="FNALConn_tag">
              <property name="styleSheet">
               <string notr="true">color: rgb(255, 0, 0);</string>
              </property>
@@ -212,7 +212,7 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QLabel" name="LastMQTTMessage_tag">
+              <widget class="QLabel" name="LastMQTTMsgTS_tag">
                <property name="styleSheet">
                 <string notr="true"/>
                </property>
@@ -250,11 +250,46 @@
             <property name="title">
              <string>JULABO readings</string>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_9">
-             <item>
+            <layout class="QGridLayout" name="gridLayout_3">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>Last message timestamp: </string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
               <widget class="QLabel" name="label_15">
                <property name="text">
-                <string>WORK IN PROGRESS</string>
+                <string>Status</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_16">
+               <property name="text">
+                <string>Setpoint 1</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="LastJulaboMsgTS_tag">
+               <property name="text">
+                <string>Never</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLabel" name="LastJulaboStatus_tag">
+               <property name="text">
+                <string>UNKNOWN</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="LastJulaboSP1_tag">
+               <property name="text">
+                <string>UNKNOWN</string>
                </property>
               </widget>
              </item>
@@ -448,7 +483,7 @@
      <x>0</x>
      <y>0</y>
      <width>1006</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
