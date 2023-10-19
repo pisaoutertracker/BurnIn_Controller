@@ -13,6 +13,11 @@
     <height>763</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Burn-In Controller v0.0</string>
   </property>
@@ -409,7 +414,7 @@
              <item>
               <widget class="QPushButton" name="CAENTestCmd_btn">
                <property name="text">
-                <string>PushButton</string>
+                <string>Send</string>
                </property>
               </widget>
              </item>
@@ -443,7 +448,7 @@
      <x>0</x>
      <y>0</y>
      <width>1006</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
