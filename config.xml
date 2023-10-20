@@ -13,8 +13,8 @@
 		<EnableMonitor>True</EnableMonitor>
 	</MQTT>
 	<FNALBox>
-		<Port>1883</Port>
-		<Addr>192.168.0.45</Addr>
+		<Port>10001</Port>
+		<Addr>192.168.0.187</Addr>
 		<EnableMonitor>True</EnableMonitor>
 	</FNALBox>
 </configParam>
