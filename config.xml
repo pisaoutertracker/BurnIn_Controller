@@ -3,15 +3,18 @@
 	<Julabo>
 		<Addr>169.254.218.204</Addr>
 		<Port>5050</Port>
+		<EnableMonitor>True</EnableMonitor>
 	</Julabo>
 	<MQTT>
 		<Port>1883</Port>
 		<Addr>192.168.0.45</Addr>
 		<ClientId>BurnIn_Controller</ClientId>
 		<CAENTopic>#</CAENTopic>
+		<EnableMonitor>True</EnableMonitor>
 	</MQTT>
 	<FNALBox>
 		<Port>1883</Port>
 		<Addr>192.168.0.45</Addr>
+		<EnableMonitor>True</EnableMonitor>
 	</FNALBox>
 </configParam>
