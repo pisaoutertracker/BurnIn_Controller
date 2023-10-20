@@ -9,7 +9,7 @@ from MQTT_interface import *
 
 class BurnIn_Monitor(QObject):
 
-	def __init__(self,configDict,logger, MonitorTags, Julabo):
+	def __init__(self,configDict,logger, MonitorTags, Julabo, FNALBox):
 	
 		super(BurnIn_Monitor,self).__init__();
 		self.configDict=configDict
@@ -19,6 +19,7 @@ class BurnIn_Monitor(QObject):
 		self.MQTT =  MQTT_interface(configDict,logger)
 		self.MonitorTags = MonitorTags
 		self.Julabo = Julabo
+		self.FNALBox = FNALBox
 
 	def run(self):
 		self.logger.info("MONITOR: Monitoring thread started")

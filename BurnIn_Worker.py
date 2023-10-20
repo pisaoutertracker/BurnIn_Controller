@@ -3,7 +3,6 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject, pyqtSlot
 import time
 
-from Julabo import *
 
 class BurnIn_Worker(QObject):
 

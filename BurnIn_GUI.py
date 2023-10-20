@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from PyQt5.QtCore import QThread, pyqtSlot, pyqtSignal
 
 
-from Julabo import *
+from BurnIn_TCP import *
 
 from BurnIn_Worker import *
 from BurnIn_Monitor import *
@@ -29,7 +29,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		uic.loadUi('GUI.ui', self) # Load the .ui file
 		self.show() # Show the GUI
 		
-		self.Julabo = Julabo(self.configDict,self.logger)
+		self.Julabo = BurnIn_TCP(self.configDict,self.logger,"Julabo")
+		self.FNALBox = BurnIn_TCP(self.configDict,self.logger,"FNALBox")
 		
 		#packing monitor tag
 		self.MonitorTags = []
@@ -49,7 +50,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		# start monitoring function in QThread
 		self.MonitorThread = QThread()
-		self.Monitor = BurnIn_Monitor(self.configDict,self.logger, self.MonitorTags, self.Julabo)
+		self.Monitor = BurnIn_Monitor(self.configDict,self.logger, self.MonitorTags, self.Julabo, self.FNALBox)
 		self.Monitor.moveToThread(self.MonitorThread)
 		self.MonitorThread.started.connect(self.Monitor.run)
 		self.MonitorThread.start()	
