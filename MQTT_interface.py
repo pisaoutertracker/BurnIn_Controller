@@ -53,10 +53,13 @@ class MQTT_interface():
 			self.is_connected = False
 			
 	def on_message(self, client, userdata, msg):
-		self.logger.info(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-		self.LastMessage = msg.payload.decode()
-		self.LastSource = msg.topic
-		self.LastMessageTS = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+		try:
+			self.logger.info(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+			self.LastMessage = msg.payload.decode()
+			self.LastSource = msg.topic
+			self.LastMessageTS = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+		except Exception as e:
+			self.logger.info("MQTT client: invalid string from MQTT Broker!")
 		
 	def connect(self):
 		

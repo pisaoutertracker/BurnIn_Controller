@@ -64,9 +64,13 @@ class BurnIn_Monitor(QObject):
 					self.MonitorTags[2].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
 					self.MonitorTags[2].setText("Connected")
 					self.Julabo.sendTCP("status")
-					self.MonitorTags[8].setText(self.Julabo.receive())
+					reply = self.Julabo.receive()
+					if (reply != "None" and reply != "TCP error"):
+						self.MonitorTags[8].setText(reply)
 					self.Julabo.sendTCP("in_sp_00")
-					self.MonitorTags[9].setText(self.Julabo.receive())
+					reply = self.Julabo.receive()
+					if (reply != "None" and reply != "TCP error"):
+						self.MonitorTags[9].setText(reply)
 					self.MonitorTags[7].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 				else:
 					self.MonitorTags[2].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
@@ -81,6 +85,8 @@ class BurnIn_Monitor(QObject):
 				if self.FNALBox.is_connected :
 					self.MonitorTags[3].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
 					self.MonitorTags[3].setText("Connected")
+					self.FNALBox.sendTCP("[40]")
+					self.FNALBox.receive()
 					self.MonitorTags[10].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 				else:
 					self.MonitorTags[3].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");

@@ -38,7 +38,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -452,10 +452,10 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="FNALTestCmd_line"/>
+              <widget class="QLineEdit" name="FNALBoxTestCmd_line"/>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_5">
+              <widget class="QPushButton" name="FNALBoxTestCmd_btn">
                <property name="text">
                 <string>Send</string>
                </property>

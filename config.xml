@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <configParam>
 	<Julabo>
-		<Addr>169.254.218.204</Addr>
+		<Addr>192.168.0.2</Addr>
 		<Port>5050</Port>
 		<EnableMonitor>True</EnableMonitor>
 	</Julabo>

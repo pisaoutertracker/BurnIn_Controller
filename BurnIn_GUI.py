@@ -13,6 +13,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 
 	
 	SendJulaboCmd_sig = pyqtSignal(str)
+	SendFNALBoxCmd_sig = pyqtSignal(str)
 
 	def __init__(self,configDict,logger):
 		super(BurnIn_GUI,self).__init__()
@@ -44,7 +45,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MonitorTags.append(self.LastJulaboMsgTS_tag)
 		self.MonitorTags.append(self.LastJulaboStatus_tag)
 		self.MonitorTags.append(self.LastJulaboSP1_tag)
-		self.MonitorTags.append(self.LastJulaboMsgTS_tag)
+		self.MonitorTags.append(self.LastFNALBoxMsgTS_tag)
 
 
 		
@@ -59,12 +60,14 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		# start GUI worker in QThread
 		self.WorkerThread = QThread()
-		self.Worker = BurnIn_Worker(self.configDict,self.logger, self.Julabo)
+		self.Worker = BurnIn_Worker(self.configDict,self.logger, self.Julabo, self.FNALBox)
 		self.Worker.moveToThread(self.WorkerThread)
 		self.WorkerThread.start()	
 		
 		self.SendJulaboCmd_sig.connect(self.Worker.SendJulaboCmd)
 		self.JulaboTestCmd_btn.clicked.connect(self.SendJulaboCmd)	
+		self.SendFNALBoxCmd_sig.connect(self.Worker.SendFNALBoxCmd)
+		self.FNALBoxTestCmd_btn.clicked.connect(self.SendFNALBoxCmd)	
 		#connecting slots
 		self.actionExit.triggered.connect(self.close)
 		self.actionExpert.triggered.connect(self.expert)
@@ -72,6 +75,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 	def SendJulaboCmd(self):
 		self.SendJulaboCmd_sig.emit(self.JulaboTestCmd_line.text())
+		
+	def SendFNALBoxCmd(self):
+		self.SendFNALBoxCmd_sig.emit(self.FNALBoxTestCmd_line.text())
 		
 		
 	def expert(self):

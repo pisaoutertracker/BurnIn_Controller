@@ -37,7 +37,7 @@ class BurnIn_TCP():
 				self.TCPSock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 				self.TCPSock.connect((self.Addr,int(self.Port))) 
 				self.interfaces.clear()
-				self.interfaces.Append(self.TCPSock)       # [self.UDPSock,self.TCPSock]
+				self.interfaces.append(self.TCPSock)       # [self.UDPSock,self.TCPSock]
 				self.is_connected = True
 				
 			except socket.error as e:
@@ -54,9 +54,17 @@ class BurnIn_TCP():
 	def receive(self):
 		inputReady,outputReady,exceptReady = select(self.interfaces,[],[],1)  #wait for data in interfaces list
 		for s in inputReady:              
-			if s == self.TCPSock:        
-				self.buffer = self.readTCP(2048)
-				return self.buffer
+			if s == self.TCPSock:
+				try:
+					self.buffer = self.readTCP(2048).decode()
+					self.logger.debug(self.moduleName + " stream received: "+self.buffer)
+					if self.moduleName == "Julabo":
+						return self.buffer[:-1]
+					else:
+						return self.buffer
+				except Exception as e:
+					self.logger.error(e)
+					self.is_connected = False
 			else:
 				self.logger.error(self.moduleName + ": UNKNOWN SOCKET TYPE")
 				return "TCP error"
@@ -65,10 +73,13 @@ class BurnIn_TCP():
 	def sendTCP(self,message):
 		if self.is_connected:
 			try:
-				self.TCPSock.send(message+"\r")
+				if self.moduleName == "Julabo":
+					message = message+"\r"
+				self.TCPSock.send(message.encode())
 				time.sleep(0.250) #as per JULABO datasheet
 			except Exception as e:
 				self.logger.error(self.moduleName + ": TCP send cmd failed")
+				self.logger.error(e)
 				self.is_connected = False
 		else:
 			self.logger.error(self.moduleName + ": can't send command, No device connected!")
