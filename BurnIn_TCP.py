@@ -39,6 +39,7 @@ class BurnIn_TCP():
 				self.interfaces.clear()
 				self.interfaces.append(self.TCPSock)       # [self.UDPSock,self.TCPSock]
 				self.is_connected = True
+				self.logger.info(self.moduleName + ": Connected!")
 				
 			except socket.error as e:
 				self.logger.error(self.moduleName + ": Device connection error:"+str(e))        
@@ -53,6 +54,7 @@ class BurnIn_TCP():
 					
 	def receive(self):
 		inputReady,outputReady,exceptReady = select(self.interfaces,[],[],1)  #wait for data in interfaces list
+		time.sleep(0.001)
 		for s in inputReady:              
 			if s == self.TCPSock:
 				try:

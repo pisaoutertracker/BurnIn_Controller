@@ -54,7 +54,7 @@ class MQTT_interface():
 			
 	def on_message(self, client, userdata, msg):
 		try:
-			self.logger.info(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+			self.logger.debug(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
 			self.LastMessage = msg.payload.decode()
 			self.LastSource = msg.topic
 			self.LastMessageTS = datetime.now().strftime("%d/%m/%Y %H:%M:%S")

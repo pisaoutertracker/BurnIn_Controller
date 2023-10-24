@@ -85,8 +85,18 @@ class BurnIn_Monitor(QObject):
 				if self.FNALBox.is_connected :
 					self.MonitorTags[3].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
 					self.MonitorTags[3].setText("Connected")
-					self.FNALBox.sendTCP("[40]")
-					self.FNALBox.receive()
+					self.FNALBox.sendTCP("[10]")
+					reply = self.FNALBox.receive()
+					if (reply != "None" and reply != "TCP error"):
+						reply_list = reply[1:-1].split(",")
+						try:
+							self.MonitorTags[11].setText(reply_list[0])
+							self.MonitorTags[12].setText(reply_list[1][1:])
+							self.MonitorTags[13].setText(reply_list[2][1:])
+							self.MonitorTags[14].setText(reply_list[3][1:])
+							self.MonitorTags[15].setText(reply_list[14][1:])
+						except Exception as e:
+							self.logger.warning("MONITOR: error splitting FNAL reply "+reply)
 					self.MonitorTags[10].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 				else:
 					self.MonitorTags[3].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");

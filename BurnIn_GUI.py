@@ -46,6 +46,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MonitorTags.append(self.LastJulaboStatus_tag)
 		self.MonitorTags.append(self.LastJulaboSP1_tag)
 		self.MonitorTags.append(self.LastFNALBoxMsgTS_tag)
+		self.MonitorTags.append(self.LastFNALBoxTemp0_tag)
+		self.MonitorTags.append(self.LastFNALBoxTemp1_tag)
+		self.MonitorTags.append(self.LastFNALBoxRH0_tag)
+		self.MonitorTags.append(self.LastFNALBoxRH1_tag)
+		self.MonitorTags.append(self.LastFNALBoxDP_tag)
+		
 
 
 		

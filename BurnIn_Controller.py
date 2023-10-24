@@ -5,6 +5,7 @@ import argparse
 import logging
 import os
 from datetime import datetime
+import yaml
 
 
 import xml.etree.ElementTree as ET
@@ -14,20 +15,12 @@ from BurnIn_GUI import *
 
 # Global variables
 configDict = {}
-
-def parseConfigParam(XMLName):	
-	try:
-		XMLtree = ET.parse(XMLName)
-	except ET.ParseError as err:
-		logger.warning("WARNING: Can't Parse XML file "+XMLName+". Using default config parameter.")
-		logger.warning(err)
-		return None
+			
+def parseYamlParam(yaml_parser):
 	logger.info("Parsing Configuration Parameter")
-	
-	XMLroot = XMLtree.getroot()
-	for XMLchild in XMLroot:
-		for XMLparam in  XMLchild:
-			configDict[(XMLchild.tag,XMLparam.tag)]=XMLparam.text
+	for classKey, classDict in yaml_parser.items():
+		for paramKey , value in  classDict.items():
+			configDict[(classKey,paramKey)]=value
 			
 # Main body
 if __name__ == '__main__':
@@ -37,9 +30,10 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	
 	parser.add_argument("-d","--debug", help="Enable debug messages",  action='store_true')
-	parser.add_argument("-x","--xml", help="XML configuration file")
+	parser.add_argument("-y","--yaml", help="YAML configuration file")
 	args=parser.parse_args()
 	
+
 	
 	logger = logging.getLogger(__name__)
 	
@@ -62,20 +56,25 @@ if __name__ == '__main__':
 	
 	logger.info("BURN IN controller started")
 	
-	# pars XML
-	if args.xml:
-		logger.info("XML Config file: " + str(args.xml))
-		parseConfigParam(args.xml)
+	# pars YAML
+	if args.yaml:
+		logger.info("YAML Config file: " + str(args.yaml))
+		with open(args.yaml, 'r') as file:
+			prime_service = yaml.safe_load(file)
+			parseYamlParam(prime_service)
 	else:
-		if os.path.exists("config.xml"):
-			logger.info("Using default XML Config file: config.xml" )
-			parseConfigParam("config.xml")
+		if os.path.exists("Config.yaml"):
+			logger.info("Using default YAML Config file: Config.yaml" )
+			with open("Config.yaml", 'r') as file:
+				prime_service = yaml.safe_load(file)
+				parseYamlParam(prime_service)
 		else:
-			logger.info("XML Config file: " + str(args.xml))
+			logger.info("YAML Config file: " + str(args.yaml))
+			
 		
 	
-	logger.debug("Configuration parameter")
-	logger.debug(configDict)
+	logger.info("Configuration parameter")
+	logger.info(configDict)
 	
 	app = QtWidgets.QApplication(sys.argv)
 	
