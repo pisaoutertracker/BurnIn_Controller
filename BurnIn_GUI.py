@@ -34,23 +34,56 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.FNALBox = BurnIn_TCP(self.configDict,self.logger,"FNALBox")
 		
 		#packing monitor tag
-		self.MonitorTags = []
-		self.MonitorTags.append(self.LastMonitor_tag)
-		self.MonitorTags.append(self.MQTTConn_tag)
-		self.MonitorTags.append(self.JULABOConn_tag)
-		self.MonitorTags.append(self.FNALConn_tag)
-		self.MonitorTags.append(self.LastMQTTMsgTS_tag)
-		self.MonitorTags.append(self.LastMQTTMsg_tag)
-		self.MonitorTags.append(self.LastMQTTSource_tag)
-		self.MonitorTags.append(self.LastJulaboMsgTS_tag)
-		self.MonitorTags.append(self.LastJulaboStatus_tag)
-		self.MonitorTags.append(self.LastJulaboSP1_tag)
-		self.MonitorTags.append(self.LastFNALBoxMsgTS_tag)
-		self.MonitorTags.append(self.LastFNALBoxTemp0_tag)
-		self.MonitorTags.append(self.LastFNALBoxTemp1_tag)
-		self.MonitorTags.append(self.LastFNALBoxRH0_tag)
-		self.MonitorTags.append(self.LastFNALBoxRH1_tag)
-		self.MonitorTags.append(self.LastFNALBoxDP_tag)
+		self.MonitorInfo = {}
+		self.MonitorInfo["LastMonitor"]=self.LastMonitor_tag
+		self.MonitorInfo["MQTTConn"]=self.MQTTConn_tag
+		self.MonitorInfo["JULABOConn"]=self.JULABOConn_tag
+		self.MonitorInfo["FNALConn"]=self.FNALConn_tag
+		self.MonitorInfo["LastMQTTMsgTS"]=self.LastMQTTMsgTS_tag
+		self.MonitorInfo["LastJulaboMsgTS"]=self.LastJulaboMsgTS_tag
+		self.MonitorInfo["LastJulaboStatus"]=self.LastJulaboStatus_tag
+		self.MonitorInfo["LastJulaboSP1"]=self.LastJulaboSP1_tag
+		self.MonitorInfo["LastJulaboSP2"]=self.LastJulaboSP2_tag
+		self.MonitorInfo["LastJulaboSP3"]=self.LastJulaboSP3_tag
+		self.MonitorInfo["LastJulaboBT"]=self.LastJulaboBT_tag
+		self.MonitorInfo["LastJulaboHP"]=self.LastJulaboHP_tag
+		self.MonitorInfo["LastJulaboTSP"]=self.LastJulaboTSP_tag
+		self.MonitorInfo["LastFNALBoxMsgTS"]=self.LastFNALBoxMsgTS_tag
+		self.MonitorInfo["LastFNALBoxTemp0"]=self.LastFNALBoxTemp0_tag
+		self.MonitorInfo["LastFNALBoxTemp1"]=self.LastFNALBoxTemp1_tag
+		self.MonitorInfo["LastFNALBoxDP"]=self.LastFNALBoxDP_tag
+		
+		
+		self.MonitorInfo["CH00_ID"]=self.CH00_ID
+		self.MonitorInfo["CH01_ID"]=self.CH01_ID
+		self.MonitorInfo["CH02_ID"]=self.CH02_ID
+		self.MonitorInfo["CH03_ID"]=self.CH03_ID
+		self.MonitorInfo["CH04_ID"]=self.CH04_ID
+		self.MonitorInfo["CH05_ID"]=self.CH05_ID
+		self.MonitorInfo["CH06_ID"]=self.CH06_ID
+		self.MonitorInfo["CH00_ST"]=self.CH00_ST
+		self.MonitorInfo["CH01_ST"]=self.CH01_ST
+		self.MonitorInfo["CH02_ST"]=self.CH02_ST
+		self.MonitorInfo["CH03_ST"]=self.CH03_ST
+		self.MonitorInfo["CH04_ST"]=self.CH04_ST
+		self.MonitorInfo["CH05_ST"]=self.CH05_ST
+		self.MonitorInfo["CH06_ST"]=self.CH06_ST
+		self.MonitorInfo["CH00_V"]=self.CH00_V
+		self.MonitorInfo["CH01_V"]=self.CH01_V
+		self.MonitorInfo["CH02_V"]=self.CH02_V
+		self.MonitorInfo["CH03_V"]=self.CH03_V
+		self.MonitorInfo["CH04_V"]=self.CH04_V
+		self.MonitorInfo["CH05_V"]=self.CH05_V
+		self.MonitorInfo["CH06_V"]=self.CH06_V
+		self.MonitorInfo["CH00_I"]=self.CH00_I
+		self.MonitorInfo["CH01_I"]=self.CH01_I
+		self.MonitorInfo["CH02_I"]=self.CH02_I
+		self.MonitorInfo["CH03_I"]=self.CH03_I
+		self.MonitorInfo["CH04_I"]=self.CH04_I
+		self.MonitorInfo["CH05_I"]=self.CH05_I
+		self.MonitorInfo["CH06_I"]=self.CH06_I
+		
+		
 		
 
 
@@ -58,7 +91,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		# start monitoring function in QThread
 		self.MonitorThread = QThread()
-		self.Monitor = BurnIn_Monitor(self.configDict,self.logger, self.MonitorTags, self.Julabo, self.FNALBox)
+		self.Monitor = BurnIn_Monitor(self.configDict,self.logger, self.MonitorInfo, self.Julabo, self.FNALBox)
 		self.Monitor.moveToThread(self.MonitorThread)
 		self.MonitorThread.started.connect(self.Monitor.run)
 		self.MonitorThread.start()	

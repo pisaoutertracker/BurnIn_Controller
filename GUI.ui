@@ -38,7 +38,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -207,51 +207,268 @@ p, li { white-space: pre-wrap; }
             <property name="title">
              <string>MQTT readings</string>
             </property>
-            <layout class="QGridLayout" name="gridLayout_2">
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_11">
-               <property name="text">
-                <string>Last message timestamp: </string>
-               </property>
-              </widget>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <layout class="QGridLayout" name="gridLayout_2">
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_11">
+                 <property name="text">
+                  <string>Last message timestamp: </string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLabel" name="LastMQTTMsgTS_tag">
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
+                 <property name="text">
+                  <string>NEVER</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_13">
-               <property name="text">
-                <string>Last msg(DEBUG):</string>
-               </property>
-              </widget>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_5">
+               <item row="0" column="3">
+                <widget class="QLabel" name="label_25">
+                 <property name="text">
+                  <string>Current</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_22">
+                 <property name="text">
+                  <string>Ch ID</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="CH00_ID">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="CH01_ID">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLabel" name="label_23">
+                 <property name="text">
+                  <string>Status</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QLabel" name="label_24">
+                 <property name="text">
+                  <string>Voltage</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="CH02_ID">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="CH04_ID">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="CH03_ID">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="0">
+                <widget class="QLabel" name="CH06_ID">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLabel" name="CH05_ID">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLabel" name="CH00_ST">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLabel" name="CH01_ST">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLabel" name="CH02_ST">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLabel" name="CH03_ST">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QLabel" name="CH04_ST">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="1">
+                <widget class="QLabel" name="CH05_ST">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QLabel" name="CH00_V">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="2">
+                <widget class="QLabel" name="CH01_V">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="2">
+                <widget class="QLabel" name="CH02_V">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="2">
+                <widget class="QLabel" name="CH03_V">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="2">
+                <widget class="QLabel" name="CH04_V">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="2">
+                <widget class="QLabel" name="CH05_V">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="2">
+                <widget class="QLabel" name="CH06_V">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="3">
+                <widget class="QLabel" name="CH00_I">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="3">
+                <widget class="QLabel" name="CH01_I">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="3">
+                <widget class="QLabel" name="CH02_I">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="3">
+                <widget class="QLabel" name="CH03_I">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="3">
+                <widget class="QLabel" name="CH04_I">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="3">
+                <widget class="QLabel" name="CH05_I">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="3">
+                <widget class="QLabel" name="CH06_I">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="1">
+                <widget class="QLabel" name="CH06_ST">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
-             <item row="0" column="1">
-              <widget class="QLabel" name="LastMQTTMsgTS_tag">
-               <property name="styleSheet">
-                <string notr="true"/>
+             <item>
+              <spacer name="verticalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                </property>
-               <property name="text">
-                <string>NEVER</string>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
                </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_14">
-               <property name="text">
-                <string>Last msg source (DEBUG)</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QLabel" name="LastMQTTSource_tag">
-               <property name="text">
-                <string>None</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QLabel" name="LastMQTTMsg_tag">
-               <property name="text">
-                <string>Waiting...</string>
-               </property>
-              </widget>
+              </spacer>
              </item>
             </layout>
            </widget>
@@ -264,17 +481,10 @@ p, li { white-space: pre-wrap; }
                <string>JULABO readings</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_3">
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_12">
+               <item row="2" column="1">
+                <widget class="QLabel" name="LastJulaboSP1_tag">
                  <property name="text">
-                  <string>Last message timestamp: </string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QLabel" name="LastJulaboMsgTS_tag">
-                 <property name="text">
-                  <string>NEVER</string>
+                  <string>UNKNOWN</string>
                  </property>
                 </widget>
                </item>
@@ -285,13 +495,6 @@ p, li { white-space: pre-wrap; }
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
-                <widget class="QLabel" name="LastJulaboStatus_tag">
-                 <property name="text">
-                  <string>UNKNOWN</string>
-                 </property>
-                </widget>
-               </item>
                <item row="2" column="0">
                 <widget class="QLabel" name="label_16">
                  <property name="text">
@@ -299,8 +502,92 @@ p, li { white-space: pre-wrap; }
                  </property>
                 </widget>
                </item>
-               <item row="2" column="1">
-                <widget class="QLabel" name="LastJulaboSP1_tag">
+               <item row="1" column="1">
+                <widget class="QLabel" name="LastJulaboStatus_tag">
+                 <property name="text">
+                  <string>UNKNOWN</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLabel" name="LastJulaboMsgTS_tag">
+                 <property name="text">
+                  <string>NEVER</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_12">
+                 <property name="text">
+                  <string>Last message timestamp: </string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="label_20">
+                 <property name="text">
+                  <string>Heating Power (%)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_13">
+                 <property name="text">
+                  <string>Setpoint 2  (C°)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_14">
+                 <property name="text">
+                  <string>Setpoint 3  (C°)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLabel" name="label_21">
+                 <property name="text">
+                  <string>Bath Temp (C°)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="0">
+                <widget class="QLabel" name="label_26">
+                 <property name="text">
+                  <string>Target Setpoint -1</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLabel" name="LastJulaboSP2_tag">
+                 <property name="text">
+                  <string>UNKNOWN</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLabel" name="LastJulaboSP3_tag">
+                 <property name="text">
+                  <string>UNKNOWN</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QLabel" name="LastJulaboHP_tag">
+                 <property name="text">
+                  <string>UNKNOWN</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="1">
+                <widget class="QLabel" name="LastJulaboBT_tag">
+                 <property name="text">
+                  <string>UNKNOWN</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="1">
+                <widget class="QLabel" name="LastJulaboTSP_tag">
                  <property name="text">
                   <string>UNKNOWN</string>
                  </property>
@@ -315,24 +602,10 @@ p, li { white-space: pre-wrap; }
                <string>FNAL Box</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_4">
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_20">
-                 <property name="text">
-                  <string>RH 0  (???)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="1">
+               <item row="3" column="1">
                 <widget class="QLabel" name="LastFNALBoxDP_tag">
                  <property name="text">
                   <string>UNKNOWN</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_17">
-                 <property name="text">
-                  <string>Last message timestamp: </string>
                  </property>
                 </widget>
                </item>
@@ -343,10 +616,10 @@ p, li { white-space: pre-wrap; }
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
-                <widget class="QLabel" name="LastFNALBoxTemp0_tag">
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_17">
                  <property name="text">
-                  <string>UNKNOWN</string>
+                  <string>Last message timestamp: </string>
                  </property>
                 </widget>
                </item>
@@ -357,17 +630,10 @@ p, li { white-space: pre-wrap; }
                  </property>
                 </widget>
                </item>
-               <item row="5" column="0">
+               <item row="3" column="0">
                 <widget class="QLabel" name="label_19">
                  <property name="text">
                   <string>Dew Point  (C°)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QLabel" name="LastFNALBoxTemp1_tag">
-                 <property name="text">
-                  <string>UNKNOWN</string>
                  </property>
                 </widget>
                </item>
@@ -378,22 +644,15 @@ p, li { white-space: pre-wrap; }
                  </property>
                 </widget>
                </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_21">
-                 <property name="text">
-                  <string>RH 1 (???)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QLabel" name="LastFNALBoxRH0_tag">
+               <item row="1" column="1">
+                <widget class="QLabel" name="LastFNALBoxTemp0_tag">
                  <property name="text">
                   <string>UNKNOWN</string>
                  </property>
                 </widget>
                </item>
-               <item row="4" column="1">
-                <widget class="QLabel" name="LastFNALBoxRH1_tag">
+               <item row="2" column="1">
+                <widget class="QLabel" name="LastFNALBoxTemp1_tag">
                  <property name="text">
                   <string>UNKNOWN</string>
                  </property>

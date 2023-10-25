@@ -6,7 +6,7 @@ MQTT:
  Port: "1883"
  Addr: "192.168.0.45"
  ClientId: BurnIn_Controller
- CAENTopic: "#"
+ CAENTopic: "/caenstatus/#"
  EnableMonitor: "True"
 FNALBox:
  Port: "10001"

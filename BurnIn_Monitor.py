@@ -9,7 +9,7 @@ from MQTT_interface import *
 
 class BurnIn_Monitor(QObject):
 
-	def __init__(self,configDict,logger, MonitorTags, Julabo, FNALBox):
+	def __init__(self,configDict,logger, MonitorInfo, Julabo, FNALBox):
 	
 		super(BurnIn_Monitor,self).__init__();
 		self.configDict=configDict
@@ -17,7 +17,7 @@ class BurnIn_Monitor(QObject):
 		self.logger.info("MONITOR: Monitoring class initialized")
 		
 		self.MQTT =  MQTT_interface(configDict,logger)
-		self.MonitorTags = MonitorTags
+		self.MonitorInfo = MonitorInfo
 		self.Julabo = Julabo
 		self.FNALBox = FNALBox
 
@@ -26,14 +26,14 @@ class BurnIn_Monitor(QObject):
 		self.logger.info("MONITOR: Attempting first connection to MQTT server...")
 		self.MQTT.connect()
 		if self.MQTT.is_connected :
-			self.MonitorTags[1].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-			self.MonitorTags[1].setText("Connected")
+			self.MonitorInfo["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+			self.MonitorInfo["MQTTConn"].setText("Connected")
 			
 			
 		while(1):
 		
-			self.MonitorTags[0].setStyleSheet("");
-			self.MonitorTags[0].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+			self.MonitorInfo["LastMonitor"].setStyleSheet("");
+			self.MonitorInfo["LastMonitor"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 			
 			#MQTT cycle
 			if (self.configDict.get(("MQTT","EnableMonitor"),"NOKEY").upper() == "TRUE"):
@@ -41,40 +41,87 @@ class BurnIn_Monitor(QObject):
 					self.logger.info("MONITOR: Attempting first connection to MQTT server...")
 					self.MQTT.connect()
 					if self.MQTT.is_connected :
-						self.MonitorTags[1].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-						self.MonitorTags[1].setText("Connected")
+						self.MonitorInfo["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+						self.MonitorInfo["MQTTConn"].setText("Connected")
 				else:
 					if self.MQTT.is_connected :
-						self.MonitorTags[1].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-						self.MonitorTags[1].setText("Connected")
+						self.MonitorInfo["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+						self.MonitorInfo["MQTTConn"].setText("Connected")
 					else:
-						self.MonitorTags[1].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
-						self.MonitorTags[1].setText("Disconnected")
+						self.MonitorInfo["MQTTConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+						self.MonitorInfo["MQTTConn"].setText("Disconnected")
 				
-				self.MonitorTags[4].setText(self.MQTT.LastMessageTS)
-				self.MonitorTags[5].setText(self.MQTT.LastMessage)
-				self.MonitorTags[6].setText(self.MQTT.LastSource)
-				
+				self.MonitorInfo["LastMQTTMsgTS"].setText(self.MQTT.LastMessageTS)
+				try:
+					MQTT_splitted = self.MQTT.LastMessage[1:-1].split(",")
+					for idx in range(0,len(MQTT_splitted),3):
+						MQTT_splitted[idx].replace(" ", "")
+						MQTT_splitted[idx+1].replace(" ", "")
+						MQTT_splitted[idx+2].replace(" ", "")
+						if idx<28:
+							self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_ID"].setText(MQTT_splitted[idx].split("_")[1].replace(" ", ""))
+							is_active = float(MQTT_splitted[idx].split(":")[1])
+							if is_active >0 :
+								self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_ST"].setText("ON")
+							else:
+								self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_ST"].setText("OFF")
+								
+							self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_V"].setText(MQTT_splitted[idx+1].split(":")[1].replace(" ", ""))
+							self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_I"].setText(MQTT_splitted[idx+2].split(":")[1].replace(" ", ""))
+								
+						else:
+							self.logger.warning("MONITOR: too many channel in MQTT reply!")
+				except Exception as e:
+					self.logger.warning("MONITOR: error splitting MQTT reply")
+					self.logger.warning(e)
+					
 			#JULABO
 			if (self.configDict.get(("Julabo","EnableMonitor"),"NOKEY").upper() == "TRUE"):
 				self.Julabo.lock.acquire()
 				if not self.Julabo.is_connected :
 					self.Julabo.connect()
 				if self.Julabo.is_connected :
-					self.MonitorTags[2].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-					self.MonitorTags[2].setText("Connected")
+					self.MonitorInfo["JULABOConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+					self.MonitorInfo["JULABOConn"].setText("Connected")
 					self.Julabo.sendTCP("status")
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
-						self.MonitorTags[8].setText(reply)
+						self.MonitorInfo["LastJulaboStatus"].setText(reply)
+						
 					self.Julabo.sendTCP("in_sp_00")
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
-						self.MonitorTags[9].setText(reply)
-					self.MonitorTags[7].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+						self.MonitorInfo["LastJulaboSP1"].setText(reply)
+						
+					self.Julabo.sendTCP("in_sp_01")
+					reply = self.Julabo.receive()
+					if (reply != "None" and reply != "TCP error"):
+						self.MonitorInfo["LastJulaboSP2"].setText(reply)
+						
+					self.Julabo.sendTCP("in_sp_02")
+					reply = self.Julabo.receive()
+					if (reply != "None" and reply != "TCP error"):
+						self.MonitorInfo["LastJulaboSP3"].setText(reply)
+						
+					self.Julabo.sendTCP("in_pv_00")
+					reply = self.Julabo.receive()
+					if (reply != "None" and reply != "TCP error"):
+						self.MonitorInfo["LastJulaboBT"].setText(reply)
+						
+					self.Julabo.sendTCP("in_pv_01")
+					reply = self.Julabo.receive()
+					if (reply != "None" and reply != "TCP error"):
+						self.MonitorInfo["LastJulaboHP"].setText(reply)
+						
+					self.Julabo.sendTCP("in_mode_01")
+					reply = self.Julabo.receive()
+					if (reply != "None" and reply != "TCP error"):
+						self.MonitorInfo["LastJulaboTSP"].setText(reply)
+						
+					self.MonitorInfo["LastJulaboMsgTS"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 				else:
-					self.MonitorTags[2].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
-					self.MonitorTags[2].setText("Disconnected")
+					self.MonitorInfo["JULABOConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+					self.MonitorInfo["JULABOConn"].setText("Disconnected")
 				self.Julabo.lock.release()	
 				
 			#FNALBox
@@ -83,24 +130,22 @@ class BurnIn_Monitor(QObject):
 				if not self.FNALBox.is_connected :
 					self.FNALBox.connect()
 				if self.FNALBox.is_connected :
-					self.MonitorTags[3].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-					self.MonitorTags[3].setText("Connected")
+					self.MonitorInfo["FNALConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+					self.MonitorInfo["FNALConn"].setText("Connected")
 					self.FNALBox.sendTCP("[10]")
 					reply = self.FNALBox.receive()
 					if (reply != "None" and reply != "TCP error"):
 						reply_list = reply[1:-1].split(",")
 						try:
-							self.MonitorTags[11].setText(reply_list[0])
-							self.MonitorTags[12].setText(reply_list[1][1:])
-							self.MonitorTags[13].setText(reply_list[2][1:])
-							self.MonitorTags[14].setText(reply_list[3][1:])
-							self.MonitorTags[15].setText(reply_list[14][1:])
+							self.MonitorInfo["LastFNALBoxTemp0"].setText(reply_list[0])
+							self.MonitorInfo["LastFNALBoxTemp1"].setText(reply_list[1][1:])
+							self.MonitorInfo["LastFNALBoxDP"].setText(reply_list[14][1:])
 						except Exception as e:
 							self.logger.warning("MONITOR: error splitting FNAL reply "+reply)
-					self.MonitorTags[10].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+					self.MonitorInfo["LastFNALBoxMsgTS"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 				else:
-					self.MonitorTags[3].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
-					self.MonitorTags[3].setText("Disconnected")
+					self.MonitorInfo["FNALConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+					self.MonitorInfo["FNALConn"].setText("Disconnected")
 				self.FNALBox.lock.release()	
 			
 			self.logger.debug("MONITOR: Monitoring cycle done")
