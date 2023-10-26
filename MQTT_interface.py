@@ -12,9 +12,13 @@ class MQTT_interface():
 		self.is_connected = False
 		self.is_subscribed = False
 		
-		self.LastMessage = ""
 		self.LastSource = "None"
-		self.LastMessageTS = "NEVER"
+		
+		self.LastCAENMessageTS = "NEVER"
+		self.LastCAENMessage = ""
+		
+		self.LastM5MessageTS = "NEVER"
+		self.LastM5Message = ""
 		
 		
 		self.configDict=configDict
@@ -35,6 +39,10 @@ class MQTT_interface():
 		if self.CAENTopic == "NOKEY":
 			self.CAENTopic = "/caenstatus/full"
 			self.logger.warning("MQTT CAENTopic parameter not found. Using default")
+		self.M5Topic = configDict.get(("MQTT","M5Topic"),"NOKEY")
+		if self.M5Topic == "NOKEY":
+			self.M5Topic = "/caenstatus/full"
+			self.logger.warning("MQTT M5Topic parameter not found. Using default")
 			
 		self.client = mqtt_client.Client(self.ClientId)
 		self.client.on_connect = self.on_connect
@@ -45,6 +53,7 @@ class MQTT_interface():
 	def on_connect(self,client, userdata, flags, rc):
 		self.logger.info("MQTT client: Connected to MQTT Broker!")
 		self.client.subscribe(self.CAENTopic)
+		self.client.subscribe(self.M5Topic)
 		self.is_connected = True
 		
 	def on_disconnect(self, client, userdata, rc):
@@ -55,9 +64,15 @@ class MQTT_interface():
 	def on_message(self, client, userdata, msg):
 		try:
 			self.logger.debug(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-			self.LastMessage = msg.payload.decode()
 			self.LastSource = msg.topic
-			self.LastMessageTS = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+			if self.LastSource == "/caenstatus/full":
+				self.LastCAENMessage = msg.payload.decode()	
+				self.LastCAENMessageTS = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+			elif self.LastSource == "/environment/HumAndTemp001":
+				self.LastM5Message = msg.payload.decode()	
+				self.LastM5MessageTS = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+			else:
+				self.logger.warning("MQTT client: Message from unknown topic")
 		except Exception as e:
 			self.logger.info("MQTT client: invalid string from MQTT Broker!")
 		

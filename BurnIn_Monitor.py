@@ -51,30 +51,43 @@ class BurnIn_Monitor(QObject):
 						self.MonitorInfo["MQTTConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
 						self.MonitorInfo["MQTTConn"].setText("Disconnected")
 				
-				self.MonitorInfo["LastMQTTMsgTS"].setText(self.MQTT.LastMessageTS)
-				try:
-					MQTT_splitted = self.MQTT.LastMessage[1:-1].split(",")
-					for idx in range(0,len(MQTT_splitted),3):
-						MQTT_splitted[idx].replace(" ", "")
-						MQTT_splitted[idx+1].replace(" ", "")
-						MQTT_splitted[idx+2].replace(" ", "")
-						if idx<28:
-							self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_ID"].setText(MQTT_splitted[idx].split("_")[1].replace(" ", ""))
-							is_active = float(MQTT_splitted[idx].split(":")[1])
-							if is_active >0 :
-								self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_ST"].setText("ON")
+				if (self.MQTT.LastCAENMessageTS != "NEVER"):
+					self.MonitorInfo["LastMQTTCAENMsgTS"].setText(self.MQTT.LastCAENMessageTS)
+					try:
+						MQTT_splitted = self.MQTT.LastCAENMessage[1:-1].split(",")
+						for idx in range(0,len(MQTT_splitted),3):
+							MQTT_splitted[idx].replace(" ", "")
+							MQTT_splitted[idx+1].replace(" ", "")
+							MQTT_splitted[idx+2].replace(" ", "")
+							if idx<28:
+								self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_ID"].setText(MQTT_splitted[idx].split("_")[1].replace(" ", ""))
+								is_active = float(MQTT_splitted[idx].split(":")[1])
+								if is_active >0 :
+									self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_ST"].setText("ON")
+								else:
+									self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_ST"].setText("OFF")
+									
+								self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_V"].setText(MQTT_splitted[idx+1].split(":")[1].replace(" ", ""))
+								self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_I"].setText(MQTT_splitted[idx+2].split(":")[1].replace(" ", ""))
+									
 							else:
-								self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_ST"].setText("OFF")
-								
-							self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_V"].setText(MQTT_splitted[idx+1].split(":")[1].replace(" ", ""))
-							self.MonitorInfo["CH"+str((int)(idx/3)).zfill(2)+"_I"].setText(MQTT_splitted[idx+2].split(":")[1].replace(" ", ""))
-								
-						else:
-							self.logger.warning("MONITOR: too many channel in MQTT reply!")
-				except Exception as e:
-					self.logger.warning("MONITOR: error splitting MQTT reply")
-					self.logger.warning(e)
-					
+								self.logger.warning("MONITOR: too many channel in MQTT CAEN message!")
+					except Exception as e:
+						self.logger.warning("MONITOR: error splitting MQTT CAEN message. Details below.")
+						self.logger.error(e)
+				
+				if (self.MQTT.LastM5MessageTS != "NEVER"):
+					self.MonitorInfo["LastMQTTM5MsgTS"].setText(self.MQTT.LastM5MessageTS)
+					try:
+						MQTT_splitted = self.MQTT.LastM5Message[1:-1].replace(" ", "").split(",")
+						self.MonitorInfo["LastM5DP"].setText(MQTT_splitted[0].split(":")[1])
+						self.MonitorInfo["LastM5Temp"].setText(MQTT_splitted[1].split(":")[1])
+						self.MonitorInfo["LastM5Humi"].setText(MQTT_splitted[2].split(":")[1])
+						self.MonitorInfo["LastM5Pres"].setText(MQTT_splitted[3].split(":")[1])
+					except Exception as e:
+						self.logger.warning("MONITOR: error splitting MQTT M5 message. Details below.")
+						self.logger.error(e)
+						
 			#JULABO
 			if (self.configDict.get(("Julabo","EnableMonitor"),"NOKEY").upper() == "TRUE"):
 				self.Julabo.lock.acquire()

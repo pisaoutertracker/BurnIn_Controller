@@ -39,7 +39,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MonitorInfo["MQTTConn"]=self.MQTTConn_tag
 		self.MonitorInfo["JULABOConn"]=self.JULABOConn_tag
 		self.MonitorInfo["FNALConn"]=self.FNALConn_tag
-		self.MonitorInfo["LastMQTTMsgTS"]=self.LastMQTTMsgTS_tag
+		self.MonitorInfo["LastMQTTCAENMsgTS"]=self.LastMQTTCAENMsgTS_tag
+		self.MonitorInfo["LastMQTTM5MsgTS"]=self.LastMQTTM5MsgTS_tag
+		self.MonitorInfo["LastM5Temp"]=self.LastM5Temp_tag
+		self.MonitorInfo["LastM5Humi"]=self.LastM5Humi_tag
+		self.MonitorInfo["LastM5Pres"]=self.LastM5Pres_tag
+		self.MonitorInfo["LastM5DP"]=self.LastM5DP_tag
 		self.MonitorInfo["LastJulaboMsgTS"]=self.LastJulaboMsgTS_tag
 		self.MonitorInfo["LastJulaboStatus"]=self.LastJulaboStatus_tag
 		self.MonitorInfo["LastJulaboSP1"]=self.LastJulaboSP1_tag
