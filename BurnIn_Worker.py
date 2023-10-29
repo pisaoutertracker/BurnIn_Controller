@@ -37,3 +37,35 @@ class BurnIn_Worker(QObject):
 			self.FNALBox.sendTCP(cmd)
 			self.logger.info(self.FNALBox.receive())
 		self.FNALBox.lock.release()
+	
+	@pyqtSlot(int)	
+	def Ctrl_SelSp_Cmd(self,Sp_id):
+		self.logger.info("Selecting Sp"+str(Sp_id))
+		self.logger.info("But not yet implemented...")
+	
+	@pyqtSlot(int,float)	
+	def Ctrl_SetSp_Cmd(self,Sp_id,value):
+		self.logger.info("Setting Sp "+str(Sp_id) + " to "+ str(value))
+		self.logger.info("But not yet implemented...")
+		
+	@pyqtSlot(bool)	
+	def Ctrl_SetLock_Cmd(self,switch):
+		self.logger.info("Set magnet lock: "+str(switch))
+		self.logger.info("But not yet implemented...")
+		
+	@pyqtSlot(bool)	
+	def Ctrl_PowerJulabo_Cmd(self,switch):
+		self.logger.info("Julabo powered: "+str(switch))
+		self.logger.info("But not yet implemented...")
+		
+	@pyqtSlot(bool)	
+	def Ctrl_SetHighFlow_Cmd(self,switch):
+		self.logger.info("Setting high Flow: "+str(switch))
+		self.logger.info("But not yet implemented...")
+	
+	
+	
+	
+	
+	
+	

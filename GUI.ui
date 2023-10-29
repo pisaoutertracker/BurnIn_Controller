@@ -83,7 +83,7 @@ p, li { white-space: pre-wrap; }
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_8">
              <item>
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="Ctrl_StartJulabo_btn">
                <property name="enabled">
                 <bool>true</bool>
                </property>
@@ -96,7 +96,7 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_2">
+              <widget class="QPushButton" name="Ctrl_StopJulabo_btn">
                <property name="text">
                 <string>STOP Chiller</string>
                </property>
@@ -114,28 +114,28 @@ p, li { white-space: pre-wrap; }
            <item>
             <layout class="QGridLayout" name="gridLayout_7">
              <item row="1" column="1">
-              <widget class="QLabel" name="label_36">
+              <widget class="QLabel" name="Ctrl_Sp2_tag">
                <property name="text">
                 <string>?</string>
                </property>
               </widget>
              </item>
              <item row="2" column="1">
-              <widget class="QLabel" name="label_37">
+              <widget class="QLabel" name="Ctrl_Sp3_tag">
                <property name="text">
                 <string>?</string>
                </property>
               </widget>
              </item>
              <item row="1" column="6">
-              <widget class="QPushButton" name="pushButton_7">
+              <widget class="QPushButton" name="Ctrl_SelSp2_btn">
                <property name="text">
                 <string>Set as Target T</string>
                </property>
               </widget>
              </item>
              <item row="2" column="6">
-              <widget class="QPushButton" name="pushButton_8">
+              <widget class="QPushButton" name="Ctrl_SelSp3_btn">
                <property name="text">
                 <string>Set as target T</string>
                </property>
@@ -149,7 +149,7 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QLabel" name="label_35">
+              <widget class="QLabel" name="Ctrl_Sp1_tag">
                <property name="text">
                 <string>?</string>
                </property>
@@ -177,7 +177,7 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item row="0" column="4">
-              <widget class="QDoubleSpinBox" name="doubleSpinBox">
+              <widget class="QDoubleSpinBox" name="Ctrl_ValSp1_dsb">
                <property name="minimum">
                 <double>-50.000000000000000</double>
                </property>
@@ -194,28 +194,28 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item row="0" column="6">
-              <widget class="QPushButton" name="pushButton_6">
+              <widget class="QPushButton" name="Ctrl_SelSp1_btn">
                <property name="text">
                 <string>Set as target T</string>
                </property>
               </widget>
              </item>
              <item row="0" column="5">
-              <widget class="QPushButton" name="pushButton_3">
+              <widget class="QPushButton" name="Ctrl_SetSp1_btn">
                <property name="text">
                 <string>Set value</string>
                </property>
               </widget>
              </item>
              <item row="1" column="5">
-              <widget class="QPushButton" name="pushButton_4">
+              <widget class="QPushButton" name="Ctrl_SetSp2_btn">
                <property name="text">
                 <string>Set value</string>
                </property>
               </widget>
              </item>
              <item row="2" column="4">
-              <widget class="QDoubleSpinBox" name="doubleSpinBox_3">
+              <widget class="QDoubleSpinBox" name="Ctrl_ValSp3_dsb">
                <property name="minimum">
                 <double>-50.000000000000000</double>
                </property>
@@ -225,7 +225,7 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item row="1" column="4">
-              <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+              <widget class="QDoubleSpinBox" name="Ctrl_ValSp2_dsb">
                <property name="minimum">
                 <double>-50.000000000000000</double>
                </property>
@@ -235,7 +235,7 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item row="2" column="5">
-              <widget class="QPushButton" name="pushButton_5">
+              <widget class="QPushButton" name="Ctrl_SetSp3_btn">
                <property name="text">
                 <string>Set value</string>
                </property>
@@ -293,7 +293,7 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_52">
+              <widget class="QLabel" name="Ctrl_StatusJulabo_tag">
                <property name="text">
                 <string>?</string>
                </property>
@@ -320,7 +320,7 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_42">
+              <widget class="QLabel" name="Ctrl_TargetTemp_tag">
                <property name="text">
                 <string>?</string>
                </property>
@@ -347,7 +347,7 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_44">
+              <widget class="QLabel" name="Ctrl_IntDewPoint_tag">
                <property name="text">
                 <string>?</string>
                </property>
@@ -378,14 +378,14 @@ p, li { white-space: pre-wrap; }
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
            <item row="0" column="1">
-            <widget class="QPushButton" name="pushButton_9">
+            <widget class="QPushButton" name="Ctrl_SetHighFlow_btn">
              <property name="text">
               <string>High Flow</string>
              </property>
             </widget>
            </item>
            <item row="0" column="2">
-            <widget class="QPushButton" name="pushButton_10">
+            <widget class="QPushButton" name="Ctrl_SetLowFlow_btn">
              <property name="text">
               <string>Low Flow</string>
              </property>
@@ -426,28 +426,28 @@ p, li { white-space: pre-wrap; }
             </spacer>
            </item>
            <item row="1" column="1">
-            <widget class="QPushButton" name="pushButton_11">
+            <widget class="QPushButton" name="Ctrl_SetLock_btn">
              <property name="text">
               <string>Lock</string>
              </property>
             </widget>
            </item>
            <item row="0" column="4">
-            <widget class="QLabel" name="label_46">
+            <widget class="QLabel" name="Ctrl_StatusFlow_tag">
              <property name="text">
               <string>?</string>
              </property>
             </widget>
            </item>
            <item row="1" column="2">
-            <widget class="QPushButton" name="pushButton_12">
+            <widget class="QPushButton" name="Ctrl_SetUnlock_btn">
              <property name="text">
               <string>Unlock</string>
              </property>
             </widget>
            </item>
            <item row="1" column="4">
-            <widget class="QLabel" name="label_48">
+            <widget class="QLabel" name="Ctrl_StatusLock_tag">
              <property name="text">
               <string>?</string>
              </property>
@@ -468,7 +468,7 @@ p, li { white-space: pre-wrap; }
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="QLabel" name="label_54">
+            <widget class="QLabel" name="Ctrl_ExtDewPoint_tag">
              <property name="text">
               <string>?</string>
              </property>

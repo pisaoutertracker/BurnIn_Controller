@@ -30,7 +30,7 @@ class BurnIn_Monitor(QObject):
 			self.MonitorInfo["MQTTConn"].setText("Connected")
 			
 			
-		while(1):
+		while(1):		
 		
 			self.MonitorInfo["LastMonitor"].setStyleSheet("");
 			self.MonitorInfo["LastMonitor"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
@@ -81,6 +81,7 @@ class BurnIn_Monitor(QObject):
 					try:
 						MQTT_splitted = self.MQTT.LastM5Message[1:-1].replace(" ", "").split(",")
 						self.MonitorInfo["LastM5DP"].setText(MQTT_splitted[0].split(":")[1])
+						self.MonitorInfo["Ctrl_ExtDewPoint"].setText(MQTT_splitted[0].split(":")[1])
 						self.MonitorInfo["LastM5Temp"].setText(MQTT_splitted[1].split(":")[1])
 						self.MonitorInfo["LastM5Humi"].setText(MQTT_splitted[2].split(":")[1])
 						self.MonitorInfo["LastM5Pres"].setText(MQTT_splitted[3].split(":")[1])
@@ -100,21 +101,33 @@ class BurnIn_Monitor(QObject):
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
 						self.MonitorInfo["LastJulaboStatus"].setText(reply)
+						if self.MonitorInfo["LastJulaboStatus"].text().find("START")!=-1:
+							self.MonitorInfo["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+							self.MonitorInfo["Ctrl_StatusJulabo"].setText(self.MonitorInfo["LastJulaboStatus"].text())
+						else:
+							self.MonitorInfo["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+							self.MonitorInfo["Ctrl_StatusJulabo"].setText(self.MonitorInfo["LastJulaboStatus"].text())
+						
+							
+						
 						
 					self.Julabo.sendTCP("in_sp_00")
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
 						self.MonitorInfo["LastJulaboSP1"].setText(reply)
+						self.MonitorInfo["Ctrl_Sp1"]=self.MonitorInfo["LastJulaboSP1"].text()
 						
 					self.Julabo.sendTCP("in_sp_01")
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
 						self.MonitorInfo["LastJulaboSP2"].setText(reply)
+						self.MonitorInfo["Ctrl_Sp2"]=self.MonitorInfo["LastJulaboSP2"].text()
 						
 					self.Julabo.sendTCP("in_sp_02")
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
 						self.MonitorInfo["LastJulaboSP3"].setText(reply)
+						self.MonitorInfo["Ctrl_Sp3"]=self.MonitorInfo["LastJulaboSP3"].text()
 						
 					self.Julabo.sendTCP("in_pv_00")
 					reply = self.Julabo.receive()
@@ -130,6 +143,14 @@ class BurnIn_Monitor(QObject):
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
 						self.MonitorInfo["LastJulaboTSP"].setText(reply)
+						
+					if self.MonitorInfo["LastJulaboTSP"].text()=="0":
+						self.MonitorInfo["Ctrl_TargetTemp"].setText(self.MonitorInfo["LastJulaboSP1"].text())
+					elif self.MonitorInfo["LastJulaboTSP"].text()=="1":
+						self.MonitorInfo["Ctrl_TargetTemp"].setText(self.MonitorInfo["LastJulaboSP2"].text())
+					elif self.MonitorInfo["LastJulaboTSP"].text()=="2":
+						self.MonitorInfo["Ctrl_TargetTemp"].setText(self.MonitorInfo["LastJulaboSP3"].text())
+							
 						
 					self.MonitorInfo["LastJulaboMsgTS"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 				else:
@@ -153,6 +174,7 @@ class BurnIn_Monitor(QObject):
 							self.MonitorInfo["LastFNALBoxTemp0"].setText(reply_list[0])
 							self.MonitorInfo["LastFNALBoxTemp1"].setText(reply_list[1][1:])
 							self.MonitorInfo["LastFNALBoxDP"].setText(reply_list[14][1:])
+							self.MonitorInfo["Ctrl_IntDewPoint"].setText(reply_list[14][1:])
 						except Exception as e:
 							self.logger.warning("MONITOR: error splitting FNAL reply "+reply)
 					self.MonitorInfo["LastFNALBoxMsgTS"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))

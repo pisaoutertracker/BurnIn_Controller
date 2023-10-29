@@ -15,6 +15,14 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	SendJulaboCmd_sig = pyqtSignal(str)
 	SendFNALBoxCmd_sig = pyqtSignal(str)
 
+
+	Ctrl_SetSp_sig = pyqtSignal(int,float)
+	Ctrl_SelSp_sig = pyqtSignal(int)
+	Ctrl_PowerJulabo_sig = pyqtSignal(bool)
+	Ctrl_SetHighFlow_sig = pyqtSignal(bool)
+	Ctrl_SetLock_sig = pyqtSignal(bool)
+
+
 	def __init__(self,configDict,logger):
 		super(BurnIn_GUI,self).__init__()
 		self.is_expert=False
@@ -88,6 +96,13 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MonitorInfo["CH05_I"]=self.CH05_I
 		self.MonitorInfo["CH06_I"]=self.CH06_I
 		
+		self.MonitorInfo["Ctrl_Sp1"]=self.Ctrl_Sp1_tag
+		self.MonitorInfo["Ctrl_Sp2"]=self.Ctrl_Sp2_tag
+		self.MonitorInfo["Ctrl_Sp3"]=self.Ctrl_Sp3_tag
+		self.MonitorInfo["Ctrl_StatusJulabo"]=self.Ctrl_StatusJulabo_tag
+		self.MonitorInfo["Ctrl_TargetTemp"]=self.Ctrl_TargetTemp_tag
+		self.MonitorInfo["Ctrl_IntDewPoint"]=self.Ctrl_IntDewPoint_tag
+		self.MonitorInfo["Ctrl_ExtDewPoint"]=self.Ctrl_ExtDewPoint_tag
 		
 		
 
@@ -108,13 +123,38 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Worker.moveToThread(self.WorkerThread)
 		self.WorkerThread.start()	
 		
-		self.SendJulaboCmd_sig.connect(self.Worker.SendJulaboCmd)
+		#connecting local slots
+		
+		
 		self.JulaboTestCmd_btn.clicked.connect(self.SendJulaboCmd)	
-		self.SendFNALBoxCmd_sig.connect(self.Worker.SendFNALBoxCmd)
-		self.FNALBoxTestCmd_btn.clicked.connect(self.SendFNALBoxCmd)	
-		#connecting slots
+		self.FNALBoxTestCmd_btn.clicked.connect(self.SendFNALBoxCmd)
+		self.Ctrl_SetSp1_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(0,self.Ctrl_ValSp1_dsb.value()))
+		self.Ctrl_SetSp2_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(1,self.Ctrl_ValSp2_dsb.value()))
+		self.Ctrl_SetSp3_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(2,self.Ctrl_ValSp3_dsb.value()))
+		self.Ctrl_SelSp1_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(0))
+		self.Ctrl_SelSp2_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(1))
+		self.Ctrl_SelSp3_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(2))
+		self.Ctrl_SetLowFlow_btn.clicked.connect(lambda : self.Ctrl_SetHighFlow_Cmd(False))
+		self.Ctrl_SetHighFlow_btn.clicked.connect(lambda : self.Ctrl_SetHighFlow_Cmd(True))
+		self.Ctrl_SetLock_btn.clicked.connect    (lambda : self.Ctrl_SetLock_Cmd(True))
+		self.Ctrl_SetUnlock_btn.clicked.connect  (lambda : self.Ctrl_SetLock_Cmd(False))
+		self.Ctrl_StartJulabo_btn.clicked.connect(lambda : self.Ctrl_PowerJulabo_Cmd(True))
+		self.Ctrl_StopJulabo_btn.clicked.connect (lambda : self.Ctrl_PowerJulabo_Cmd(False))
+		
 		self.actionExit.triggered.connect(self.close)
 		self.actionExpert.triggered.connect(self.expert)
+		
+		#connecting worker slots
+		self.SendJulaboCmd_sig.connect(self.Worker.SendJulaboCmd)
+		self.SendFNALBoxCmd_sig.connect(self.Worker.SendFNALBoxCmd)
+		
+		self.Ctrl_SelSp_sig.connect(self.Worker.Ctrl_SelSp_Cmd)
+		self.Ctrl_SetSp_sig.connect(self.Worker.Ctrl_SetSp_Cmd)
+		self.Ctrl_PowerJulabo_sig.connect(self.Worker.Ctrl_PowerJulabo_Cmd)
+		self.Ctrl_SetLock_sig.connect(self.Worker.Ctrl_SetLock_Cmd)
+		self.Ctrl_SetHighFlow_sig.connect(self.Worker.Ctrl_SetHighFlow_Cmd)
+		
+		
 		self.statusBar().showMessage("System ready")
 		
 	def SendJulaboCmd(self):
@@ -122,6 +162,22 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 	def SendFNALBoxCmd(self):
 		self.SendFNALBoxCmd_sig.emit(self.FNALBoxTestCmd_line.text())
+	
+	def Ctrl_SetSp_Cmd(self,Sp_ID,value):
+		self.Ctrl_SetSp_sig.emit(Sp_ID,value)
+	
+	def Ctrl_SelSp_Cmd(self,Sp_ID):
+		self.Ctrl_SelSp_sig.emit(Sp_ID)
+	
+	def Ctrl_PowerJulabo_Cmd(self,switch):
+		self.Ctrl_PowerJulabo_sig.emit(switch)
+	
+	def Ctrl_SetHighFlow_Cmd(self,switch):
+		self.Ctrl_SetHighFlow_sig.emit(switch)
+	
+	def Ctrl_SetLock_Cmd(self,switch):
+		self.Ctrl_SetLock_sig.emit(switch)
+		
 		
 		
 	def expert(self):
