@@ -61,16 +61,16 @@ class BurnIn_Monitor(QObject):
 							MQTT_splitted[idx].replace(" ", "")
 							MQTT_splitted[idx+1].replace(" ", "")
 							MQTT_splitted[idx+2].replace(" ", "")
-							if idx<28:
-								self.MonitorTags["CH"+str((int)(idx/3)).zfill(2)+"_ID"].setText(MQTT_splitted[idx].split("_")[1].replace(" ", ""))
+							if idx<40:
+								self.MonitorTags["LV"+str((int)(idx/3)).zfill(2)+"ID"].setText(MQTT_splitted[idx].split("_")[1].replace(" ", ""))
 								is_active = float(MQTT_splitted[idx].split(":")[1])
 								if is_active >0 :
-									self.MonitorTags["CH"+str((int)(idx/3)).zfill(2)+"_ST"].setText("ON")
+									self.MonitorTags["LastLV"+str((int)(idx/3)).zfill(2)+"Status"].setText("ON")
 								else:
-									self.MonitorTags["CH"+str((int)(idx/3)).zfill(2)+"_ST"].setText("OFF")
+									self.MonitorTags["LastLV"+str((int)(idx/3)).zfill(2)+"Status"].setText("OFF")
 									
-								self.MonitorTags["CH"+str((int)(idx/3)).zfill(2)+"_V"].setText(MQTT_splitted[idx+1].split(":")[1].replace(" ", ""))
-								self.MonitorTags["CH"+str((int)(idx/3)).zfill(2)+"_I"].setText(MQTT_splitted[idx+2].split(":")[1].replace(" ", ""))
+								self.MonitorTags["LastL"+str((int)(idx/3)).zfill(2)+"Voltage"].setText(MQTT_splitted[idx+1].split(":")[1].replace(" ", ""))
+								self.MonitorTags["LastLH"+str((int)(idx/3)).zfill(2)+"Current"].setText(MQTT_splitted[idx+2].split(":")[1].replace(" ", ""))
 								
 							else:
 								self.logger.warning("MONITOR: too many channel in MQTT CAEN message!")
