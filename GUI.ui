@@ -59,7 +59,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:18pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Some test cmd can be sent trough the &amp;quot;test operation&amp;quot; tab. At present only test cmd to JULABO and FNALBox are active. BE AWARE that it should be done only if you know what you are doing...&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:18pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Manual Operation tab implements safe(?) manual operations&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;&amp;quot;Manual Operations&amp;quot; tab implements safe(?) manual operations&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:18pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;In the &amp;quot;monitor tab&amp;quot; all information retrieved by the controller can be seen. Monitored modules can be disabled in the config YAML file.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
@@ -313,6 +313,33 @@ p, li { white-space: pre-wrap; }
               </spacer>
              </item>
              <item>
+              <widget class="QLabel" name="label_35">
+               <property name="text">
+                <string>Setpoint:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="Ctrl_TSp_tag">
+               <property name="text">
+                <string>?</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_9">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
               <widget class="QLabel" name="label_41">
                <property name="text">
                 <string>Target temperature (C°):</string>
@@ -473,6 +500,62 @@ p, li { white-space: pre-wrap; }
               <string>?</string>
              </property>
             </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_11">
+          <property name="title">
+           <string>CAEN LV/HV</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_13">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QComboBox" name="comboBox"/>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_10">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="Line" name="line_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QComboBox" name="comboBox_2"/>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_11">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -884,84 +967,18 @@ p, li { white-space: pre-wrap; }
                  </item>
                 </layout>
                </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QGroupBox" name="groupBox_8">
-              <property name="title">
-               <string>MQTT readings - M5</string>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_6">
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_30">
-                 <property name="text">
-                  <string>Humidity (%)</string>
+               <item>
+                <spacer name="verticalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
                  </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_28">
-                 <property name="text">
-                  <string>Temprature (C°)</string>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
                  </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_29">
-                 <property name="text">
-                  <string>Pressure (hPa)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QLabel" name="LastM5Humi_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_27">
-                 <property name="text">
-                  <string>Last message timestamp: </string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QLabel" name="LastM5Pres_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QLabel" name="LastM5Temp_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QLabel" name="LastMQTTM5MsgTS_tag">
-                 <property name="text">
-                  <string>NEVER</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_31">
-                 <property name="text">
-                  <string>Dew Point (C°)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QLabel" name="LastM5DP_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
+                </spacer>
                </item>
               </layout>
              </widget>
@@ -1049,7 +1066,7 @@ p, li { white-space: pre-wrap; }
                <item row="7" column="0">
                 <widget class="QLabel" name="label_26">
                  <property name="text">
-                  <string>Target Setpoint -1</string>
+                  <string>Target Setpoint</string>
                  </property>
                 </widget>
                </item>
@@ -1157,17 +1174,83 @@ p, li { white-space: pre-wrap; }
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
+             <widget class="QGroupBox" name="groupBox_8">
+              <property name="title">
+               <string>MQTT readings - M5</string>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
+              <layout class="QGridLayout" name="gridLayout_6">
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_30">
+                 <property name="text">
+                  <string>Humidity (%)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_28">
+                 <property name="text">
+                  <string>Temprature (C°)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_29">
+                 <property name="text">
+                  <string>Pressure (hPa)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLabel" name="LastM5Humi_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_27">
+                 <property name="text">
+                  <string>Last message timestamp: </string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLabel" name="LastM5Pres_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLabel" name="LastM5Temp_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLabel" name="LastMQTTM5MsgTS_tag">
+                 <property name="text">
+                  <string>NEVER</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_31">
+                 <property name="text">
+                  <string>Dew Point (C°)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLabel" name="LastM5DP_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
             </item>
            </layout>
           </item>
@@ -1230,56 +1313,6 @@ p, li { white-space: pre-wrap; }
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <item>
-              <widget class="QLabel" name="label_2">
-               <property name="text">
-                <string>Door magnet</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="MagON_btn">
-               <property name="text">
-                <string>Magnet ON</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="MagOFF_btn">
-               <property name="text">
-                <string>Magnet OFF</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <item>
-              <widget class="QLabel" name="label_3">
-               <property name="text">
-                <string>Dry air Flow</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="FLOWLow_btn">
-               <property name="text">
-                <string>LOW flow</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="FLOWHigh_btn">
-               <property name="text">
-                <string>HIGH flow</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
               <widget class="QLabel" name="label_4">
@@ -1319,7 +1352,11 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="CAENTestCmd_line"/>
+              <widget class="QLineEdit" name="CAENTestCmd_line">
+               <property name="text">
+                <string>NOT ACTIVE</string>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QPushButton" name="CAENTestCmd_btn">
@@ -1358,7 +1395,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>1007</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">

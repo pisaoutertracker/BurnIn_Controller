@@ -8,7 +8,7 @@ MQTT:
  ClientId: BurnIn_Controller
  CAENTopic: "/caenstatus/full"
  M5Topic: "/environment/HumAndTemp001"
- EnableMonitor: "True"
+ EnableMonitor: "False"
 FNALBox:
  Port: "10001"
  Addr: "192.168.0.187"
