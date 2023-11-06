@@ -1,7 +1,7 @@
 Julabo:
  Addr: "192.168.0.2"
  Port: "5050"
- EnableMonitor: "False"
+ EnableMonitor: "True"
 MQTT:
  Port: "1883"
  Addr: "192.168.0.45"
@@ -12,5 +12,5 @@ MQTT:
 FNALBox:
  Port: "10001"
  Addr: "192.168.0.187"
- EnableMonitor: "False"
+ EnableMonitor: "True"
  

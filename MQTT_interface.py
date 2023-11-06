@@ -67,10 +67,12 @@ class MQTT_interface():
 			self.LastSource = msg.topic
 			if self.LastSource == "/caenstatus/full":
 				self.LastCAENMessage = msg.payload.decode()	
-				self.LastCAENMessageTS = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+				self.LastCAENMessageDT = datetime.now()	
+				self.LastCAENMessageTS = self.LastCAENMessageDT.strftime("%d/%m/%Y %H:%M:%S")
 			elif self.LastSource == "/environment/HumAndTemp001":
 				self.LastM5Message = msg.payload.decode()	
-				self.LastM5MessageTS = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+				self.LastM5MessageDT = datetime.now()	
+				self.LastM5MessageTS = self.LastM5MessageDT.strftime("%d/%m/%Y %H:%M:%S")
 			else:
 				self.logger.warning("MQTT client: Message from unknown topic")
 		except Exception as e:

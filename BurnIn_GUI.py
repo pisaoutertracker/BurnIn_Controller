@@ -21,6 +21,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	Ctrl_PowerJulabo_sig = pyqtSignal(bool)
 	Ctrl_SetHighFlow_sig = pyqtSignal(bool)
 	Ctrl_SetLock_sig = pyqtSignal(bool)
+	
 
 
 	def __init__(self,configDict,logger):
@@ -42,76 +43,136 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.FNALBox = BurnIn_TCP(self.configDict,self.logger,"FNALBox")
 		
 		#packing monitor tag
-		self.MonitorInfo = {}
-		self.MonitorInfo["LastMonitor"]=self.LastMonitor_tag
-		self.MonitorInfo["MQTTConn"]=self.MQTTConn_tag
-		self.MonitorInfo["JULABOConn"]=self.JULABOConn_tag
-		self.MonitorInfo["FNALConn"]=self.FNALConn_tag
-		self.MonitorInfo["LastMQTTCAENMsgTS"]=self.LastMQTTCAENMsgTS_tag
-		self.MonitorInfo["LastMQTTM5MsgTS"]=self.LastMQTTM5MsgTS_tag
-		self.MonitorInfo["LastM5Temp"]=self.LastM5Temp_tag
-		self.MonitorInfo["LastM5Humi"]=self.LastM5Humi_tag
-		self.MonitorInfo["LastM5Pres"]=self.LastM5Pres_tag
-		self.MonitorInfo["LastM5DP"]=self.LastM5DP_tag
-		self.MonitorInfo["LastJulaboMsgTS"]=self.LastJulaboMsgTS_tag
-		self.MonitorInfo["LastJulaboStatus"]=self.LastJulaboStatus_tag
-		self.MonitorInfo["LastJulaboSP1"]=self.LastJulaboSP1_tag
-		self.MonitorInfo["LastJulaboSP2"]=self.LastJulaboSP2_tag
-		self.MonitorInfo["LastJulaboSP3"]=self.LastJulaboSP3_tag
-		self.MonitorInfo["LastJulaboBT"]=self.LastJulaboBT_tag
-		self.MonitorInfo["LastJulaboHP"]=self.LastJulaboHP_tag
-		self.MonitorInfo["LastJulaboTSP"]=self.LastJulaboTSP_tag
-		self.MonitorInfo["LastFNALBoxMsgTS"]=self.LastFNALBoxMsgTS_tag
-		self.MonitorInfo["LastFNALBoxTemp0"]=self.LastFNALBoxTemp0_tag
-		self.MonitorInfo["LastFNALBoxTemp1"]=self.LastFNALBoxTemp1_tag
-		self.MonitorInfo["LastFNALBoxDP"]=self.LastFNALBoxDP_tag
+		self.MonitorTags = {}
+		self.MonitorTags["LastMonitor"]=self.LastMonitor_tag
+		self.MonitorTags["MQTTConn"]=self.MQTTConn_tag
+		self.MonitorTags["JULABOConn"]=self.JULABOConn_tag
+		self.MonitorTags["FNALConn"]=self.FNALConn_tag
+		self.MonitorTags["LastMQTTCAENMsgTS"]=self.LastMQTTCAENMsgTS_tag
+		self.MonitorTags["LastMQTTM5MsgTS"]=self.LastMQTTM5MsgTS_tag
+		self.MonitorTags["LastM5Temp"]=self.LastM5Temp_tag
+		self.MonitorTags["LastM5Humi"]=self.LastM5Humi_tag
+		self.MonitorTags["LastM5Pres"]=self.LastM5Pres_tag
+		self.MonitorTags["LastM5DP"]=self.LastM5DP_tag
+		self.MonitorTags["LastJulaboMsgTS"]=self.LastJulaboMsgTS_tag
+		self.MonitorTags["LastJulaboStatus"]=self.LastJulaboStatus_tag
+		self.MonitorTags["LastJulaboSP1"]=self.LastJulaboSP1_tag
+		self.MonitorTags["LastJulaboSP2"]=self.LastJulaboSP2_tag
+		self.MonitorTags["LastJulaboSP3"]=self.LastJulaboSP3_tag
+		self.MonitorTags["LastJulaboBT"]=self.LastJulaboBT_tag
+		self.MonitorTags["LastJulaboHP"]=self.LastJulaboHP_tag
+		self.MonitorTags["LastJulaboTSP"]=self.LastJulaboTSP_tag
+		self.MonitorTags["LastFNALBoxMsgTS"]=self.LastFNALBoxMsgTS_tag
+		self.MonitorTags["LastFNALBoxTemp0"]=self.LastFNALBoxTemp0_tag
+		self.MonitorTags["LastFNALBoxTemp1"]=self.LastFNALBoxTemp1_tag
+		self.MonitorTags["LastFNALBoxDP"]=self.LastFNALBoxDP_tag
 		
 		
-		self.MonitorInfo["CH00_ID"]=self.CH00_ID
-		self.MonitorInfo["CH01_ID"]=self.CH01_ID
-		self.MonitorInfo["CH02_ID"]=self.CH02_ID
-		self.MonitorInfo["CH03_ID"]=self.CH03_ID
-		self.MonitorInfo["CH04_ID"]=self.CH04_ID
-		self.MonitorInfo["CH05_ID"]=self.CH05_ID
-		self.MonitorInfo["CH06_ID"]=self.CH06_ID
-		self.MonitorInfo["CH00_ST"]=self.CH00_ST
-		self.MonitorInfo["CH01_ST"]=self.CH01_ST
-		self.MonitorInfo["CH02_ST"]=self.CH02_ST
-		self.MonitorInfo["CH03_ST"]=self.CH03_ST
-		self.MonitorInfo["CH04_ST"]=self.CH04_ST
-		self.MonitorInfo["CH05_ST"]=self.CH05_ST
-		self.MonitorInfo["CH06_ST"]=self.CH06_ST
-		self.MonitorInfo["CH00_V"]=self.CH00_V
-		self.MonitorInfo["CH01_V"]=self.CH01_V
-		self.MonitorInfo["CH02_V"]=self.CH02_V
-		self.MonitorInfo["CH03_V"]=self.CH03_V
-		self.MonitorInfo["CH04_V"]=self.CH04_V
-		self.MonitorInfo["CH05_V"]=self.CH05_V
-		self.MonitorInfo["CH06_V"]=self.CH06_V
-		self.MonitorInfo["CH00_I"]=self.CH00_I
-		self.MonitorInfo["CH01_I"]=self.CH01_I
-		self.MonitorInfo["CH02_I"]=self.CH02_I
-		self.MonitorInfo["CH03_I"]=self.CH03_I
-		self.MonitorInfo["CH04_I"]=self.CH04_I
-		self.MonitorInfo["CH05_I"]=self.CH05_I
-		self.MonitorInfo["CH06_I"]=self.CH06_I
+		self.MonitorTags["LastLV00Current"]=self.LastLV00Current_tag
+		self.MonitorTags["LastLV01Current"]=self.LastLV01Current_tag
+		self.MonitorTags["LastLV02Current"]=self.LastLV02Current_tag
+		self.MonitorTags["LastLV03Current"]=self.LastLV03Current_tag
+		self.MonitorTags["LastLV04Current"]=self.LastLV04Current_tag
+		self.MonitorTags["LastLV05Current"]=self.LastLV05Current_tag
+		self.MonitorTags["LastLV06Current"]=self.LastLV06Current_tag
+		self.MonitorTags["LastLV07Current"]=self.LastLV07Current_tag
+		self.MonitorTags["LastLV08Current"]=self.LastLV08Current_tag
+		self.MonitorTags["LastLV09Current"]=self.LastLV09Current_tag
+		self.MonitorTags["LastLV00Voltage"]=self.LastLV00Voltage_tag
+		self.MonitorTags["LastLV01Voltage"]=self.LastLV01Voltage_tag
+		self.MonitorTags["LastLV02Voltage"]=self.LastLV02Voltage_tag
+		self.MonitorTags["LastLV03Voltage"]=self.LastLV03Voltage_tag
+		self.MonitorTags["LastLV04Voltage"]=self.LastLV04Voltage_tag
+		self.MonitorTags["LastLV05Voltage"]=self.LastLV05Voltage_tag
+		self.MonitorTags["LastLV06Voltage"]=self.LastLV06Voltage_tag
+		self.MonitorTags["LastLV07Voltage"]=self.LastLV07Voltage_tag
+		self.MonitorTags["LastLV08Voltage"]=self.LastLV08Voltage_tag
+		self.MonitorTags["LastLV09Voltage"]=self.LastLV09Voltage_tag
+		self.MonitorTags["LastLV00Status"]=self.LastLV00Status_tag
+		self.MonitorTags["LastLV01Status"]=self.LastLV01Status_tag
+		self.MonitorTags["LastLV02Status"]=self.LastLV02Status_tag
+		self.MonitorTags["LastLV03Status"]=self.LastLV03Status_tag
+		self.MonitorTags["LastLV04Status"]=self.LastLV04Status_tag
+		self.MonitorTags["LastLV05Status"]=self.LastLV05Status_tag
+		self.MonitorTags["LastLV06Status"]=self.LastLV06Status_tag
+		self.MonitorTags["LastLV07Status"]=self.LastLV07Status_tag
+		self.MonitorTags["LastLV08Status"]=self.LastLV08Status_tag
+		self.MonitorTags["LastLV09Status"]=self.LastLV09Status_tag
+		self.MonitorTags["LV00ID"]=self.LV00ID_tag
+		self.MonitorTags["LV01ID"]=self.LV01ID_tag
+		self.MonitorTags["LV02ID"]=self.LV02ID_tag
+		self.MonitorTags["LV03ID"]=self.LV03ID_tag
+		self.MonitorTags["LV04ID"]=self.LV04ID_tag
+		self.MonitorTags["LV05ID"]=self.LV05ID_tag
+		self.MonitorTags["LV06ID"]=self.LV06ID_tag
+		self.MonitorTags["LV07ID"]=self.LV07ID_tag
+		self.MonitorTags["LV08ID"]=self.LV08ID_tag
+		self.MonitorTags["LV09ID"]=self.LV09ID_tag
 		
-		self.MonitorInfo["Ctrl_Sp1"]=self.Ctrl_Sp1_tag
-		self.MonitorInfo["Ctrl_Sp2"]=self.Ctrl_Sp2_tag
-		self.MonitorInfo["Ctrl_Sp3"]=self.Ctrl_Sp3_tag
-		self.MonitorInfo["Ctrl_StatusJulabo"]=self.Ctrl_StatusJulabo_tag
-		self.MonitorInfo["Ctrl_TargetTemp"]=self.Ctrl_TargetTemp_tag
-		self.MonitorInfo["Ctrl_IntDewPoint"]=self.Ctrl_IntDewPoint_tag
-		self.MonitorInfo["Ctrl_ExtDewPoint"]=self.Ctrl_ExtDewPoint_tag
+		self.MonitorTags["LastHV00Current"]=self.LastHV00Current_tag
+		self.MonitorTags["LastHV01Current"]=self.LastHV01Current_tag
+		self.MonitorTags["LastHV02Current"]=self.LastHV02Current_tag
+		self.MonitorTags["LastHV03Current"]=self.LastHV03Current_tag
+		self.MonitorTags["LastHV04Current"]=self.LastHV04Current_tag
+		self.MonitorTags["LastHV05Current"]=self.LastHV05Current_tag
+		self.MonitorTags["LastHV06Current"]=self.LastHV06Current_tag
+		self.MonitorTags["LastHV07Current"]=self.LastHV07Current_tag
+		self.MonitorTags["LastHV08Current"]=self.LastHV08Current_tag
+		self.MonitorTags["LastHV09Current"]=self.LastHV09Current_tag
+		self.MonitorTags["LastHV00Voltage"]=self.LastHV00Voltage_tag
+		self.MonitorTags["LastHV01Voltage"]=self.LastHV01Voltage_tag
+		self.MonitorTags["LastHV02Voltage"]=self.LastHV02Voltage_tag
+		self.MonitorTags["LastHV03Voltage"]=self.LastHV03Voltage_tag
+		self.MonitorTags["LastHV04Voltage"]=self.LastHV04Voltage_tag
+		self.MonitorTags["LastHV05Voltage"]=self.LastHV05Voltage_tag
+		self.MonitorTags["LastHV06Voltage"]=self.LastHV06Voltage_tag
+		self.MonitorTags["LastHV07Voltage"]=self.LastHV07Voltage_tag
+		self.MonitorTags["LastHV08Voltage"]=self.LastHV08Voltage_tag
+		self.MonitorTags["LastHV09Voltage"]=self.LastHV09Voltage_tag
+		self.MonitorTags["LastHV00Status"]=self.LastHV00Status_tag
+		self.MonitorTags["LastHV01Status"]=self.LastHV01Status_tag
+		self.MonitorTags["LastHV02Status"]=self.LastHV02Status_tag
+		self.MonitorTags["LastHV03Status"]=self.LastHV03Status_tag
+		self.MonitorTags["LastHV04Status"]=self.LastHV04Status_tag
+		self.MonitorTags["LastHV05Status"]=self.LastHV05Status_tag
+		self.MonitorTags["LastHV06Status"]=self.LastHV06Status_tag
+		self.MonitorTags["LastHV07Status"]=self.LastHV07Status_tag
+		self.MonitorTags["LastHV08Status"]=self.LastHV08Status_tag
+		self.MonitorTags["LastHV09Status"]=self.LastHV09Status_tag
+		self.MonitorTags["HV00ID"]=self.HV00ID_tag
+		self.MonitorTags["HV01ID"]=self.HV01ID_tag
+		self.MonitorTags["HV02ID"]=self.HV02ID_tag
+		self.MonitorTags["HV03ID"]=self.HV03ID_tag
+		self.MonitorTags["HV04ID"]=self.HV04ID_tag
+		self.MonitorTags["HV05ID"]=self.HV05ID_tag
+		self.MonitorTags["HV06ID"]=self.HV06ID_tag
+		self.MonitorTags["HV07ID"]=self.HV07ID_tag
+		self.MonitorTags["HV08ID"]=self.HV08ID_tag
+		self.MonitorTags["HV09ID"]=self.HV09ID_tag
+		
+		self.MonitorTags["Ctrl_Sp1"]=self.Ctrl_Sp1_tag
+		self.MonitorTags["Ctrl_Sp2"]=self.Ctrl_Sp2_tag
+		self.MonitorTags["Ctrl_Sp3"]=self.Ctrl_Sp3_tag
+		self.MonitorTags["Ctrl_TSp"]=self.Ctrl_TSp_tag
+		self.MonitorTags["Ctrl_StatusJulabo"]=self.Ctrl_StatusJulabo_tag
+		self.MonitorTags["Ctrl_TargetTemp"]=self.Ctrl_TargetTemp_tag
+		self.MonitorTags["Ctrl_IntDewPoint"]=self.Ctrl_IntDewPoint_tag
+		self.MonitorTags["Ctrl_ExtDewPoint"]=self.Ctrl_ExtDewPoint_tag
+		
+		self.MonitorTags["Ctrl_StatusFlow"]=self.Ctrl_StatusFlow_tag
+		self.MonitorTags["Ctrl_StatusLock"]=self.Ctrl_StatusLock_tag
 		
 		
-
+		self.MonitorTags["M5_updated"]=False
+		self.MonitorTags["Julabo_updated"]=False
+		self.MonitorTags["FNALBox_updated"]=False
+		self.MonitorTags["CAEN_updated"]=False
 
 		
 		
 		# start monitoring function in QThread
 		self.MonitorThread = QThread()
-		self.Monitor = BurnIn_Monitor(self.configDict,self.logger, self.MonitorInfo, self.Julabo, self.FNALBox)
+		self.Monitor = BurnIn_Monitor(self.configDict,self.logger, self.MonitorTags, self.Julabo, self.FNALBox)
 		self.Monitor.moveToThread(self.MonitorThread)
 		self.MonitorThread.started.connect(self.Monitor.run)
 		self.MonitorThread.start()	
@@ -119,12 +180,11 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		# start GUI worker in QThread
 		self.WorkerThread = QThread()
-		self.Worker = BurnIn_Worker(self.configDict,self.logger, self.Julabo, self.FNALBox)
+		self.Worker = BurnIn_Worker(self.configDict,self.logger, self.MonitorTags, self.Julabo, self.FNALBox)
 		self.Worker.moveToThread(self.WorkerThread)
 		self.WorkerThread.start()	
 		
 		#connecting local slots
-		
 		
 		self.JulaboTestCmd_btn.clicked.connect(self.SendJulaboCmd)	
 		self.FNALBoxTestCmd_btn.clicked.connect(self.SendFNALBoxCmd)
@@ -155,6 +215,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_SetHighFlow_sig.connect(self.Worker.Ctrl_SetHighFlow_Cmd)
 		
 		
+		
+		self.Worker.Request_msg.connect(self.Show_msg)
+		
+		
 		self.statusBar().showMessage("System ready")
 		
 	def SendJulaboCmd(self):
@@ -178,7 +242,18 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	def Ctrl_SetLock_Cmd(self,switch):
 		self.Ctrl_SetLock_sig.emit(switch)
 		
-		
+	@pyqtSlot(str,str)
+	def Show_msg(self,warn_msg,rsn_msg):
+		self.logger.warning(warn_msg)
+		self.logger.warning(rsn_msg)
+		msg = QMessageBox()
+		msg.setWindowTitle("Operation warning")
+		msg.setText(warn_msg)
+		msg.setIcon(QMessageBox.Warning)
+		msg.setInformativeText(rsn_msg)
+		self.statusBar().showMessage("Waiting acknowledge")
+		msg.exec()
+		self.statusBar().showMessage("System ready")
 		
 	def expert(self):
 		psw, ok = QtWidgets.QInputDialog.getText(None, "Expert mode", "Password?", QtWidgets.QLineEdit.Password)
@@ -186,6 +261,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.logger.info("Expert mode activated")
 			self.statusBar().showMessage("Expert mode activated")
 			self.is_expert=True
+			
 		
 
 if __name__== '__main__':
