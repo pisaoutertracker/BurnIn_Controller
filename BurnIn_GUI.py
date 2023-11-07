@@ -14,6 +14,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	
 	SendJulaboCmd_sig = pyqtSignal(str)
 	SendFNALBoxCmd_sig = pyqtSignal(str)
+	SendCAENControllerCmd_sig = pyqtSignal(str)
 
 
 	Ctrl_SetSp_sig = pyqtSignal(int,float)
@@ -29,6 +30,32 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.is_expert=False
 		self.logger=logger
 		self.configDict=configDict
+
+		self.LVNames=[]
+		self.LVNames.append("LV_S00_C00")
+		self.LVNames.append("LV_S00_C01")
+		self.LVNames.append("LV_S00_C02")
+		self.LVNames.append("LV_S00_C03")
+		self.LVNames.append("LV_S00_C04")
+		self.LVNames.append("LV_S00_C05")
+		self.LVNames.append("LV_S00_C06")
+		self.LVNames.append("LV_S00_C07")
+		self.LVNames.append("LV_S00_C08")
+		self.LVNames.append("LV_S00_C09")
+		self.LVNames.append("All")
+
+		self.HVNames=[]
+		self.HVNames.append("HV_S01_C00")
+		self.HVNames.append("HV_S01_C01")
+		self.HVNames.append("HV_S01_C02")
+		self.HVNames.append("HV_S01_C03")
+		self.HVNames.append("HV_S01_C04")
+		self.HVNames.append("HV_S01_C05")
+		self.HVNames.append("HV_S01_C06")
+		self.HVNames.append("HV_S01_C07")
+		self.HVNames.append("HV_S01_C08")
+		self.HVNames.append("HV_S01_C09")
+		self.HVNames.append("All")
 		
 		
 		self.initUI()
@@ -41,6 +68,13 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		self.Julabo = BurnIn_TCP(self.configDict,self.logger,"Julabo")
 		self.FNALBox = BurnIn_TCP(self.configDict,self.logger,"FNALBox")
+		self.CAENController = BurnIn_TCP(self.configDict,self.logger,"CAENController")
+
+		for name in self.LVNames:
+			self.Ctrl_LVCh_comboBox.addItem(name)
+		for name in self.HVNames:
+			self.Ctrl_HVCh_comboBox.addItem(name)
+
 		
 		#packing monitor tag
 		self.MonitorTags = {}
@@ -180,7 +214,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		# start GUI worker in QThread
 		self.WorkerThread = QThread()
-		self.Worker = BurnIn_Worker(self.configDict,self.logger, self.MonitorTags, self.Julabo, self.FNALBox)
+		self.Worker = BurnIn_Worker(self.configDict,self.logger, self.MonitorTags, self.Julabo, self.FNALBox, self.CAENController)
 		self.Worker.moveToThread(self.WorkerThread)
 		self.WorkerThread.start()	
 		
@@ -188,6 +222,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		self.JulaboTestCmd_btn.clicked.connect(self.SendJulaboCmd)	
 		self.FNALBoxTestCmd_btn.clicked.connect(self.SendFNALBoxCmd)
+		self.CAENControllerTestCmd_btn.clicked.connect(self.SendCAENControllerCmd)
 		self.Ctrl_SetSp1_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(0,self.Ctrl_ValSp1_dsb.value()))
 		self.Ctrl_SetSp2_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(1,self.Ctrl_ValSp2_dsb.value()))
 		self.Ctrl_SetSp3_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(2,self.Ctrl_ValSp3_dsb.value()))
@@ -207,6 +242,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		#connecting worker slots
 		self.SendJulaboCmd_sig.connect(self.Worker.SendJulaboCmd)
 		self.SendFNALBoxCmd_sig.connect(self.Worker.SendFNALBoxCmd)
+		self.SendCAENControllerCmd_sig.connect(self.Worker.SendCAENControllerCmd)
 		
 		self.Ctrl_SelSp_sig.connect(self.Worker.Ctrl_SelSp_Cmd)
 		self.Ctrl_SetSp_sig.connect(self.Worker.Ctrl_SetSp_Cmd)
@@ -226,6 +262,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 	def SendFNALBoxCmd(self):
 		self.SendFNALBoxCmd_sig.emit(self.FNALBoxTestCmd_line.text())
+		
+	def SendCAENControllerCmd(self):
+		self.SendCAENControllerCmd_sig.emit(self.CAENControllerTestCmd_line.text())
 	
 	def Ctrl_SetSp_Cmd(self,Sp_ID,value):
 		self.Ctrl_SetSp_sig.emit(Sp_ID,value)

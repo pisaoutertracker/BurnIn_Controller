@@ -3,14 +3,17 @@ Julabo:
  Port: "5050"
  EnableMonitor: "True"
 MQTT:
- Port: "1883"
  Addr: "192.168.0.45"
+ Port: "1883"
  ClientId: BurnIn_Controller
  CAENTopic: "/caenstatus/full"
  M5Topic: "/environment/HumAndTemp001"
  EnableMonitor: "True"
 FNALBox:
- Port: "10001"
  Addr: "192.168.0.187"
+ Port: "10001"
  EnableMonitor: "True"
+CAENController:
+ Addr: "192.168.0.45"
+ Port: "7000"
  

@@ -9,14 +9,14 @@ class BurnIn_Worker(QObject):
 
 	Request_msg = pyqtSignal(str,str)
 	
-	def __init__(self,configDict,logger, MonitorTags, Julabo, FNALBox):
+	def __init__(self,configDict,logger, MonitorTags, Julabo, FNALBox, CAENController):
 	
 		super(BurnIn_Worker,self).__init__();
 		self.configDict=configDict
 		self.logger = logger
 		self.Julabo = Julabo
 		self.FNALBox = FNALBox
-		self.MonitorTags = MonitorTags
+		self.CAENController = CAENController
 		self.MonitorTags = MonitorTags
 		
 		self.logger.info("Worker class initialized")
@@ -31,6 +31,18 @@ class BurnIn_Worker(QObject):
 			self.Julabo.sendTCP(cmd)
 			self.logger.info(self.Julabo.receive())
 		self.Julabo.lock.release()
+	
+	@pyqtSlot(str)
+	def SendCAENControllerCmd(self,cmd):
+		self.CAENController.lock.acquire()
+		self.logger.info("Sending CAENController cmd "+cmd)
+		if not self.CAENController.is_connected :
+			self.CAENController.connect()
+		if self.CAENController.is_connected :
+			self.CAENController.sendTCP(cmd)
+			time.sleep(0.250)
+			self.logger.info(self.CAENController.receive())
+		self.CAENController.lock.release()
 	
 	@pyqtSlot(str)
 	def SendFNALBoxCmd(self,cmd):

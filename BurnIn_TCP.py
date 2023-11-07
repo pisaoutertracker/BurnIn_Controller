@@ -77,6 +77,11 @@ class BurnIn_TCP():
 			try:
 				if self.moduleName == "Julabo":
 					message = message+"\r"
+				elif self.moduleName == "CAENController":
+					pknumber=0
+					messageLength = len(message) + self.headerBytes
+					message = (messageLength).to_bytes(4, byteorder='big') +  (pknumber).to_bytes(4, byteorder='big')  + message.encode('utf-8')
+        				
 				self.TCPSock.send(message.encode())
 				time.sleep(0.250) #as per JULABO datasheet
 			except Exception as e:
