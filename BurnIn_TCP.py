@@ -62,6 +62,8 @@ class BurnIn_TCP():
 					self.logger.debug(self.moduleName + " stream received: "+self.buffer)
 					if self.moduleName == "Julabo":
 						return self.buffer[:-1]
+					elif self.moduleName == "CAENController":
+						return self.buffer[8:]
 					else:
 						return self.buffer
 				except Exception as e:
@@ -77,12 +79,14 @@ class BurnIn_TCP():
 			try:
 				if self.moduleName == "Julabo":
 					message = message+"\r"
+					self.TCPSock.send(message.encode())
 				elif self.moduleName == "CAENController":
 					pknumber=0
-					messageLength = len(message) + self.headerBytes
+					messageLength = len(message) + 8
 					message = (messageLength).to_bytes(4, byteorder='big') +  (pknumber).to_bytes(4, byteorder='big')  + message.encode('utf-8')
-        				
-				self.TCPSock.send(message.encode())
+					self.TCPSock.send(message)
+				else:	
+					self.TCPSock.send(message.encode())
 				time.sleep(0.250) #as per JULABO datasheet
 			except Exception as e:
 				self.logger.error(self.moduleName + ": TCP send cmd failed")
