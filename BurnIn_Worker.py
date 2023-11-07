@@ -10,6 +10,7 @@ class BurnIn_Worker(QObject):
 	Request_msg = pyqtSignal(str,str)
 	
 	def __init__(self,configDict,logger, MonitorTags, Julabo, FNALBox, CAENController):
+
 	
 		super(BurnIn_Worker,self).__init__();
 		self.configDict=configDict
@@ -81,7 +82,6 @@ class BurnIn_Worker(QObject):
 					self.logger.warning(Reason_str)
 					self.Request_msg.emit(Warning_str,Reason_str)
 					return
-
 			self.Julabo.lock.acquire()
 			self.logger.debug("WORKER: Sending Julabo cmd" )
 			if not self.Julabo.is_connected :
@@ -94,6 +94,7 @@ class BurnIn_Worker(QObject):
 					self.logger.error(e)	
 						
 			self.Julabo.lock.release()
+
 			
 	
 	@pyqtSlot(int,float)	
@@ -107,7 +108,6 @@ class BurnIn_Worker(QObject):
 		else:	
 			if (self.MonitorTags["Ctrl_StatusJulabo"].text().find("START") != -1):
 				Sp_actual = int(self.MonitorTags["Ctrl_TSp"].text())-1
-				print() 
 				if Sp_actual==Sp_id and  value  < float(self.MonitorTags["Ctrl_IntDewPoint"].text()):
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Attempting to set target temperature of the active set point below internal dew point"
@@ -115,7 +115,6 @@ class BurnIn_Worker(QObject):
 					self.logger.warning(Reason_str)
 					self.Request_msg.emit(Warning_str,Reason_str)
 					return
-
 			self.Julabo.lock.acquire()
 			self.logger.debug("WORKER: Sending Julabo cmd" )
 			if not self.Julabo.is_connected :
@@ -128,6 +127,7 @@ class BurnIn_Worker(QObject):
 					self.logger.error(e)	
 						
 			self.Julabo.lock.release()
+
 		
 	@pyqtSlot(bool)	
 	def Ctrl_PowerJulabo_Cmd(self,switch):
@@ -200,6 +200,7 @@ class BurnIn_Worker(QObject):
 				else:
 					self.MonitorTags["Ctrl_StatusLock"].setText("?")
 					self.logger.error("WORKER: uncorrect reply from FNAL Box: "+reply)
+
 			except Exception as e:
 				self.logger.error(e)
 				self.MonitorTags["Ctrl_StatusLock"].setText("?")	
@@ -230,6 +231,7 @@ class BurnIn_Worker(QObject):
 				else:
 					self.MonitorTags["Ctrl_StatusFlow"].setText("?")
 					self.logger.error("WORKER: uncorrect reply from FNAL Box: "+reply)
+
 			except Exception as e:
 				self.logger.error(e)
 				self.MonitorTags["Ctrl_StatusFlow"].setText("?")	
