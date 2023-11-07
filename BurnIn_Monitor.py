@@ -23,7 +23,7 @@ class BurnIn_Monitor(QObject):
 		self.FNALBox = FNALBox
 
 		self.LastJulaboCycleDT = datetime.min
-		self.LastFNALBoxCycleDT = datetime.min
+		self.LastFNALBoxCycleDT = datetime.min 
 
 	def run(self):
 		self.logger.info("MONITOR: Monitoring thread started")
