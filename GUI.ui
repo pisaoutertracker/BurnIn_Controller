@@ -520,7 +520,8 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item>
-              <widget class="QComboBox" name="comboBox"/>
+              <widget class="QComboBox" name="Ctrl_LVCh_comboBox"/>
+
              </item>
              <item>
               <widget class="QLabel" name="label_91">
@@ -627,7 +628,7 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item>
-              <widget class="QComboBox" name="comboBox_2"/>
+              <widget class="QComboBox" name="Ctrl_HVCh_comboBox"/>
              </item>
              <item>
               <widget class="QLabel" name="label_92">
@@ -1936,14 +1937,14 @@ p, li { white-space: pre-wrap; }
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="CAENTestCmd_line">
+              <widget class="QLineEdit" name="CAENControllerTestCmd_line">
                <property name="text">
-                <string>NOT ACTIVE</string>
+                <string>GetStatus,PowerSupplyId:caen</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="CAENTestCmd_btn">
+              <widget class="QPushButton" name="CAENControllerTestCmd_btn">
                <property name="text">
                 <string>Send</string>
                </property>

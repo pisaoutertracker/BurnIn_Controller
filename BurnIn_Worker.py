@@ -9,14 +9,15 @@ class BurnIn_Worker(QObject):
 
 	Request_msg = pyqtSignal(str,str)
 	
-	def __init__(self,configDict,logger, MonitorTags, Julabo, FNALBox):
+	def __init__(self,configDict,logger, MonitorTags, Julabo, FNALBox, CAENController):
+
 	
 		super(BurnIn_Worker,self).__init__();
 		self.configDict=configDict
 		self.logger = logger
 		self.Julabo = Julabo
 		self.FNALBox = FNALBox
-		self.MonitorTags = MonitorTags
+		self.CAENController = CAENController
 		self.MonitorTags = MonitorTags
 		
 		self.logger.info("Worker class initialized")
@@ -31,6 +32,18 @@ class BurnIn_Worker(QObject):
 			self.Julabo.sendTCP(cmd)
 			self.logger.info(self.Julabo.receive())
 		self.Julabo.lock.release()
+	
+	@pyqtSlot(str)
+	def SendCAENControllerCmd(self,cmd):
+		self.CAENController.lock.acquire()
+		self.logger.info("Sending CAENController cmd "+cmd)
+		if not self.CAENController.is_connected :
+			self.CAENController.connect()
+		if self.CAENController.is_connected :
+			self.CAENController.sendTCP(cmd)
+			time.sleep(0.250)
+			self.logger.info(self.CAENController.receive())
+		self.CAENController.lock.release()
 	
 	@pyqtSlot(str)
 	def SendFNALBoxCmd(self,cmd):
@@ -61,6 +74,7 @@ class BurnIn_Worker(QObject):
 					targetT = float(self.MonitorTags["Ctrl_Sp2"].text())
 				elif Sp_id == 2 :
 					targetT = float(self.MonitorTags["Ctrl_Sp3"].text())
+
 				if targetT  < float(self.MonitorTags["Ctrl_IntDewPoint"].text()):
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Set point is configured with a temperature below internal dew point"
@@ -68,19 +82,19 @@ class BurnIn_Worker(QObject):
 					self.logger.warning(Reason_str)
 					self.Request_msg.emit(Warning_str,Reason_str)
 					return
-			else:
-				self.Julabo.lock.acquire()
-				self.logger.debug("WORKER: Sending Julabo cmd" )
-				if not self.Julabo.is_connected :
-					self.Julabo.connect()
-				if self.Julabo.is_connected :
-					try:
-						self.Julabo.sendTCP("out_mode_01 "+str(Sp_id))
-						self.logger.info("WORKER: JULABO cmd sent")
-					except Exception as e:
-						self.logger.error(e)	
+			self.Julabo.lock.acquire()
+			self.logger.debug("WORKER: Sending Julabo cmd" )
+			if not self.Julabo.is_connected :
+				self.Julabo.connect()
+			if self.Julabo.is_connected :
+				try:
+					self.Julabo.sendTCP("out_mode_01 "+str(Sp_id))
+					self.logger.info("WORKER: JULABO cmd sent")
+				except Exception as e:
+					self.logger.error(e)	
 						
-				self.Julabo.lock.release()
+			self.Julabo.lock.release()
+
 			
 	
 	@pyqtSlot(int,float)	
@@ -93,7 +107,7 @@ class BurnIn_Worker(QObject):
 			return
 		else:	
 			if (self.MonitorTags["Ctrl_StatusJulabo"].text().find("START") != -1):
-				Sp_actual = int(self.MonitorTags["Ctrl_TSp"].text()) 
+				Sp_actual = int(self.MonitorTags["Ctrl_TSp"].text())-1
 				if Sp_actual==Sp_id and  value  < float(self.MonitorTags["Ctrl_IntDewPoint"].text()):
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Attempting to set target temperature of the active set point below internal dew point"
@@ -101,19 +115,19 @@ class BurnIn_Worker(QObject):
 					self.logger.warning(Reason_str)
 					self.Request_msg.emit(Warning_str,Reason_str)
 					return
-			else:
-				self.Julabo.lock.acquire()
-				self.logger.debug("WORKER: Sending Julabo cmd" )
-				if not self.Julabo.is_connected :
-					self.Julabo.connect()
-				if self.Julabo.is_connected :
-					try:
-						self.Julabo.sendTCP("out_sp_0"+str(Sp_id)+" "+str(value))
-						self.logger.info("WORKER: JULABO cmd sent")
-					except Exception as e:
-						self.logger.error(e)	
+			self.Julabo.lock.acquire()
+			self.logger.debug("WORKER: Sending Julabo cmd" )
+			if not self.Julabo.is_connected :
+				self.Julabo.connect()
+			if self.Julabo.is_connected :
+				try:
+					self.Julabo.sendTCP("out_sp_0"+str(Sp_id)+" "+str(value))
+					self.logger.info("WORKER: JULABO cmd sent")
+				except Exception as e:
+					self.logger.error(e)	
 						
-				self.Julabo.lock.release()
+			self.Julabo.lock.release()
+
 		
 	@pyqtSlot(bool)	
 	def Ctrl_PowerJulabo_Cmd(self,switch):
@@ -180,12 +194,13 @@ class BurnIn_Worker(QObject):
 				self.logger.info("WORKER: FNAL Box cmd sent: " + cmd)
 				time.sleep(0.250)
 				reply = self.FNALBox.receive()
-				if reply=="[*]":
+				if reply[-3:]=="[*]":
 					self.MonitorTags["Ctrl_StatusLock"].setText(lock)
 					self.logger.info("WORKER: Done")
 				else:
 					self.MonitorTags["Ctrl_StatusLock"].setText("?")
-					self.logger.Error("WORKER: uncorrect reply from FNAL Box: "+reply)
+					self.logger.error("WORKER: uncorrect reply from FNAL Box: "+reply)
+
 			except Exception as e:
 				self.logger.error(e)
 				self.MonitorTags["Ctrl_StatusLock"].setText("?")	
@@ -210,12 +225,13 @@ class BurnIn_Worker(QObject):
 				self.logger.info("WORKER: FNAL Box cmd sent: " + cmd)
 				time.sleep(0.250)
 				reply = self.FNALBox.receive()
-				if reply=="[*]":
-					self.MonitorTags["Ctrl_StatusFlow"].setText(lock)
+				if reply[-3:]=="[*]":
+					self.MonitorTags["Ctrl_StatusFlow"].setText(flow)
 					self.logger.info("WORKER: Done")
 				else:
 					self.MonitorTags["Ctrl_StatusFlow"].setText("?")
-					self.logger.Error("WORKER: uncorrect reply from FNAL Box: "+reply)
+					self.logger.error("WORKER: uncorrect reply from FNAL Box: "+reply)
+
 			except Exception as e:
 				self.logger.error(e)
 				self.MonitorTags["Ctrl_StatusFlow"].setText("?")	

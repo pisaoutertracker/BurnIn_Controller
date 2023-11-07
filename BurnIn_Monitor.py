@@ -69,8 +69,8 @@ class BurnIn_Monitor(QObject):
 								else:
 									self.MonitorTags["LastLV"+str((int)(idx/3)).zfill(2)+"Status"].setText("OFF")
 									
-								self.MonitorTags["LastL"+str((int)(idx/3)).zfill(2)+"Voltage"].setText(MQTT_splitted[idx+1].split(":")[1].replace(" ", ""))
-								self.MonitorTags["LastLH"+str((int)(idx/3)).zfill(2)+"Current"].setText(MQTT_splitted[idx+2].split(":")[1].replace(" ", ""))
+								self.MonitorTags["LastLV"+str((int)(idx/3)).zfill(2)+"Voltage"].setText(MQTT_splitted[idx+1].split(":")[1].replace(" ", ""))
+								self.MonitorTags["LastLV"+str((int)(idx/3)).zfill(2)+"Current"].setText(MQTT_splitted[idx+2].split(":")[1].replace(" ", ""))
 								
 							else:
 								self.logger.warning("MONITOR: too many channel in MQTT CAEN message!")
@@ -184,11 +184,11 @@ class BurnIn_Monitor(QObject):
 					else:
 						self.JulaboCycleOK = False
 						
-					if self.MonitorTags["LastJulaboTSP"].text()[:1]=="0":
+					if self.MonitorTags["LastJulaboTSP"].text()[:1]=="1":
 						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["LastJulaboSP1"].text())
-					elif self.MonitorTags["LastJulaboTSP"].text()[:1]=="1":
-						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["LastJulaboSP2"].text())
 					elif self.MonitorTags["LastJulaboTSP"].text()[:1]=="2":
+						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["LastJulaboSP2"].text())
+					elif self.MonitorTags["LastJulaboTSP"].text()[:1]=="3":
 						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["LastJulaboSP3"].text())
 							
 						
