@@ -90,6 +90,17 @@ class BurnIn_Worker(QObject):
 				try:
 					self.Julabo.sendTCP("out_mode_01 "+str(Sp_id))
 					self.logger.info("WORKER: JULABO cmd sent")
+					self.Julabo.sendTCP("in_mode_01")
+					reply = self.Julabo.receive()
+					if (reply != "None" and reply != "TCP error"):
+						Sp = str(int(reply.replace(" ", ""))+1)
+						self.MonitorTags["Ctrl_TSp"].setText(Sp)
+					if self.MonitorTags["Ctrl_TSp"].text()[:1]=="1":
+						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["Ctrl_Sp1"].text())
+					elif self.MonitorTags["Ctrl_TSp"].text()[:1]=="2":
+						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["Ctrl_Sp2"].text())
+					elif self.MonitorTags["Ctrl_TSp"].text()[:1]=="3":
+						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["Ctrl_Sp3"].text())
 				except Exception as e:
 					self.logger.error(e)	
 						
@@ -122,7 +133,17 @@ class BurnIn_Worker(QObject):
 			if self.Julabo.is_connected :
 				try:
 					self.Julabo.sendTCP("out_sp_0"+str(Sp_id)+" "+str(value))
-					self.logger.info("WORKER: JULABO cmd sent")
+					self.logger.info("WORKER: JULABO cmd sent")					
+					self.Julabo.sendTCP("in_sp_0"+str(Sp_id))
+					reply = self.Julabo.receive()
+					if (reply != "None" and reply != "TCP error"):
+						self.MonitorTags["Ctrl_Sp"+str(Sp_id+1)].setText(reply.replace(" ", ""))
+					if self.MonitorTags["Ctrl_TSp"].text()[:1]=="1":
+						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["Ctrl_Sp1"].text())
+					elif self.MonitorTags["Ctrl_TSp"].text()[:1]=="2":
+						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["Ctrl_Sp2"].text())
+					elif self.MonitorTags["Ctrl_TSp"].text()[:1]=="3":
+						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["Ctrl_Sp3"].text())
 				except Exception as e:
 					self.logger.error(e)	
 						
@@ -142,6 +163,14 @@ class BurnIn_Worker(QObject):
 				try:
 					self.Julabo.sendTCP("out_mode_05 0")
 					self.logger.info("WORKER: JULABO cmd sent")
+					self.Julabo.sendTCP("status")
+					reply = self.Julabo.receive()
+					if (reply != "None" and reply != "TCP error"):
+						self.MonitorTags["Ctrl_StatusJulabo"].setText(reply)
+					if self.MonitorTags["Ctrl_StatusJulabo"].text().find("START")!=-1:
+						self.MonitorTags["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+					else:
+						self.MonitorTags["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
 				except Exception as e:
 					self.logger.error(e)	
 						
@@ -170,10 +199,20 @@ class BurnIn_Worker(QObject):
 						try:
 							self.Julabo.sendTCP("out_mode_05 1")
 							self.logger.info("WORKER: JULABO cmd sent")
+							self.Julabo.sendTCP("status")
+							reply = self.Julabo.receive()
+							if (reply != "None" and reply != "TCP error"):
+								self.MonitorTags["Ctrl_StatusJulabo"].setText(reply)
+							if self.MonitorTags["Ctrl_StatusJulabo"].text().find("START")!=-1:
+								self.MonitorTags["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+							else:
+								self.MonitorTags["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
 						except Exception as e:
 							self.logger.error(e)	
 					
 					self.Julabo.lock.release()
+                    
+					
 
 					
 		
@@ -184,6 +223,33 @@ class BurnIn_Worker(QObject):
 		cmd = "[5011]" if switch else "[5010]"
 
 		self.logger.info("WORKER: Setting door magnet to: "+lock)
+		if (not switch):
+			
+			if not (self.MonitorTags["Julabo_updated"] and self.MonitorTags["FNALBox_updated"] and self.MonitorTags["M5_updated"]):
+				Warning_str = "Operation can't be performed"
+				Reason_str = "Julabo, FNAL box or M5 infos are not updated"
+				self.Request_msg.emit(Warning_str,Reason_str)
+				return
+			try:
+				IntTemp_arr = [float(self.MonitorTags["LastFNALBoxTemp1"].text()),float(self.MonitorTags["LastFNALBoxTemp0"].text())]
+				IntTemp_min = min(IntTemp_arr)
+			except Exception as e:
+				self.logger.error(e)
+				return
+			if (self.MonitorTags["Ctrl_StatusJulabo"].text().find("START")!=-1) and (float(self.MonitorTags["Ctrl_TargetTemp"].text()) < float(self.MonitorTags["Ctrl_ExtDewPoint"].text())):
+				Warning_str = "Operation can't be performed"
+				Reason_str = "JULABO is ON with target temp below external dew point"
+				self.Request_msg.emit(Warning_str,Reason_str)
+				return
+			if IntTemp_min < float(self.MonitorTags["Ctrl_ExtDewPoint"].text()):
+				Warning_str = "Operation can't be performed"
+				Reason_str = "Internal minimum temperature below external dew point. Retry later"
+				self.Request_msg.emit(Warning_str,Reason_str)
+				return
+				
+
+
+
 		self.FNALBox.lock.acquire()
 		self.logger.debug("WORKER: Sending FNAL Box cmd" )
 		if not self.FNALBox.is_connected :

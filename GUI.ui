@@ -521,7 +521,6 @@ p, li { white-space: pre-wrap; }
              </item>
              <item>
               <widget class="QComboBox" name="Ctrl_LVCh_comboBox"/>
-
              </item>
              <item>
               <widget class="QLabel" name="label_91">

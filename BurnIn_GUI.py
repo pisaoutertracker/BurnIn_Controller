@@ -31,32 +31,16 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.logger=logger
 		self.configDict=configDict
 
-		self.LVNames=[]
-		self.LVNames.append("LV_S00_C00")
-		self.LVNames.append("LV_S00_C01")
-		self.LVNames.append("LV_S00_C02")
-		self.LVNames.append("LV_S00_C03")
-		self.LVNames.append("LV_S00_C04")
-		self.LVNames.append("LV_S00_C05")
-		self.LVNames.append("LV_S00_C06")
-		self.LVNames.append("LV_S00_C07")
-		self.LVNames.append("LV_S00_C08")
-		self.LVNames.append("LV_S00_C09")
-		self.LVNames.append("All")
+		self.LVNames=["?"] * 10
+		self.LVNames[0]="nc0"
+		self.LVNames[1]="BLV08"
+		self.LVNames[2]="BLV09"
+		self.LVNames[3]="BLV10"
 
-		self.HVNames=[]
-		self.HVNames.append("HV_S01_C00")
-		self.HVNames.append("HV_S01_C01")
-		self.HVNames.append("HV_S01_C02")
-		self.HVNames.append("HV_S01_C03")
-		self.HVNames.append("HV_S01_C04")
-		self.HVNames.append("HV_S01_C05")
-		self.HVNames.append("HV_S01_C06")
-		self.HVNames.append("HV_S01_C07")
-		self.HVNames.append("HV_S01_C08")
-		self.HVNames.append("HV_S01_C09")
-		self.HVNames.append("All")
-		
+		self.HVNames=["?"] * 10
+		self.HVNames[0]="HV001"
+		self.HVNames[1]="HV002"
+		self.HVNames[2]="HV003"
 		
 		self.initUI()
 		
@@ -132,16 +116,16 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MonitorTags["LastLV07Status"]=self.LastLV07Status_tag
 		self.MonitorTags["LastLV08Status"]=self.LastLV08Status_tag
 		self.MonitorTags["LastLV09Status"]=self.LastLV09Status_tag
-		self.MonitorTags["LV00ID"]=self.LV00ID_tag
-		self.MonitorTags["LV01ID"]=self.LV01ID_tag
-		self.MonitorTags["LV02ID"]=self.LV02ID_tag
-		self.MonitorTags["LV03ID"]=self.LV03ID_tag
-		self.MonitorTags["LV04ID"]=self.LV04ID_tag
-		self.MonitorTags["LV05ID"]=self.LV05ID_tag
-		self.MonitorTags["LV06ID"]=self.LV06ID_tag
-		self.MonitorTags["LV07ID"]=self.LV07ID_tag
-		self.MonitorTags["LV08ID"]=self.LV08ID_tag
-		self.MonitorTags["LV09ID"]=self.LV09ID_tag
+		self.LV00ID_tag.setText(self.LVNames[0])
+		self.LV01ID_tag.setText(self.LVNames[1])
+		self.LV02ID_tag.setText(self.LVNames[2])
+		self.LV03ID_tag.setText(self.LVNames[3])
+		self.LV04ID_tag.setText(self.LVNames[4])
+		self.LV05ID_tag.setText(self.LVNames[5])
+		self.LV06ID_tag.setText(self.LVNames[6])
+		self.LV07ID_tag.setText(self.LVNames[7])
+		self.LV08ID_tag.setText(self.LVNames[8])
+		self.LV09ID_tag.setText(self.LVNames[9])
 		
 		self.MonitorTags["LastHV00Current"]=self.LastHV00Current_tag
 		self.MonitorTags["LastHV01Current"]=self.LastHV01Current_tag
@@ -173,16 +157,16 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MonitorTags["LastHV07Status"]=self.LastHV07Status_tag
 		self.MonitorTags["LastHV08Status"]=self.LastHV08Status_tag
 		self.MonitorTags["LastHV09Status"]=self.LastHV09Status_tag
-		self.MonitorTags["HV00ID"]=self.HV00ID_tag
-		self.MonitorTags["HV01ID"]=self.HV01ID_tag
-		self.MonitorTags["HV02ID"]=self.HV02ID_tag
-		self.MonitorTags["HV03ID"]=self.HV03ID_tag
-		self.MonitorTags["HV04ID"]=self.HV04ID_tag
-		self.MonitorTags["HV05ID"]=self.HV05ID_tag
-		self.MonitorTags["HV06ID"]=self.HV06ID_tag
-		self.MonitorTags["HV07ID"]=self.HV07ID_tag
-		self.MonitorTags["HV08ID"]=self.HV08ID_tag
-		self.MonitorTags["HV09ID"]=self.HV09ID_tag
+		self.HV00ID_tag.setText(self.HVNames[0])
+		self.HV01ID_tag.setText(self.HVNames[1])
+		self.HV02ID_tag.setText(self.HVNames[2])
+		self.HV03ID_tag.setText(self.HVNames[3])
+		self.HV04ID_tag.setText(self.HVNames[4])
+		self.HV05ID_tag.setText(self.HVNames[5])
+		self.HV06ID_tag.setText(self.HVNames[6])
+		self.HV07ID_tag.setText(self.HVNames[7])
+		self.HV08ID_tag.setText(self.HVNames[8])
+		self.HV09ID_tag.setText(self.HVNames[9])
 		
 		self.MonitorTags["Ctrl_Sp1"]=self.Ctrl_Sp1_tag
 		self.MonitorTags["Ctrl_Sp2"]=self.Ctrl_Sp2_tag
@@ -206,7 +190,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		# start monitoring function in QThread
 		self.MonitorThread = QThread()
-		self.Monitor = BurnIn_Monitor(self.configDict,self.logger, self.MonitorTags, self.Julabo, self.FNALBox)
+		self.Monitor = BurnIn_Monitor(self.configDict,self.logger, self.MonitorTags, self.Julabo, self.FNALBox, self.LVNames, self.HVNames)
 		self.Monitor.moveToThread(self.MonitorThread)
 		self.MonitorThread.started.connect(self.Monitor.run)
 		self.MonitorThread.start()	

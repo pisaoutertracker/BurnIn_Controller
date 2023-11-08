@@ -3,13 +3,14 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject
 import time
 from datetime import datetime
+import json
 
 from MQTT_interface import *
 
 
 class BurnIn_Monitor(QObject):
 
-	def __init__(self,configDict,logger, MonitorTags, Julabo, FNALBox):
+	def __init__(self,configDict,logger, MonitorTags, Julabo, FNALBox, LVNames, HVNames):
 	
 		super(BurnIn_Monitor,self).__init__();
 		self.configDict=configDict
@@ -21,9 +22,11 @@ class BurnIn_Monitor(QObject):
 		self.MonitorTags = MonitorTags
 		self.Julabo = Julabo
 		self.FNALBox = FNALBox
+		self.LVNames = LVNames
+		self.HVNames = HVNames
 
 		self.LastJulaboCycleDT = datetime.min
-		self.LastFNALBoxCycleDT = datetime.min 
+		self.LastFNALBoxCycleDT = datetime.min
 
 	def run(self):
 		self.logger.info("MONITOR: Monitoring thread started")
@@ -56,24 +59,55 @@ class BurnIn_Monitor(QObject):
 				
 				if (self.MQTT.LastCAENMessageTS != "NEVER"):
 					try:
-						MQTT_splitted = self.MQTT.LastCAENMessage[1:-1].split(",")
-						for idx in range(0,len(MQTT_splitted),3):
-							MQTT_splitted[idx].replace(" ", "")
-							MQTT_splitted[idx+1].replace(" ", "")
-							MQTT_splitted[idx+2].replace(" ", "")
-							if idx<40:
-								self.MonitorTags["LV"+str((int)(idx/3)).zfill(2)+"ID"].setText(MQTT_splitted[idx].split("_")[1].replace(" ", ""))
-								is_active = float(MQTT_splitted[idx].split(":")[1])
-								if is_active >0 :
-									self.MonitorTags["LastLV"+str((int)(idx/3)).zfill(2)+"Status"].setText("ON")
+						
+						CAEN_dict = json.loads(self.MQTT.LastCAENMessage)
+						for i in range (len(self.LVNames)):
+							if self.LVNames[i]!="?":
+								key = "caen_"+self.LVNames[i]+"_IsOn"
+								if key in CAEN_dict:
+									is_active = CAEN_dict[key]
+									if is_active >0 :
+										self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"Status"].setText("ON")
+									else:
+										self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"Status"].setText("OFF")	
 								else:
-									self.MonitorTags["LastLV"+str((int)(idx/3)).zfill(2)+"Status"].setText("OFF")
-									
-								self.MonitorTags["LastLV"+str((int)(idx/3)).zfill(2)+"Voltage"].setText(MQTT_splitted[idx+1].split(":")[1].replace(" ", ""))
-								self.MonitorTags["LastLV"+str((int)(idx/3)).zfill(2)+"Current"].setText(MQTT_splitted[idx+2].split(":")[1].replace(" ", ""))
-								
-							else:
-								self.logger.warning("MONITOR: too many channel in MQTT CAEN message!")
+									self.logger.warning("MONITOR: Status of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
+
+								key = "caen_"+self.LVNames[i]+"_Voltage"
+								if (key) in CAEN_dict:
+									self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"Voltage"].setText(str(CAEN_dict[key]))
+								else:
+									self.logger.warning("MONITOR: Voltage of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
+
+								key = "caen_"+self.LVNames[i]+"_Current"
+								if (key) in CAEN_dict:
+									self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"Current"].setText(str(CAEN_dict[key]))
+								else:
+									self.logger.warning("MONITOR: Current of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
+							
+							if self.HVNames[i]!="?":
+								key = "caen_"+self.HVNames[i]+"_IsOn"
+								if key in CAEN_dict:
+									is_active = CAEN_dict[key]
+									if is_active >0 :
+										self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"Status"].setText("ON")
+									else:
+										self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"Status"].setText("OFF")	
+								else:
+									self.logger.warning("MONITOR: Status of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
+
+								key = "caen_"+self.HVNames[i]+"_Voltage"
+								if (key) in CAEN_dict:
+									self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"Voltage"].setText(str(CAEN_dict[key]))
+								else:
+									self.logger.warning("MONITOR: Voltage of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
+
+								key = "caen_"+self.HVNames[i]+"_Current"
+								if (key) in CAEN_dict:
+									self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"Current"].setText(str(CAEN_dict[key]))
+								else:
+									self.logger.warning("MONITOR: Current of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
+
 					
 						self.MonitorTags["LastMQTTCAENMsgTS"].setText(self.MQTT.LastCAENMessageTS)
 						deltaSec = (datetime.now()-self.MQTT.LastCAENMessageDT).total_seconds()
@@ -92,12 +126,14 @@ class BurnIn_Monitor(QObject):
 				if (self.MQTT.LastM5MessageTS != "NEVER"):
 
 					try:
-						MQTT_splitted = self.MQTT.LastM5Message[1:-1].replace(" ", "").split(",")
-						self.MonitorTags["LastM5DP"].setText(MQTT_splitted[0].split(":")[1])
-						self.MonitorTags["Ctrl_ExtDewPoint"].setText(MQTT_splitted[0].split(":")[1])
-						self.MonitorTags["LastM5Temp"].setText(MQTT_splitted[1].split(":")[1])
-						self.MonitorTags["LastM5Humi"].setText(MQTT_splitted[2].split(":")[1])
-						self.MonitorTags["LastM5Pres"].setText(MQTT_splitted[3].split(":")[1])
+						
+						M5_dict = json.loads(self.MQTT.LastM5Message)
+
+						self.MonitorTags["LastM5DP"].setText(str(M5_dict["dewpoint"]))
+						self.MonitorTags["Ctrl_ExtDewPoint"].setText(str(M5_dict["dewpoint"]))
+						self.MonitorTags["LastM5Temp"].setText(str(M5_dict["temperature"]))
+						self.MonitorTags["LastM5Humi"].setText(str(M5_dict["RH"]))
+						self.MonitorTags["LastM5Pres"].setText(str(M5_dict["Pressure"]))
 					
 						self.MonitorTags["LastMQTTM5MsgTS"].setText(self.MQTT.LastM5MessageTS)
 						deltaSec = (datetime.now()-self.MQTT.LastM5MessageDT).total_seconds()
@@ -215,7 +251,9 @@ class BurnIn_Monitor(QObject):
 				
 			#FNALBox
 			if (self.configDict.get(("FNALBox","EnableMonitor"),"NOKEY").upper() == "TRUE"):
+				self.logger.debug("MONITOR: FNAL lock requested")
 				self.FNALBox.lock.acquire()
+				self.logger.debug("MONITOR: FNAL lock acquired")
 				self.FNALBoxCycleOK = True
 				if not self.FNALBox.is_connected :
 					self.FNALBox.connect()
@@ -240,7 +278,8 @@ class BurnIn_Monitor(QObject):
 					self.FNALBoxCycleOK = False
 					self.MonitorTags["FNALConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
 					self.MonitorTags["FNALConn"].setText("Disconnected")
-				self.FNALBox.lock.release()	
+				self.FNALBox.lock.release()
+				self.logger.debug("MONITOR: FNAL lock released")	
 				
 				if self.FNALBoxCycleOK:
 					self.LastFNALBoxCycleDT = datetime.now()
