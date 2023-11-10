@@ -54,10 +54,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.FNALBox = BurnIn_TCP(self.configDict,self.logger,"FNALBox")
 		self.CAENController = BurnIn_TCP(self.configDict,self.logger,"CAENController")
 
-		for name in self.LVNames:
-			self.Ctrl_LVCh_comboBox.addItem(name)
-		for name in self.HVNames:
-			self.Ctrl_HVCh_comboBox.addItem(name)
+		#for idx,name in enumerate(self.LVNames):
+		#	self.Ctrl_LVCh_comboBox.addItem(name)
+		#for idx,name in enumerate(self.HVNames):
+		#	self.Ctrl_HVCh_comboBox.addItem(name)
 
 		
 		#packing monitor tag
