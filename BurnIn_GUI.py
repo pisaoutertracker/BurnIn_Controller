@@ -51,6 +51,22 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		uic.loadUi('GUI.ui', self) # Load the .ui file
 		self.show() # Show the GUI
 		
+		#adjust GUI table elements
+		self.Ctrl_CAEN_table.item(0,0).setCheckState(QtCore.Qt.Unchecked)
+		for row in range(10):
+			self.Ctrl_CAEN_table.item(row+1,0).setCheckState(QtCore.Qt.Unchecked) 
+			self.Ctrl_CAEN_table.setItem(row+1,1,QtWidgets.QTableWidgetItem(self.LVNames[row]))
+			self.Ctrl_CAEN_table.setItem(row+1,2,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row+1,3,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row+1,4,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row+1,5,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row+1,6,QtWidgets.QTableWidgetItem(self.HVNames[row]))
+			self.Ctrl_CAEN_table.setItem(row+1,7,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row+1,8,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row+1,9,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row+1,10,QtWidgets.QTableWidgetItem("?"))
+		
+		
 		self.Julabo = BurnIn_TCP(self.configDict,self.logger,"Julabo")
 		self.FNALBox = BurnIn_TCP(self.configDict,self.logger,"FNALBox")
 		self.CAENController = BurnIn_TCP(self.configDict,self.logger,"CAENController")
@@ -196,6 +212,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MonitorTags["Julabo_updated"]=False
 		self.MonitorTags["FNALBox_updated"]=False
 		self.MonitorTags["CAEN_updated"]=False
+		
+		self.MonitorTags["CAEN_table"]=self.Ctrl_CAEN_table
 
 		
 		
