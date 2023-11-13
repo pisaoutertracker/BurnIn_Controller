@@ -27,6 +27,8 @@ class BurnIn_Monitor(QObject):
 
 		self.LastJulaboCycleDT = datetime.min
 		self.LastFNALBoxCycleDT = datetime.min
+		self.MQTT_JULABO_dict = {}
+		self.MQTT_FNALBox_dict = {}
 
 	def run(self):
 		self.logger.info("MONITOR: Monitoring thread started")
@@ -41,7 +43,7 @@ class BurnIn_Monitor(QObject):
 			self.MonitorTags["LastMonitor"].setStyleSheet("");
 			self.MonitorTags["LastMonitor"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 			
-			#MQTT cycle
+			#MQTT reception cycle
 			if (self.configDict.get(("MQTT","EnableMonitor"),"NOKEY").upper() == "TRUE"):
 				if not self.MQTT.is_subscribed:
 					self.logger.info("MONITOR: Attempting first connection to MQTT server...")
@@ -161,6 +163,7 @@ class BurnIn_Monitor(QObject):
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
 						self.MonitorTags["LastJulaboStatus"].setText(reply)
+						self.MQTT_JULABO_dict["status"]=reply
 						if self.MonitorTags["LastJulaboStatus"].text().find("START")!=-1:
 							self.MonitorTags["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
 							self.MonitorTags["Ctrl_StatusJulabo"].setText(self.MonitorTags["LastJulaboStatus"].text())
@@ -178,6 +181,7 @@ class BurnIn_Monitor(QObject):
 					if (reply != "None" and reply != "TCP error"):
 						self.MonitorTags["LastJulaboSP1"].setText(reply.replace(" ", ""))
 						self.MonitorTags["Ctrl_Sp1"].setText(self.MonitorTags["LastJulaboSP1"].text())
+						self.MQTT_JULABO_dict["Temp_SP1"]=float(reply.replace(" ", ""))
 					else:
 						self.JulaboCycleOK = False
 						
@@ -186,6 +190,7 @@ class BurnIn_Monitor(QObject):
 					if (reply != "None" and reply != "TCP error"):
 						self.MonitorTags["LastJulaboSP2"].setText(reply.replace(" ", ""))
 						self.MonitorTags["Ctrl_Sp2"].setText(self.MonitorTags["LastJulaboSP2"].text())
+						self.MQTT_JULABO_dict["Temp_SP2"]=float(reply.replace(" ", ""))
 					else:
 						self.JulaboCycleOK = False
 						
@@ -194,6 +199,7 @@ class BurnIn_Monitor(QObject):
 					if (reply != "None" and reply != "TCP error"):
 						self.MonitorTags["LastJulaboSP3"].setText(reply.replace(" ", ""))
 						self.MonitorTags["Ctrl_Sp3"].setText(self.MonitorTags["LastJulaboSP3"].text())
+						self.MQTT_JULABO_dict["Temp_SP3"]=float(reply.replace(" ", ""))
 					else:
 						self.JulaboCycleOK = False
 						
@@ -201,6 +207,7 @@ class BurnIn_Monitor(QObject):
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
 						self.MonitorTags["LastJulaboBT"].setText(reply.replace(" ", ""))
+						self.MQTT_JULABO_dict["Temp_bath"]=float(reply.replace(" ", ""))
 					else:
 						self.JulaboCycleOK = False
 						
@@ -208,6 +215,7 @@ class BurnIn_Monitor(QObject):
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
 						self.MonitorTags["LastJulaboHP"].setText(reply.replace(" ", ""))
+						self.MQTT_JULABO_dict["HP"]=float(reply.replace(" ", ""))
 					else:
 						self.JulaboCycleOK = False
 						
@@ -217,6 +225,7 @@ class BurnIn_Monitor(QObject):
 						Sp = str(int(reply.replace(" ", ""))+1)
 						self.MonitorTags["LastJulaboTSP"].setText(Sp)
 						self.MonitorTags["Ctrl_TSp"].setText(Sp)
+						self.MQTT_JULABO_dict["target_SP"]=float(reply.replace(" ", ""))
 					else:
 						self.JulaboCycleOK = False
 						
@@ -237,6 +246,8 @@ class BurnIn_Monitor(QObject):
 				if self.JulaboCycleOK:
 					self.LastJulaboCycleDT = datetime.now()
 					self.MonitorTags["LastJulaboMsgTS"].setText(self.LastJulaboCycleDT.strftime("%d/%m/%Y %H:%M:%S"))
+					if self.MQTT.is_connected:
+						self.MQTT.publish("/julabo/full",json.dumps(self.MQTT_JULABO_dict))
 				if (datetime.now()-self.LastJulaboCycleDT).total_seconds() < 60:
 					self.MonitorTags["LastJulaboMsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
 					self.MonitorTags["Julabo_updated"] = True
@@ -261,14 +272,19 @@ class BurnIn_Monitor(QObject):
 					self.MonitorTags["FNALConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
 					self.MonitorTags["FNALConn"].setText("Connected")
 					self.FNALBox.sendTCP("[10]")
-					time.sleep(0.250)
 					reply = self.FNALBox.receive()
 					if (reply != "None" and reply != "TCP error"):
 						reply_list = reply[1:-1].split(",")
 						try:
 							self.MonitorTags["LastFNALBoxTemp0"].setText(reply_list[0])
+							self.MQTT_FNALBox_dict["Temp0"]=float(reply_list[0])
 							self.MonitorTags["LastFNALBoxTemp1"].setText(reply_list[1][1:])
+							self.MQTT_FNALBox_dict["Temp1"]=float(reply_list[1][1:])
+							for i in range(10):
+								self.MonitorTags["LastFNALBoxOW"+str(i)].setText(reply_list[i+4][1:])
+								self.MQTT_FNALBox_dict["OW"+str(i)]=float(reply_list[i+4][1:])
 							self.MonitorTags["LastFNALBoxDP"].setText(reply_list[14][1:])
+							self.MQTT_FNALBox_dict["DewPoint"]=float(reply_list[14][1:])
 							self.MonitorTags["Ctrl_IntDewPoint"].setText(reply_list[14][1:])
 						except Exception as e:
 							self.logger.warning("MONITOR: error splitting FNAL reply "+reply)
@@ -284,6 +300,10 @@ class BurnIn_Monitor(QObject):
 				if self.FNALBoxCycleOK:
 					self.LastFNALBoxCycleDT = datetime.now()
 					self.MonitorTags["LastFNALBoxMsgTS"].setText(self.LastFNALBoxCycleDT.strftime("%d/%m/%Y %H:%M:%S"))
+					if self.MQTT.is_connected:
+						self.MQTT_FNALBox_dict["StatusLock"]=self.MonitorTags["Ctrl_StatusLock"].text()
+						self.MQTT_FNALBox_dict["AirFlow"]=self.MonitorTags["Ctrl_StatusFlow"].text()
+						self.MQTT.publish("/fnalbox/full",json.dumps(self.MQTT_FNALBox_dict))
 				if (datetime.now()-self.LastFNALBoxCycleDT).total_seconds() < 60:
 					self.MonitorTags["LastFNALBoxMsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
 					self.MonitorTags["FNALBox_updated"] = True

@@ -54,14 +54,14 @@ class BurnIn_TCP():
 					
 	def receive(self):
 		inputReady,outputReady,exceptReady = select(self.interfaces,[],[],1)  #wait for data in interfaces list
-		time.sleep(0.001)
+		time.sleep(0.010)
 		for s in inputReady:              
 			if s == self.TCPSock:
 				try:
 					self.buffer = self.readTCP(2048).decode()
 					self.logger.debug(self.moduleName + " stream received: "+self.buffer)
 					if self.moduleName == "Julabo":
-						return self.buffer[:-1]
+						return self.buffer[:-2]
 					elif self.moduleName == "CAENController":
 						return self.buffer[8:]
 					else:

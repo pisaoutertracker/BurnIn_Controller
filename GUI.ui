@@ -38,7 +38,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -50,6 +50,12 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="html">
            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -57,9 +63,9 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:18pt;&quot;&gt;BurnIn controller under development....&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:18pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:18pt;&quot;&gt;Some test cmd can be sent trough the &amp;quot;test operation&amp;quot; tab. At present only test cmd to JULABO and FNALBox are active. BE AWARE that it should be done only if you know what you are doing...&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:18pt;&quot;&gt;Some test cmd can be sent trough the &amp;quot;test operation&amp;quot; tab. BE AWARE that it should be done only if you know what you are doing...&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:18pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:18pt;&quot;&gt;&amp;quot;Manual Operations&amp;quot; tab implements safe(?) manual operations&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:18pt;&quot;&gt;&amp;quot;Manual Operations&amp;quot; tab implements safe(?) manual operations. LV/HV control under development.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:18pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:18pt;&quot;&gt;In the &amp;quot;monitor tab&amp;quot; all information retrieved by the controller can be seen. Monitored modules can be disabled in the config YAML file.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';&quot;&gt;&lt;br /&gt;&lt;/p&gt;
@@ -509,453 +515,454 @@ p, li { white-space: pre-wrap; }
           <property name="title">
            <string>CAEN LV/HV (not yet working)</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_14"/>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTabWidget" name="tabWidget_2">
-          <property name="currentIndex">
-           <number>0</number>
-          </property>
-          <widget class="QWidget" name="tab">
-           <attribute name="title">
-            <string>LV</string>
-           </attribute>
-           <layout class="QHBoxLayout" name="horizontalLayout_10">
-            <item>
-             <widget class="QTableWidget" name="Ctrl_LV_table">
-              <property name="frameShape">
-               <enum>QFrame::StyledPanel</enum>
-              </property>
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAsNeeded</enum>
-              </property>
-              <property name="sizeAdjustPolicy">
-               <enum>QAbstractScrollArea::AdjustToContents</enum>
-              </property>
-              <property name="editTriggers">
-               <set>QAbstractItemView::NoEditTriggers</set>
-              </property>
-              <property name="sortingEnabled">
-               <bool>false</bool>
-              </property>
-              <property name="cornerButtonEnabled">
-               <bool>true</bool>
-              </property>
-              <attribute name="horizontalHeaderCascadingSectionResizes">
-               <bool>true</bool>
+          <layout class="QVBoxLayout" name="verticalLayout_14">
+           <item>
+            <widget class="QTabWidget" name="tabWidget_2">
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <widget class="QWidget" name="tab">
+              <attribute name="title">
+               <string>LV</string>
               </attribute>
-              <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-               <bool>true</bool>
+              <layout class="QHBoxLayout" name="horizontalLayout_10">
+               <item>
+                <widget class="QTableWidget" name="Ctrl_LV_table">
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="verticalScrollBarPolicy">
+                  <enum>Qt::ScrollBarAsNeeded</enum>
+                 </property>
+                 <property name="sizeAdjustPolicy">
+                  <enum>QAbstractScrollArea::AdjustToContents</enum>
+                 </property>
+                 <property name="editTriggers">
+                  <set>QAbstractItemView::NoEditTriggers</set>
+                 </property>
+                 <property name="sortingEnabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="cornerButtonEnabled">
+                  <bool>true</bool>
+                 </property>
+                 <attribute name="horizontalHeaderCascadingSectionResizes">
+                  <bool>true</bool>
+                 </attribute>
+                 <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                  <bool>true</bool>
+                 </attribute>
+                 <row>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>0</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>1</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>2</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>3</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>4</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>5</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>6</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>7</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>8</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>9</string>
+                  </property>
+                 </row>
+                 <column>
+                  <property name="text">
+                   <string>Ch. Name</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Status</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>V set (V)</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>V read (V)</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Current (A)</string>
+                  </property>
+                 </column>
+                 <item row="0" column="0">
+                  <property name="text">
+                   <string>All</string>
+                  </property>
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="1" column="0">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="2" column="0">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="3" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="4" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="5" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="6" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="7" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="8" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="9" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="10" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_15">
+                 <item>
+                  <widget class="QPushButton" name="pushButton_9">
+                   <property name="text">
+                    <string>LV on</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_7">
+                   <property name="text">
+                    <string>LV off</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_8">
+                   <property name="text">
+                    <string>Set LV</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_4">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_12">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_2">
+              <attribute name="title">
+               <string>HV</string>
               </attribute>
-              <row>
-               <property name="text">
-                <string/>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>0</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>1</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>2</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>3</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>4</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>5</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>6</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>7</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>8</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>9</string>
-               </property>
-              </row>
-              <column>
-               <property name="text">
-                <string>Ch. Name</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Status</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>V set (V)</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>V read (V)</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Current (A)</string>
-               </property>
-              </column>
-              <item row="0" column="0">
-               <property name="text">
-                <string>All</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="1" column="0">
-               <property name="text">
-                <string/>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="2" column="0">
-               <property name="text">
-                <string/>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="3" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="4" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="5" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="6" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="7" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="8" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="9" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="10" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
+              <layout class="QHBoxLayout" name="horizontalLayout_11">
+               <item>
+                <widget class="QTableWidget" name="tableWidget_2">
+                 <property name="sizeAdjustPolicy">
+                  <enum>QAbstractScrollArea::AdjustToContents</enum>
+                 </property>
+                 <property name="autoScrollMargin">
+                  <number>17</number>
+                 </property>
+                 <property name="editTriggers">
+                  <set>QAbstractItemView::NoEditTriggers</set>
+                 </property>
+                 <row>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>0</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>1</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>2</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>3</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>4</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>5</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>6</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>7</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>8</string>
+                  </property>
+                 </row>
+                 <row>
+                  <property name="text">
+                   <string>9</string>
+                  </property>
+                 </row>
+                 <column>
+                  <property name="text">
+                   <string>Ch. Name</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Status</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>V set (V)</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>V read (V)</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Current (A)</string>
+                  </property>
+                 </column>
+                 <item row="0" column="0">
+                  <property name="text">
+                   <string>All</string>
+                  </property>
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="1" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="2" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="3" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="4" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="5" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="6" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="7" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="8" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="9" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                 <item row="10" column="0">
+                  <property name="checkState">
+                   <enum>Unchecked</enum>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_13">
+                 <item>
+                  <widget class="QPushButton" name="pushButton_2">
+                   <property name="text">
+                    <string>On</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton_3">
+                   <property name="text">
+                    <string>Off</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="pushButton">
+                   <property name="text">
+                    <string>Set HV</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="verticalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_10">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
              </widget>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_15">
-              <item>
-               <widget class="QPushButton" name="pushButton_9">
-                <property name="text">
-                 <string>LV on</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_7">
-                <property name="text">
-                 <string>LV off</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_8">
-                <property name="text">
-                 <string>Set LV</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_12">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="tab_2">
-           <attribute name="title">
-            <string>HV</string>
-           </attribute>
-           <layout class="QHBoxLayout" name="horizontalLayout_11">
-            <item>
-             <widget class="QTableWidget" name="tableWidget_2">
-              <property name="sizeAdjustPolicy">
-               <enum>QAbstractScrollArea::AdjustToContents</enum>
-              </property>
-              <property name="autoScrollMargin">
-               <number>17</number>
-              </property>
-              <property name="editTriggers">
-               <set>QAbstractItemView::NoEditTriggers</set>
-              </property>
-              <row>
-               <property name="text">
-                <string/>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>0</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>1</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>2</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>3</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>4</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>5</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>6</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>7</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>8</string>
-               </property>
-              </row>
-              <row>
-               <property name="text">
-                <string>9</string>
-               </property>
-              </row>
-              <column>
-               <property name="text">
-                <string>Ch. Name</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Status</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>V set (V)</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>V read (V)</string>
-               </property>
-              </column>
-              <column>
-               <property name="text">
-                <string>Current (A)</string>
-               </property>
-              </column>
-              <item row="0" column="0">
-               <property name="text">
-                <string>All</string>
-               </property>
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="1" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="2" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="3" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="4" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="5" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="6" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="7" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="8" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="9" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-              <item row="10" column="0">
-               <property name="checkState">
-                <enum>Unchecked</enum>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item>
-             <layout class="QVBoxLayout" name="verticalLayout_13">
-              <item>
-               <widget class="QPushButton" name="pushButton_2">
-                <property name="text">
-                 <string>On</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_3">
-                <property name="text">
-                 <string>Off</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton">
-                <property name="text">
-                 <string>Set HV</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_5">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_10">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </widget>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>
@@ -2337,6 +2344,40 @@ p, li { white-space: pre-wrap; }
               <widget class="QPushButton" name="CAENControllerTestCmd_btn">
                <property name="text">
                 <string>Send</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_11">
+          <property name="title">
+           <string>Module test</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_13">
+             <item>
+              <widget class="QLabel" name="label_57">
+               <property name="text">
+                <string>Bash cmd: </string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="ModuleTestCmd_line">
+               <property name="text">
+                <string>ls -ltr</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="ModuleTestCmd_btn">
+               <property name="text">
+                <string>Execute</string>
                </property>
               </widget>
              </item>

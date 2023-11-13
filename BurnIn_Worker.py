@@ -3,6 +3,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
 import time
+import subprocess
 
 
 class BurnIn_Worker(QObject):
@@ -56,6 +57,11 @@ class BurnIn_Worker(QObject):
 			time.sleep(0.250)
 			self.logger.info(self.FNALBox.receive())
 		self.FNALBox.lock.release()
+	
+	@pyqtSlot(str)
+	def SendModuleTestCmd(self,cmd):
+		self.logger.info("WORKER: Executing "+cmd)
+		subprocess.run(cmd.split(" "))
 	
 	@pyqtSlot(int)	
 	def Ctrl_SelSp_Cmd(self,Sp_id):
@@ -232,6 +238,8 @@ class BurnIn_Worker(QObject):
 				return
 			try:
 				IntTemp_arr = [float(self.MonitorTags["LastFNALBoxTemp1"].text()),float(self.MonitorTags["LastFNALBoxTemp0"].text())]
+				for i in range (10):
+					IntTemp_arr.append(float(self.MonitorTags["LastFNALBoxOW"+str(i)].text())) 
 				IntTemp_min = min(IntTemp_arr)
 			except Exception as e:
 				self.logger.error(e)

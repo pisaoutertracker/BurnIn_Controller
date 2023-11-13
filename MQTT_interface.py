@@ -48,20 +48,21 @@ class MQTT_interface():
 		self.client.on_connect = self.on_connect
 		self.client.on_message = self.on_message
 		self.client.on_disconnect = self.on_disconnect
+		self.client.on_publish = self.on_publish
 		self.logger.info("MQTT class initialized")
 	
-	def on_connect(self,client, userdata, flags, rc):
+	def on_connect(self,client, userdata, flags, rc):  #create function for callback
 		self.logger.info("MQTT client: Connected to MQTT Broker!")
 		self.client.subscribe(self.CAENTopic)
 		self.client.subscribe(self.M5Topic)
 		self.is_connected = True
 		
-	def on_disconnect(self, client, userdata, rc):
+	def on_disconnect(self, client, userdata, rc):  #create function for callback
 		if rc != 0:
 			self.logger.info("MQTT client: DISConnected to MQTT Broker!")
 			self.is_connected = False
 			
-	def on_message(self, client, userdata, msg):
+	def on_message(self, client, userdata, msg):  #create function for callback
 		try:
 			self.logger.debug(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
 			self.LastSource = msg.topic
@@ -77,6 +78,14 @@ class MQTT_interface():
 				self.logger.warning("MQTT client: Message from unknown topic")
 		except Exception as e:
 			self.logger.info("MQTT client: invalid string from MQTT Broker!")
+	
+	def on_publish(self,client,userdata,result):             #create function for callback
+    		pass
+    	
+	def publish(self, topic, msg):
+		pub_result = self.client.publish(topic,msg,0,True)
+		if pub_result[0] != 0:
+  			self.logger.error("MQTT client: Failed to publish message on topic "+topic)
 		
 	def connect(self):
 		

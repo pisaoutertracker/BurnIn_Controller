@@ -15,6 +15,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	SendJulaboCmd_sig = pyqtSignal(str)
 	SendFNALBoxCmd_sig = pyqtSignal(str)
 	SendCAENControllerCmd_sig = pyqtSignal(str)
+	SendModuleTestCmd_sig = pyqtSignal(str)
 
 
 	Ctrl_SetSp_sig = pyqtSignal(int,float)
@@ -84,6 +85,16 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MonitorTags["LastFNALBoxTemp0"]=self.LastFNALBoxTemp0_tag
 		self.MonitorTags["LastFNALBoxTemp1"]=self.LastFNALBoxTemp1_tag
 		self.MonitorTags["LastFNALBoxDP"]=self.LastFNALBoxDP_tag
+		self.MonitorTags["LastFNALBoxOW0"]=self.LastFNALBoxOW0_tag
+		self.MonitorTags["LastFNALBoxOW1"]=self.LastFNALBoxOW1_tag
+		self.MonitorTags["LastFNALBoxOW2"]=self.LastFNALBoxOW2_tag
+		self.MonitorTags["LastFNALBoxOW3"]=self.LastFNALBoxOW3_tag
+		self.MonitorTags["LastFNALBoxOW4"]=self.LastFNALBoxOW4_tag
+		self.MonitorTags["LastFNALBoxOW5"]=self.LastFNALBoxOW5_tag
+		self.MonitorTags["LastFNALBoxOW6"]=self.LastFNALBoxOW6_tag
+		self.MonitorTags["LastFNALBoxOW7"]=self.LastFNALBoxOW7_tag
+		self.MonitorTags["LastFNALBoxOW8"]=self.LastFNALBoxOW8_tag
+		self.MonitorTags["LastFNALBoxOW9"]=self.LastFNALBoxOW9_tag
 		
 		
 		self.MonitorTags["LastLV00Current"]=self.LastLV00Current_tag
@@ -207,6 +218,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.JulaboTestCmd_btn.clicked.connect(self.SendJulaboCmd)	
 		self.FNALBoxTestCmd_btn.clicked.connect(self.SendFNALBoxCmd)
 		self.CAENControllerTestCmd_btn.clicked.connect(self.SendCAENControllerCmd)
+		self.ModuleTestCmd_btn.clicked.connect(self.SendModuleTestCmd)
 		self.Ctrl_SetSp1_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(0,self.Ctrl_ValSp1_dsb.value()))
 		self.Ctrl_SetSp2_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(1,self.Ctrl_ValSp2_dsb.value()))
 		self.Ctrl_SetSp3_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(2,self.Ctrl_ValSp3_dsb.value()))
@@ -227,6 +239,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SendJulaboCmd_sig.connect(self.Worker.SendJulaboCmd)
 		self.SendFNALBoxCmd_sig.connect(self.Worker.SendFNALBoxCmd)
 		self.SendCAENControllerCmd_sig.connect(self.Worker.SendCAENControllerCmd)
+		self.SendModuleTestCmd_sig.connect(self.Worker.SendModuleTestCmd)
 		
 		self.Ctrl_SelSp_sig.connect(self.Worker.Ctrl_SelSp_Cmd)
 		self.Ctrl_SetSp_sig.connect(self.Worker.Ctrl_SetSp_Cmd)
@@ -249,6 +262,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 	def SendCAENControllerCmd(self):
 		self.SendCAENControllerCmd_sig.emit(self.CAENControllerTestCmd_line.text())
+		
+	def SendModuleTestCmd(self):
+		self.SendModuleTestCmd_sig.emit(self.ModuleTestCmd_line.text())
 	
 	def Ctrl_SetSp_Cmd(self,Sp_ID,value):
 		self.Ctrl_SetSp_sig.emit(Sp_ID,value)
