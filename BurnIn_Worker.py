@@ -44,6 +44,7 @@ class BurnIn_Worker(QObject):
 			self.CAENController.sendTCP(cmd)
 			time.sleep(0.250)
 			self.logger.info(self.CAENController.receive())
+			self.CAENController.close()
 		self.CAENController.lock.release()
 	
 	@pyqtSlot(str)
@@ -111,7 +112,6 @@ class BurnIn_Worker(QObject):
 					self.logger.error(e)	
 						
 			self.Julabo.lock.release()
-
 			
 	
 	@pyqtSlot(int,float)	
@@ -192,8 +192,6 @@ class BurnIn_Worker(QObject):
 				if float(self.MonitorTags["Ctrl_TargetTemp"].text())< float(self.MonitorTags["Ctrl_IntDewPoint"].text()):
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Attempting to start unit with target temperature below internal dew point"
-					self.logger.warning(Warning_str)
-					self.logger.warning(Reason_str)
 					self.Request_msg.emit(Warning_str,Reason_str)
 					return
 				else:
@@ -312,8 +310,63 @@ class BurnIn_Worker(QObject):
 					
 		self.FNALBox.lock.release()
 
-		
-	
+	@pyqtSlot(bool)	
+	def Ctrl_PowerLV_Cmd(self,switch):
+		Channel_list=[]
+		power = "On" if switch else "Off"
+		if not (self.MonitorTags["CAEN_updated"]):
+			Warning_str = "Operation can't be performed"
+			Reason_str = "CAEN infos are not updated"
+			self.Request_msg.emit(Warning_str,Reason_str)
+			return
+		for row in range(10):
+			if self.MonitorTags["CAEN_table"].item(row,0).isSelected():
+				ch_name = self.MonitorTags["CAEN_table"].item(row,0).text()
+				if (ch_name == "?"):
+					Warning_str = "Operation can't be performed"
+					Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
+					self.Request_msg.emit(Warning_str,Reason_str)
+					return
+				HV_defined = True if self.MonitorTags["CAEN_table"].item(row,5).text() != "?" else False	
+				if (not switch) and  HV_defined and (self.MonitorTags["CAEN_table"].item(row,6).text() != "OFF"):  # attempt to power down LV with HV not off
+					Warning_str = "Operation can't be performed"
+					Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause HV is ON or UNKNOWN"
+					self.Request_msg.emit(Warning_str,Reason_str)
+					return
+				Channel_list.append(ch_name)
+				
+		self.logger.info("WORKER: Setting LV "+power+ " for ch " +str(Channel_list))
+		for channel in Channel_list:
+			self.SendCAENControllerCmd("Turn"+power+",PowerSupplyId:caen,ChannelId:"+channel)	
+
+	@pyqtSlot(bool)	
+	def Ctrl_PowerHV_Cmd(self,switch):
+		Channel_list=[]
+		power = "On" if switch else "Off"
+		if not (self.MonitorTags["CAEN_updated"]):
+			Warning_str = "Operation can't be performed"
+			Reason_str = "CAEN infos are not updated"
+			self.Request_msg.emit(Warning_str,Reason_str)
+			return
+		for row in range(10):
+			if self.MonitorTags["CAEN_table"].item(row,5).isSelected():
+				ch_name = self.MonitorTags["CAEN_table"].item(row,5).text() 
+				if (ch_name == "?"):
+					Warning_str = "Operation can't be performed"
+					Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause HV ch. name is UNKNOWN"
+					self.Request_msg.emit(Warning_str,Reason_str)
+					return
+				if (switch) and (self.MonitorTags["CAEN_table"].item(row,1).text() != "ON"):  # attempt to power up HV with LV not on
+					Warning_str = "Operation can't be performed"
+					Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause LV is OFF or UNKNOWN"
+					self.Request_msg.emit(Warning_str,Reason_str)
+					return
+				Channel_list.append(ch_name)
+				
+		self.logger.info("WORKER: Setting LV "+power+ " for ch " +str(Channel_list))
+		for channel in Channel_list:
+			self.SendCAENControllerCmd("Turn"+power+",PowerSupplyId:caen,ChannelId:"+channel)
+			print("Turn"+power+",PowerSupplyId:caen,ChannelId:"+channel)
 	
 	
 	

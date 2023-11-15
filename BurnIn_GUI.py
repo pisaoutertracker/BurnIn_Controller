@@ -1,6 +1,7 @@
 import sys, os
 from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from PyQt5.QtCore import QThread, pyqtSlot, pyqtSignal
+import subprocess
 
 
 from BurnIn_TCP import *
@@ -23,6 +24,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	Ctrl_PowerJulabo_sig = pyqtSignal(bool)
 	Ctrl_SetHighFlow_sig = pyqtSignal(bool)
 	Ctrl_SetLock_sig = pyqtSignal(bool)
+	Ctrl_PowerLV_sig = pyqtSignal(bool)
+	Ctrl_PowerHV_sig = pyqtSignal(bool)
 	
 
 
@@ -52,32 +55,52 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.show() # Show the GUI
 		
 		#adjust GUI table elements
-		self.Ctrl_CAEN_table.item(0,0).setCheckState(QtCore.Qt.Unchecked)
 		for row in range(10):
-			self.Ctrl_CAEN_table.item(row+1,0).setCheckState(QtCore.Qt.Unchecked) 
-			self.Ctrl_CAEN_table.setItem(row+1,1,QtWidgets.QTableWidgetItem(self.LVNames[row]))
-			self.Ctrl_CAEN_table.setItem(row+1,2,QtWidgets.QTableWidgetItem("?"))
-			self.Ctrl_CAEN_table.setItem(row+1,3,QtWidgets.QTableWidgetItem("?"))
-			self.Ctrl_CAEN_table.setItem(row+1,4,QtWidgets.QTableWidgetItem("?"))
-			self.Ctrl_CAEN_table.setItem(row+1,5,QtWidgets.QTableWidgetItem("?"))
-			self.Ctrl_CAEN_table.setItem(row+1,6,QtWidgets.QTableWidgetItem(self.HVNames[row]))
-			self.Ctrl_CAEN_table.setItem(row+1,7,QtWidgets.QTableWidgetItem("?"))
-			self.Ctrl_CAEN_table.setItem(row+1,8,QtWidgets.QTableWidgetItem("?"))
-			self.Ctrl_CAEN_table.setItem(row+1,9,QtWidgets.QTableWidgetItem("?"))
-			self.Ctrl_CAEN_table.setItem(row+1,10,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row,0,QtWidgets.QTableWidgetItem(self.LVNames[row]))
+			self.Ctrl_CAEN_table.setItem(row,1,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row,2,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row,3,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row,4,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row,5,QtWidgets.QTableWidgetItem(self.HVNames[row]))
+			self.Ctrl_CAEN_table.setItem(row,6,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row,7,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row,8,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row,9,QtWidgets.QTableWidgetItem("?"))
+		
+		self.LV00ID_tag.setText(self.LVNames[0])
+		self.LV01ID_tag.setText(self.LVNames[1])
+		self.LV02ID_tag.setText(self.LVNames[2])
+		self.LV03ID_tag.setText(self.LVNames[3])
+		self.LV04ID_tag.setText(self.LVNames[4])
+		self.LV05ID_tag.setText(self.LVNames[5])
+		self.LV06ID_tag.setText(self.LVNames[6])
+		self.LV07ID_tag.setText(self.LVNames[7])
+		self.LV08ID_tag.setText(self.LVNames[8])
+		self.LV09ID_tag.setText(self.LVNames[9])
+		self.HV00ID_tag.setText(self.HVNames[0])
+		self.HV01ID_tag.setText(self.HVNames[1])
+		self.HV02ID_tag.setText(self.HVNames[2])
+		self.HV03ID_tag.setText(self.HVNames[3])
+		self.HV04ID_tag.setText(self.HVNames[4])
+		self.HV05ID_tag.setText(self.HVNames[5])
+		self.HV06ID_tag.setText(self.HVNames[6])
+		self.HV07ID_tag.setText(self.HVNames[7])
+		self.HV08ID_tag.setText(self.HVNames[8])
+		self.HV09ID_tag.setText(self.HVNames[9])
+		
+		self.JulaboTestCmd_btn.setEnabled(False)	
+		self.FNALBoxTestCmd_btn.setEnabled(False)	
+		self.CAENControllerTestCmd_btn.setEnabled(False)	
+		self.ModuleTestCmd_btn.setEnabled(False)	
 		
 		
+		# creating interfaces
 		self.Julabo = BurnIn_TCP(self.configDict,self.logger,"Julabo")
 		self.FNALBox = BurnIn_TCP(self.configDict,self.logger,"FNALBox")
 		self.CAENController = BurnIn_TCP(self.configDict,self.logger,"CAENController")
 
-		#for idx,name in enumerate(self.LVNames):
-		#	self.Ctrl_LVCh_comboBox.addItem(name)
-		#for idx,name in enumerate(self.HVNames):
-		#	self.Ctrl_HVCh_comboBox.addItem(name)
-
 		
-		#packing monitor tag
+		#packing monitor info
 		self.MonitorTags = {}
 		self.MonitorTags["LastMonitor"]=self.LastMonitor_tag
 		self.MonitorTags["MQTTConn"]=self.MQTTConn_tag
@@ -143,16 +166,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MonitorTags["LastLV07Status"]=self.LastLV07Status_tag
 		self.MonitorTags["LastLV08Status"]=self.LastLV08Status_tag
 		self.MonitorTags["LastLV09Status"]=self.LastLV09Status_tag
-		self.LV00ID_tag.setText(self.LVNames[0])
-		self.LV01ID_tag.setText(self.LVNames[1])
-		self.LV02ID_tag.setText(self.LVNames[2])
-		self.LV03ID_tag.setText(self.LVNames[3])
-		self.LV04ID_tag.setText(self.LVNames[4])
-		self.LV05ID_tag.setText(self.LVNames[5])
-		self.LV06ID_tag.setText(self.LVNames[6])
-		self.LV07ID_tag.setText(self.LVNames[7])
-		self.LV08ID_tag.setText(self.LVNames[8])
-		self.LV09ID_tag.setText(self.LVNames[9])
 		
 		self.MonitorTags["LastHV00Current"]=self.LastHV00Current_tag
 		self.MonitorTags["LastHV01Current"]=self.LastHV01Current_tag
@@ -184,16 +197,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MonitorTags["LastHV07Status"]=self.LastHV07Status_tag
 		self.MonitorTags["LastHV08Status"]=self.LastHV08Status_tag
 		self.MonitorTags["LastHV09Status"]=self.LastHV09Status_tag
-		self.HV00ID_tag.setText(self.HVNames[0])
-		self.HV01ID_tag.setText(self.HVNames[1])
-		self.HV02ID_tag.setText(self.HVNames[2])
-		self.HV03ID_tag.setText(self.HVNames[3])
-		self.HV04ID_tag.setText(self.HVNames[4])
-		self.HV05ID_tag.setText(self.HVNames[5])
-		self.HV06ID_tag.setText(self.HVNames[6])
-		self.HV07ID_tag.setText(self.HVNames[7])
-		self.HV08ID_tag.setText(self.HVNames[8])
-		self.HV09ID_tag.setText(self.HVNames[9])
 		
 		self.MonitorTags["Ctrl_Sp1"]=self.Ctrl_Sp1_tag
 		self.MonitorTags["Ctrl_Sp2"]=self.Ctrl_Sp2_tag
@@ -237,6 +240,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.FNALBoxTestCmd_btn.clicked.connect(self.SendFNALBoxCmd)
 		self.CAENControllerTestCmd_btn.clicked.connect(self.SendCAENControllerCmd)
 		self.ModuleTestCmd_btn.clicked.connect(self.SendModuleTestCmd)
+		
 		self.Ctrl_SetSp1_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(0,self.Ctrl_ValSp1_dsb.value()))
 		self.Ctrl_SetSp2_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(1,self.Ctrl_ValSp2_dsb.value()))
 		self.Ctrl_SetSp3_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(2,self.Ctrl_ValSp3_dsb.value()))
@@ -249,6 +253,11 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_SetUnlock_btn.clicked.connect  (lambda : self.Ctrl_SetLock_Cmd(False))
 		self.Ctrl_StartJulabo_btn.clicked.connect(lambda : self.Ctrl_PowerJulabo_Cmd(True))
 		self.Ctrl_StopJulabo_btn.clicked.connect (lambda : self.Ctrl_PowerJulabo_Cmd(False))
+		self.Ctrl_LVOn_btn.clicked.connect(lambda : self.Ctrl_PowerLV_Cmd(True))
+		self.Ctrl_LVOff_btn.clicked.connect (lambda : self.Ctrl_PowerLV_Cmd(False))
+		self.Ctrl_HVOn_btn.clicked.connect(lambda : self.Ctrl_PowerHV_Cmd(True))
+		self.Ctrl_HVOff_btn.clicked.connect (lambda : self.Ctrl_PowerHV_Cmd(False))
+		self.Ctrl_StartTest_btn.clicked.connect(self.Ctrl_StartTest_Cmd)
 		
 		self.actionExit.triggered.connect(self.close)
 		self.actionExpert.triggered.connect(self.expert)
@@ -264,6 +273,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_PowerJulabo_sig.connect(self.Worker.Ctrl_PowerJulabo_Cmd)
 		self.Ctrl_SetLock_sig.connect(self.Worker.Ctrl_SetLock_Cmd)
 		self.Ctrl_SetHighFlow_sig.connect(self.Worker.Ctrl_SetHighFlow_Cmd)
+		self.Ctrl_PowerLV_sig.connect(self.Worker.Ctrl_PowerLV_Cmd)
+		self.Ctrl_PowerHV_sig.connect(self.Worker.Ctrl_PowerHV_Cmd)
 		
 		
 		
@@ -293,11 +304,27 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	def Ctrl_PowerJulabo_Cmd(self,switch):
 		self.Ctrl_PowerJulabo_sig.emit(switch)
 	
+	def Ctrl_PowerLV_Cmd(self,switch):
+		self.Ctrl_PowerLV_sig.emit(switch)
+	
+	def Ctrl_PowerHV_Cmd(self,switch):
+		self.Ctrl_PowerHV_sig.emit(switch)
+	
 	def Ctrl_SetHighFlow_Cmd(self,switch):
 		self.Ctrl_SetHighFlow_sig.emit(switch)
 	
 	def Ctrl_SetLock_Cmd(self,switch):
 		self.Ctrl_SetLock_sig.emit(switch)
+	
+	def Ctrl_StartTest_Cmd(self):
+		self.logger.info("Starting module test...")
+		msg = QMessageBox()
+		msg.setWindowTitle("Module test ongoing. Please wait...")
+		msg.show()
+		result = subprocess.run(["python3", "moduleTest.py"], capture_output=True, text=True)
+		self.logger.info(result.stdout)
+		self.logger.error(result.stderr)
+		self.logger.info("Module test completed!")
 		
 	@pyqtSlot(str,str)
 	def Show_msg(self,warn_msg,rsn_msg):
@@ -319,10 +346,15 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.statusBar().showMessage("Expert mode activated")
 			self.is_expert=True
 			
+			self.JulaboTestCmd_btn.setEnabled(True)	
+			self.FNALBoxTestCmd_btn.setEnabled(True)	
+			self.CAENControllerTestCmd_btn.setEnabled(True)	
+			self.ModuleTestCmd_btn.setEnabled(True)
+			
 		
 
 if __name__== '__main__':
 	
 	app = QtWidgets.QApplication(sys.argv)
 	BurnIn_app = BurnIn_GUI(0, 0)
-	sys.exit(app.exec_()) #continua esecuzione fino a che non chiudo
+	sys.exit(app.exec_()) #continua esecuzione finchè non chiudo

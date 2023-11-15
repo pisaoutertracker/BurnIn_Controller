@@ -70,26 +70,26 @@ class BurnIn_Monitor(QObject):
 									is_active = CAEN_dict[key]
 									if is_active >0 :
 										self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"Status"].setText("ON")
-										self.MonitorTags["CAEN_table"].item(i+1,2).setText("ON")
-										self.MonitorTags["CAEN_table"].item(i+1,6).setBackground(QtGui.QColor("white"))		
+										self.MonitorTags["CAEN_table"].item(i,1).setText("ON")
+										self.MonitorTags["CAEN_table"].item(i,5).setBackground(QtGui.QColor("white"))		
 									else:
 										self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"Status"].setText("OFF")
-										self.MonitorTags["CAEN_table"].item(i+1,2).setText("OFF")
-										self.MonitorTags["CAEN_table"].item(i+1,6).setBackground(QtGui.QColor("lightgray"))	
+										self.MonitorTags["CAEN_table"].item(i,1).setText("OFF")
+										self.MonitorTags["CAEN_table"].item(i,5).setBackground(QtGui.QColor("lightgray"))	
 								else:
 									self.logger.warning("MONITOR: Status of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.LVNames[i]+"_Voltage"
 								if (key) in CAEN_dict:
 									self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"Voltage"].setText(str(CAEN_dict[key]))
-									self.MonitorTags["CAEN_table"].item(i+1,4).setText(str(CAEN_dict[key]))
+									self.MonitorTags["CAEN_table"].item(i,3).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Voltage of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.LVNames[i]+"_Current"
 								if (key) in CAEN_dict:
 									self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"Current"].setText(str(CAEN_dict[key]))
-									self.MonitorTags["CAEN_table"].item(i+1,5).setText(str(CAEN_dict[key]))
+									self.MonitorTags["CAEN_table"].item(i,4).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Current of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
 							
@@ -99,26 +99,26 @@ class BurnIn_Monitor(QObject):
 									is_active = CAEN_dict[key]
 									if is_active >0 :
 										self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"Status"].setText("ON")
-										self.MonitorTags["CAEN_table"].item(i+1,7).setText("ON")
-										self.MonitorTags["CAEN_table"].item(i+1,1).setBackground(QtGui.QColor("lightgrey"))	
+										self.MonitorTags["CAEN_table"].item(i,6).setText("ON")
+										self.MonitorTags["CAEN_table"].item(i,0).setBackground(QtGui.QColor("lightgrey"))	
 									else:
 										self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"Status"].setText("OFF")
-										self.MonitorTags["CAEN_table"].item(i+1,7).setText("OFF")
-										self.MonitorTags["CAEN_table"].item(i+1,1).setBackground(QtGui.QColor("white"))		
+										self.MonitorTags["CAEN_table"].item(i,6).setText("OFF")
+										self.MonitorTags["CAEN_table"].item(i,0).setBackground(QtGui.QColor("white"))		
 								else:
 									self.logger.warning("MONITOR: Status of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.HVNames[i]+"_Voltage"
 								if (key) in CAEN_dict:
 									self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"Voltage"].setText(str(CAEN_dict[key]))
-									self.MonitorTags["CAEN_table"].item(i+1,9).setText(str(CAEN_dict[key]))
+									self.MonitorTags["CAEN_table"].item(i,8).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Voltage of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.HVNames[i]+"_Current"
 								if (key) in CAEN_dict:
 									self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"Current"].setText(str(CAEN_dict[key]))
-									self.MonitorTags["CAEN_table"].item(i+1,10).setText(str(CAEN_dict[key]))
+									self.MonitorTags["CAEN_table"].item(i,9).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Current of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
 

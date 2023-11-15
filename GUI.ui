@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1181</width>
+    <width>1120</width>
     <height>970</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Burn-In Controller v0.0</string>
+   <string>Burn-In Controller v1.0</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -512,8 +512,14 @@ p, li { white-space: pre-wrap; }
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_12">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="title">
-           <string>CAEN LV/HV (not yet working)</string>
+           <string>CAEN LV/HV </string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_14">
            <item>
@@ -550,64 +556,54 @@ p, li { white-space: pre-wrap; }
              </attribute>
              <row>
               <property name="text">
-               <string/>
+               <string>Slot 0</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string/>
+               <string>Slot 1</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string/>
+               <string>Slot 2</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string/>
+               <string>Slot 3</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string/>
+               <string>Slot 4</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string/>
+               <string>Slot 5</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string/>
+               <string>Slot 6</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string/>
+               <string>Slot 7</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string/>
+               <string>Slot 8</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string/>
+               <string>Slot 9</string>
               </property>
              </row>
-             <row>
-              <property name="text">
-               <string/>
-              </property>
-             </row>
-             <column>
-              <property name="text">
-               <string>Slot</string>
-              </property>
-             </column>
              <column>
               <property name="text">
                <string>LV Ch.</string>
@@ -660,36 +656,17 @@ p, li { white-space: pre-wrap; }
              </column>
              <item row="0" column="0">
               <property name="text">
-               <string>All</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-             </item>
-             <item row="0" column="1">
-              <property name="text">
                <string/>
               </property>
              </item>
              <item row="1" column="0">
-              <property name="text">
-               <string>Slot 0</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-             </item>
-             <item row="1" column="1">
               <property name="text">
                <string/>
               </property>
              </item>
              <item row="2" column="0">
               <property name="text">
-               <string>Slot 1</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
+               <string/>
               </property>
              </item>
              <item row="2" column="1">
@@ -699,86 +676,12 @@ p, li { white-space: pre-wrap; }
              </item>
              <item row="3" column="0">
               <property name="text">
-               <string>Slot 2</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-             </item>
-             <item row="3" column="1">
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item row="3" column="2">
-              <property name="text">
                <string/>
               </property>
              </item>
              <item row="4" column="0">
               <property name="text">
-               <string>Slot 3</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-             </item>
-             <item row="4" column="1">
-              <property name="text">
                <string/>
-              </property>
-             </item>
-             <item row="5" column="0">
-              <property name="text">
-               <string>Slot 4</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-             </item>
-             <item row="5" column="1">
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item row="6" column="0">
-              <property name="text">
-               <string>Slot 5</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-             </item>
-             <item row="7" column="0">
-              <property name="text">
-               <string>Slot 6</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-             </item>
-             <item row="8" column="0">
-              <property name="text">
-               <string>Slot 7</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-             </item>
-             <item row="9" column="0">
-              <property name="text">
-               <string>Slot 8</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
-              </property>
-             </item>
-             <item row="10" column="0">
-              <property name="text">
-               <string>Slot 9</string>
-              </property>
-              <property name="checkState">
-               <enum>Unchecked</enum>
               </property>
              </item>
             </widget>
@@ -786,65 +689,101 @@ p, li { white-space: pre-wrap; }
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_10">
              <item>
-              <widget class="QPushButton" name="pushButton_9">
+              <widget class="QPushButton" name="Ctrl_LVOn_btn">
                <property name="text">
                 <string>LV on</string>
+               </property>
+               <property name="flat">
+                <bool>false</bool>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_7">
+              <widget class="QPushButton" name="Ctrl_LVOff_btn">
                <property name="text">
                 <string>LV off</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_8">
+              <widget class="QPushButton" name="Ctrl_LVSet_btn">
                <property name="text">
-                <string>Set LV</string>
+                <string>Set LV (not yet implemented)</string>
                </property>
               </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_10">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
              </item>
             </layout>
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_11">
              <item>
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="Ctrl_HVOn_btn">
                <property name="text">
                 <string>HV on</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_2">
+              <widget class="QPushButton" name="Ctrl_HVOff_btn">
                <property name="text">
                 <string>HV off</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_3">
+              <widget class="QPushButton" name="Ctrl_HVSet_btn">
                <property name="text">
-                <string>Set HV</string>
+                <string>Set HV (not yet implemented)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_11">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_13">
+          <property name="title">
+           <string>Module test</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_13">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QPushButton" name="Ctrl_StartTest_btn">
+               <property name="text">
+                <string>TEST!</string>
                </property>
               </widget>
              </item>
             </layout>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_4">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </widget>
@@ -2226,7 +2165,7 @@ p, li { white-space: pre-wrap; }
         <item>
          <widget class="QGroupBox" name="groupBox_11">
           <property name="title">
-           <string>Module test</string>
+           <string>Shell test</string>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
@@ -2234,7 +2173,7 @@ p, li { white-space: pre-wrap; }
              <item>
               <widget class="QLabel" name="label_57">
                <property name="text">
-                <string>Bash cmd: </string>
+                <string>Shell cmd: </string>
                </property>
               </widget>
              </item>
@@ -2281,7 +2220,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1181</width>
+     <width>1120</width>
      <height>20</height>
     </rect>
    </property>
