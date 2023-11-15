@@ -36,15 +36,14 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.configDict=configDict
 
 		self.LVNames=["?"] * 10
-		self.LVNames[0]="nc0"
-		self.LVNames[1]="BLV08"
-		self.LVNames[2]="BLV09"
-		self.LVNames[3]="BLV10"
+		self.LVNames[7]="BLV08"
+		self.LVNames[8]="BLV09"
+		self.LVNames[9]="BLV10"
 
 		self.HVNames=["?"] * 10
-		self.HVNames[0]="HV001"
-		self.HVNames[1]="HV002"
-		self.HVNames[2]="HV003"
+		self.HVNames[7]="HV001"
+		self.HVNames[8]="HV002"
+		self.HVNames[9]="HV003"
 		
 		self.initUI()
 		
