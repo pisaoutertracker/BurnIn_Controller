@@ -26,6 +26,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	Ctrl_SetLock_sig = pyqtSignal(bool)
 	Ctrl_PowerLV_sig = pyqtSignal(bool)
 	Ctrl_PowerHV_sig = pyqtSignal(bool)
+	Ctrl_LVSet_sig = pyqtSignal()
+	Ctrl_HVSet_sig = pyqtSignal()
 	
 
 
@@ -214,6 +216,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MonitorTags["Julabo_updated"]=False
 		self.MonitorTags["FNALBox_updated"]=False
 		self.MonitorTags["CAEN_updated"]=False
+		self.MonitorTags["WaitInput"]=False
+		self.MonitorTags["Input"]=0.0
 		
 		self.MonitorTags["CAEN_table"]=self.Ctrl_CAEN_table
 
@@ -257,6 +261,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_HVOn_btn.clicked.connect(lambda : self.Ctrl_PowerHV_Cmd(True))
 		self.Ctrl_HVOff_btn.clicked.connect (lambda : self.Ctrl_PowerHV_Cmd(False))
 		self.Ctrl_StartTest_btn.clicked.connect(self.Ctrl_StartTest_Cmd)
+		self.Ctrl_LVSet_btn.clicked.connect(self.Ctrl_LVSet_Cmd)
+		self.Ctrl_HVSet_btn.clicked.connect(self.Ctrl_HVSet_Cmd)
 		
 		self.actionExit.triggered.connect(self.close)
 		self.actionExpert.triggered.connect(self.expert)
@@ -274,10 +280,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_SetHighFlow_sig.connect(self.Worker.Ctrl_SetHighFlow_Cmd)
 		self.Ctrl_PowerLV_sig.connect(self.Worker.Ctrl_PowerLV_Cmd)
 		self.Ctrl_PowerHV_sig.connect(self.Worker.Ctrl_PowerHV_Cmd)
-		
+		self.Ctrl_LVSet_sig.connect(self.Worker.Ctrl_LVSet_Cmd)
+		self.Ctrl_HVSet_sig.connect(self.Worker.Ctrl_HVSet_Cmd)
 		
 		
 		self.Worker.Request_msg.connect(self.Show_msg)
+		self.Worker.Request_input_dsb.connect(self.Show_input_dsb)
 		
 		
 		self.statusBar().showMessage("System ready")
@@ -315,6 +323,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	def Ctrl_SetLock_Cmd(self,switch):
 		self.Ctrl_SetLock_sig.emit(switch)
 	
+	def Ctrl_LVSet_Cmd(self):
+		self.Ctrl_LVSet_sig.emit()
+	
+	def Ctrl_HVSet_Cmd(self):
+		self.Ctrl_HVSet_sig.emit()
+	
 	def Ctrl_StartTest_Cmd(self):
 		self.logger.info("Starting module test...")
 		msg = QMessageBox()
@@ -338,13 +352,26 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		msg.exec()
 		self.statusBar().showMessage("System ready")
 		
+	@pyqtSlot(str,float)
+	def Show_input_dsb(self,msg, startValue):
+	
+		value, ok = QtWidgets.QInputDialog.getDouble(self,msg,"New value", startValue,0,500,1) 
+		if ok:
+			self.MonitorTags["Input"]=value
+			self.MonitorTags["WaitInput"]=False
+		else:
+			self.MonitorTags["Input"]=-1
+			self.MonitorTags["WaitInput"]=False
+			
+		
+			
+		
 	def expert(self):
 		psw, ok = QtWidgets.QInputDialog.getText(None, "Expert mode", "Password?", QtWidgets.QLineEdit.Password)
 		if psw=='1234' and ok:
 			self.logger.info("Expert mode activated")
 			self.statusBar().showMessage("Expert mode activated")
 			self.is_expert=True
-			
 			self.JulaboTestCmd_btn.setEnabled(True)	
 			self.FNALBoxTestCmd_btn.setEnabled(True)	
 			self.CAENControllerTestCmd_btn.setEnabled(True)	

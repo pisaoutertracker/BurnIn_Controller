@@ -23,7 +23,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../Boss/.designer/backup/logo.png</normaloff>../../../Boss/.designer/backup/logo.png</iconset>
+    <normaloff>../../../../Boss/.designer/backup/logo.png</normaloff>../../../../Boss/.designer/backup/logo.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -708,7 +708,7 @@ p, li { white-space: pre-wrap; }
              <item>
               <widget class="QPushButton" name="Ctrl_LVSet_btn">
                <property name="text">
-                <string>Set LV (not yet implemented)</string>
+                <string>Set LV (not debugged)</string>
                </property>
               </widget>
              </item>
@@ -746,7 +746,7 @@ p, li { white-space: pre-wrap; }
              <item>
               <widget class="QPushButton" name="Ctrl_HVSet_btn">
                <property name="text">
-                <string>Set HV (not yet implemented)</string>
+                <string>Set HV (not debugged)</string>
                </property>
               </widget>
              </item>
@@ -2246,7 +2246,7 @@ p, li { white-space: pre-wrap; }
   <action name="actionExpert">
    <property name="icon">
     <iconset>
-     <normaloff>../../../Boss/.designer/backup/expert.png</normaloff>../../../Boss/.designer/backup/expert.png</iconset>
+     <normaloff>../../../../Boss/.designer/backup/expert.png</normaloff>../../../../Boss/.designer/backup/expert.png</iconset>
    </property>
    <property name="text">
     <string>Expert</string>
@@ -2258,7 +2258,7 @@ p, li { white-space: pre-wrap; }
   <action name="actionExit">
    <property name="icon">
     <iconset>
-     <normaloff>../../../Boss/.designer/backup/exit.jpeg</normaloff>../../../Boss/.designer/backup/exit.jpeg</iconset>
+     <normaloff>../../../../Boss/.designer/backup/exit.jpeg</normaloff>../../../../Boss/.designer/backup/exit.jpeg</iconset>
    </property>
    <property name="text">
     <string>Exit</string>

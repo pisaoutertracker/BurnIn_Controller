@@ -9,6 +9,7 @@ import subprocess
 class BurnIn_Worker(QObject):
 
 	Request_msg = pyqtSignal(str,str)
+	Request_input_dsb = pyqtSignal(str,float)
 	
 	def __init__(self,configDict,logger, MonitorTags, Julabo, FNALBox, CAENController):
 
@@ -194,6 +195,11 @@ class BurnIn_Worker(QObject):
 					Reason_str = "Attempting to start unit with target temperature below internal dew point"
 					self.Request_msg.emit(Warning_str,Reason_str)
 					return
+				if self.MonitorTags["Ctrl_StatusLock"].text() != "LOCKED":
+					Warning_str = "Operation can't be performed"
+					Reason_str = "Attempting to start unit with door magnet not locked"
+					self.Request_msg.emit(Warning_str,Reason_str)
+					return
 				else:
 					self.Julabo.lock.acquire()
 					self.logger.debug("WORKER: Sending Julabo cmd" )
@@ -366,8 +372,77 @@ class BurnIn_Worker(QObject):
 		self.logger.info("WORKER: Setting LV "+power+ " for ch " +str(Channel_list))
 		for channel in Channel_list:
 			self.SendCAENControllerCmd("Turn"+power+",PowerSupplyId:caen,ChannelId:"+channel)
-			print("Turn"+power+",PowerSupplyId:caen,ChannelId:"+channel)
 	
-	
+
+	@pyqtSlot()	
+	def Ctrl_LVSet_Cmd(self):
+		Channel_list=[]
+		NewValue_list=[]
+		if not (self.MonitorTags["CAEN_updated"]):
+			Warning_str = "Operation can't be performed"
+			Reason_str = "CAEN infos are not updated"
+			self.Request_msg.emit(Warning_str,Reason_str)
+			return
+		for row in range(10):
+			if self.MonitorTags["CAEN_table"].item(row,0).isSelected():
+				ch_name = self.MonitorTags["CAEN_table"].item(row,0).text() 
+				if (ch_name == "?"):
+					Warning_str = "Operation can't be performed"
+					Reason_str = "Can't set LV for  slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
+					self.Request_msg.emit(Warning_str,Reason_str)
+					return
+				if (self.MonitorTags["CAEN_table"].item(row,2).text() == "?"):  # Unknown HV set
+					Warning_str = "Operation can't be performed"
+					Reason_str = "Can't set LV for  slot "+str(row)+ " beacause current setpoint is UNKNOWN"
+					self.Request_msg.emit(Warning_str,Reason_str)
+					return
+				Channel_list.append(ch_name)
+				self.MonitorTags["WaitInput"]=True
+				Request_str="Pleas select new LV value for Slot "+str(i)
+				self.Request_input_dsb.emit(Request_str,float(self.MonitorTags["CAEN_table"].item(row,2).text()))
+				while self.MonitorTags["WaitInput"]:
+					time.sleep(0.1)
+				NewValue_list.append(self.MonitorTags["Input"])
+		
+		self.logger.info("WORKER: Setting LV for ch " +str(Channel_list))
+		self.logger.info("WORKER: New values: " +str(NewValue_list))
+		for channel in Channel_list:
+			pass
+		
+	@pyqtSlot()	
+	def Ctrl_HVSet_Cmd(self):
+		Channel_list=[]
+		NewValue_list=[]
+		if not (self.MonitorTags["CAEN_updated"]):
+			Warning_str = "Operation can't be performed"
+			Reason_str = "CAEN infos are not updated"
+			self.Request_msg.emit(Warning_str,Reason_str)
+			return
+		for row in range(10):
+			if self.MonitorTags["CAEN_table"].item(row,5).isSelected():
+				ch_name = self.MonitorTags["CAEN_table"].item(row,5).text() 
+				if (ch_name == "?"):
+					Warning_str = "Operation can't be performed"
+					Reason_str = "Can't set HV for  slot "+str(row)+ " beacause HV ch. name is UNKNOWN"
+					self.Request_msg.emit(Warning_str,Reason_str)
+					return
+				if (self.MonitorTags["CAEN_table"].item(row,7).text() == "?"):  # Unknown HV set
+					Warning_str = "Operation can't be performed"
+					Reason_str = "Can't set HV for  slot "+str(row)+ " beacause current setpoint is UNKNOWN"
+					self.Request_msg.emit(Warning_str,Reason_str)
+					return
+				Channel_list.append(ch_name)
+				self.MonitorTags["WaitInput"]=True
+				Request_str="Pleas select new HV value for Slot "+str(i)
+				self.Request_input_dsb.emit(Request_str,float(self.MonitorTags["CAEN_table"].item(row,7).text()))
+				while self.MonitorTags["WaitInput"]:
+					time.sleep(0.1)
+				NewValue_list.append(self.MonitorTags["Input"])
+		
+		self.logger.info("WORKER: Setting HV for ch " +str(Channel_list))
+		self.logger.info("WORKER: New values: " +str(NewValue_list))
+		for channel in Channel_list:
+			pass
+		
 	
 	
