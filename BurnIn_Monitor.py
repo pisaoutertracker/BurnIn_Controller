@@ -78,6 +78,13 @@ class BurnIn_Monitor(QObject):
 										self.MonitorTags["CAEN_table"].item(i,5).setBackground(QtGui.QColor("lightgray"))	
 								else:
 									self.logger.warning("MONITOR: Status of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
+									
+								key = "caen_"+self.LVNames[i]+"_VoltageCompliance"
+								if (key) in CAEN_dict:
+									self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"VoltageSet"].setText(str(CAEN_dict[key]))
+									self.MonitorTags["CAEN_table"].item(i,2).setText(str(CAEN_dict[key]))
+								else:
+									self.logger.warning("MONITOR: Voltage Compliance of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.LVNames[i]+"_Voltage"
 								if (key) in CAEN_dict:
@@ -107,6 +114,13 @@ class BurnIn_Monitor(QObject):
 										self.MonitorTags["CAEN_table"].item(i,0).setBackground(QtGui.QColor("white"))		
 								else:
 									self.logger.warning("MONITOR: Status of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
+
+								key = "caen_"+self.HVNames[i]+"_VoltageCompliance"
+								if (key) in CAEN_dict:
+									self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"VoltageSet"].setText(str(CAEN_dict[key]))
+									self.MonitorTags["CAEN_table"].item(i,7).setText(str(CAEN_dict[key]))
+								else:
+									self.logger.warning("MONITOR: Voltage of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.HVNames[i]+"_Voltage"
 								if (key) in CAEN_dict:
@@ -292,6 +306,10 @@ class BurnIn_Monitor(QObject):
 							self.MQTT_FNALBox_dict["Temp0"]=float(reply_list[0])
 							self.MonitorTags["LastFNALBoxTemp1"].setText(reply_list[1][1:])
 							self.MQTT_FNALBox_dict["Temp1"]=float(reply_list[1][1:])
+							
+							self.MonitorTags["LastFNALBoxDoor"].setText(reply_list[2][1:])
+							self.MQTT_FNALBox_dict["Door"]=float(reply_list[2][1:])
+							self.MonitorTags["Ctrl_StatusDoor"].setText(reply_list[2][1:])
 							for i in range(10):
 								self.MonitorTags["LastFNALBoxOW"+str(i)].setText(reply_list[i+4][1:])
 								self.MQTT_FNALBox_dict["OW"+str(i)]=float(reply_list[i+4][1:])
