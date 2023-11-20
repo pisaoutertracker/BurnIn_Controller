@@ -54,7 +54,7 @@ class BurnIn_TCP():
 					
 	def receive(self):
 		inputReady,outputReady,exceptReady = select(self.interfaces,[],[],1)  #wait for data in interfaces list
-		time.sleep(0.010)
+		time.sleep(0.020)
 		for s in inputReady:              
 			if s == self.TCPSock:
 				try:

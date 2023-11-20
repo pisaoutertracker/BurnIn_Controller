@@ -9,7 +9,7 @@ import subprocess
 class BurnIn_Worker(QObject):
 
 	Request_msg = pyqtSignal(str,str)
-	Request_input_dsb = pyqtSignal(str,float,float,float,float)
+	Request_input_dsb = pyqtSignal(str,float,float,float)
 	
 	def __init__(self,configDict,logger, MonitorTags, Julabo, FNALBox, CAENController):
 
@@ -402,9 +402,8 @@ class BurnIn_Worker(QObject):
 					Reason_str = "Can't set LV for  slot "+str(row)+ " beacause current setpoint is UNKNOWN"
 					self.Request_msg.emit(Warning_str,Reason_str)
 					return
-				Channel_list.append(ch_name)
 				self.MonitorTags["WaitInput"]=True
-				Request_str="Pleas select new " +VType+ " value for Slot "+str(i)
+				Request_str="New " +VType+ " Slot "+str(row)
 				ValueNow = 0.0
 				try :
 					ValueNow = float(self.MonitorTags["CAEN_table"].item(row,2+ColOffset).text())
@@ -412,18 +411,21 @@ class BurnIn_Worker(QObject):
 					self.logger.error(e)
 					
 				if VType == "LV":
-					self.Request_input_dsb.emit(Request_str,ValueNow,0,15,0.1)
+					self.Request_input_dsb.emit(Request_str,ValueNow,0,15)
 				else:
-					self.Request_input_dsb.emit(Request_str,ValueNow,0,500,1)
+					self.Request_input_dsb.emit(Request_str,ValueNow,0,500)
 					
 				while self.MonitorTags["WaitInput"]:
 					time.sleep(0.1)
-				NewValue_list.append(self.MonitorTags["Input"])
+				if self.MonitorTags["Input"]!=-1:
+					NewValue_list.append(self.MonitorTags["Input"])
+					Channel_list.append(ch_name)
 		
 		self.logger.info("WORKER: Setting LV for ch " +str(Channel_list))
 		self.logger.info("WORKER: New values: " +str(NewValue_list))
-		for channel in Channel_list:
-			pass
+		for idx,channel in enumerate(Channel_list):
+			self.SendCAENControllerCmd("SetVoltage,PowerSupplyId:caen,ChannelId:"+channel+",Voltage:"+str(NewValue_list[idx]))
+			#print("SetVoltage,PowerSupplyId:caen,ChannelId:"+channel+",Voltage:"+str(NewValue_list[idx]))
 		
 		
 	

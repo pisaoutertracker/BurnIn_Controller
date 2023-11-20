@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1120</width>
-    <height>970</height>
+    <height>971</height>
    </rect>
   </property>
   <property name="font">
@@ -38,7 +38,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -717,7 +717,7 @@ p, li { white-space: pre-wrap; }
              <item>
               <widget class="QPushButton" name="Ctrl_LVSet_btn">
                <property name="text">
-                <string>Set LV (not debugged)</string>
+                <string>Set LV</string>
                </property>
               </widget>
              </item>
@@ -755,7 +755,7 @@ p, li { white-space: pre-wrap; }
              <item>
               <widget class="QPushButton" name="Ctrl_HVSet_btn">
                <property name="text">
-                <string>Set HV (not debugged)</string>
+                <string>Set HV</string>
                </property>
               </widget>
              </item>

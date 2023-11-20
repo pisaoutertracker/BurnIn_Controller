@@ -159,16 +159,16 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["LastLV07Voltage"]=self.LastLV07Voltage_tag
 		self.SharedDict["LastLV08Voltage"]=self.LastLV08Voltage_tag
 		self.SharedDict["LastLV09Voltage"]=self.LastLV09Voltage_tag
-		self.SharedDict["LastLV00VoltageSet"]=self.LastHV00Voltage_tag
-		self.SharedDict["LastLV01VoltageSet"]=self.LastHV01Voltage_tag
-		self.SharedDict["LastLV02VoltageSet"]=self.LastHV02Voltage_tag
-		self.SharedDict["LastLV03VoltageSet"]=self.LastHV03Voltage_tag
-		self.SharedDict["LastLV04VoltageSet"]=self.LastHV04Voltage_tag
-		self.SharedDict["LastLV05VoltageSet"]=self.LastHV05Voltage_tag
-		self.SharedDict["LastLV06VoltageSet"]=self.LastHV06Voltage_tag
-		self.SharedDict["LastLV07VoltageSet"]=self.LastHV07Voltage_tag
-		self.SharedDict["LastLV08VoltageSet"]=self.LastHV08Voltage_tag
-		self.SharedDict["LastLV09VoltageSet"]=self.LastHV09Voltage_tag
+		self.SharedDict["LastLV00VoltageSet"]=self.LastLV00VoltageSet_tag
+		self.SharedDict["LastLV01VoltageSet"]=self.LastLV01VoltageSet_tag
+		self.SharedDict["LastLV02VoltageSet"]=self.LastLV02VoltageSet_tag
+		self.SharedDict["LastLV03VoltageSet"]=self.LastLV03VoltageSet_tag
+		self.SharedDict["LastLV04VoltageSet"]=self.LastLV04VoltageSet_tag
+		self.SharedDict["LastLV05VoltageSet"]=self.LastLV05VoltageSet_tag
+		self.SharedDict["LastLV06VoltageSet"]=self.LastLV06VoltageSet_tag
+		self.SharedDict["LastLV07VoltageSet"]=self.LastLV07VoltageSet_tag
+		self.SharedDict["LastLV08VoltageSet"]=self.LastLV08VoltageSet_tag
+		self.SharedDict["LastLV09VoltageSet"]=self.LastLV09VoltageSet_tag
 		self.SharedDict["LastLV00Status"]=self.LastLV00Status_tag
 		self.SharedDict["LastLV01Status"]=self.LastLV01Status_tag
 		self.SharedDict["LastLV02Status"]=self.LastLV02Status_tag
@@ -200,16 +200,16 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["LastHV07Voltage"]=self.LastHV07Voltage_tag
 		self.SharedDict["LastHV08Voltage"]=self.LastHV08Voltage_tag
 		self.SharedDict["LastHV09Voltage"]=self.LastHV09Voltage_tag
-		self.SharedDict["LastHV00VoltageSet"]=self.LastHV00Voltage_tag
-		self.SharedDict["LastHV01VoltageSet"]=self.LastHV01Voltage_tag
-		self.SharedDict["LastHV02VoltageSet"]=self.LastHV02Voltage_tag
-		self.SharedDict["LastHV03VoltageSet"]=self.LastHV03Voltage_tag
-		self.SharedDict["LastHV04VoltageSet"]=self.LastHV04Voltage_tag
-		self.SharedDict["LastHV05VoltageSet"]=self.LastHV05Voltage_tag
-		self.SharedDict["LastHV06VoltageSet"]=self.LastHV06Voltage_tag
-		self.SharedDict["LastHV07VoltageSet"]=self.LastHV07Voltage_tag
-		self.SharedDict["LastHV08VoltageSet"]=self.LastHV08Voltage_tag
-		self.SharedDict["LastHV09VoltageSet"]=self.LastHV09Voltage_tag
+		self.SharedDict["LastHV00VoltageSet"]=self.LastHV00VoltageSet_tag
+		self.SharedDict["LastHV01VoltageSet"]=self.LastHV01VoltageSet_tag
+		self.SharedDict["LastHV02VoltageSet"]=self.LastHV02VoltageSet_tag
+		self.SharedDict["LastHV03VoltageSet"]=self.LastHV03VoltageSet_tag
+		self.SharedDict["LastHV04VoltageSet"]=self.LastHV04VoltageSet_tag
+		self.SharedDict["LastHV05VoltageSet"]=self.LastHV05VoltageSet_tag
+		self.SharedDict["LastHV06VoltageSet"]=self.LastHV06VoltageSet_tag
+		self.SharedDict["LastHV07VoltageSet"]=self.LastHV07VoltageSet_tag
+		self.SharedDict["LastHV08VoltageSet"]=self.LastHV08VoltageSet_tag
+		self.SharedDict["LastHV09VoltageSet"]=self.LastHV09VoltageSet_tag
 		self.SharedDict["LastHV00Status"]=self.LastHV00Status_tag
 		self.SharedDict["LastHV01Status"]=self.LastHV01Status_tag
 		self.SharedDict["LastHV02Status"]=self.LastHV02Status_tag
@@ -377,10 +377,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		msg.exec()
 		self.statusBar().showMessage("System ready")
 		
-	@pyqtSlot(str,float,float,float,float)
-	def Show_input_dsb(self,msg, startVal, minVal, maxVal, step):
+	@pyqtSlot(str,float,float,float)
+	def Show_input_dsb(self,msg, startVal, minVal, maxVal):
 	
-		value, ok = QtWidgets.QInputDialog.getDouble(self,msg,"New value", startVal,minVal, maxVal, step) 
+		value, ok = QtWidgets.QInputDialog.getDouble(self,msg,"New value", startVal,minVal, maxVal, 1) 
 		if ok:
 			self.SharedDict["Input"]=value
 			self.SharedDict["WaitInput"]=False
