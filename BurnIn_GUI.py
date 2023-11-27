@@ -3,6 +3,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui, uic
 from PyQt5.QtCore import QThread, pyqtSlot, pyqtSignal
 import subprocess
 import pyqtgraph as pg
+import datetime
 
 from BurnIn_TCP import *
 
@@ -27,6 +28,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	Ctrl_PowerLV_sig = pyqtSignal(bool)
 	Ctrl_PowerHV_sig = pyqtSignal(bool)
 	Ctrl_VSet_sig = pyqtSignal(str)
+	
+	BI_Start_sig = pyqtSignal()
 	
 
 
@@ -53,6 +56,22 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	
 		uic.loadUi('GUI.ui', self) # Load the .ui file
 		self.show() # Show the GUI
+		
+		
+		
+		self.GraphWidget.setBackground("w")
+		styles = { "font-size": "13px"}
+		self.GraphWidget.setLabel("left", "Temperature (°C)", **styles)
+		self.GraphWidget.setLabel("bottom", "Time (?)", **styles)
+		self.GraphWidget.showGrid(x=False, y=True)
+		self.GraphWidgetLegend=self.GraphWidget.addLegend(offset=1,colCount=4)
+		self.Temp_arr=[]
+		self.Time_arr=[]
+		self.DewPoint_arr=[]
+		pen = pg.mkPen(color='r',width=3)
+		self.DewPoint_line=self.GraphWidget.plot(self.Time_arr, self.DewPoint_arr,name="Dew Point", pen=pen)
+		pen1 = pg.mkPen(color='g',width=3)
+		self.Temp_line=self.GraphWidget.plot(self.Time_arr, self.Temp_arr,name="Temp", pen=pen1)
 		
 		#adjust GUI table elements
 		for row in range(10):
@@ -244,11 +263,18 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["FNALBox_updated"]=False
 		self.SharedDict["CAEN_updated"]=False
 		self.SharedDict["WaitInput"]=False
+		self.SharedDict["BI_Active"]=False
+		self.SharedDict["BI_StopRequest"]=False
 		
 		self.SharedDict["Input"]=0.0
 		
 		self.SharedDict["CAEN_table"]=self.Ctrl_CAEN_table
+		self.SharedDict["BI_Graph"]=self.GraphWidget
+		self.SharedDict["DewPoint_arr"]=self.DewPoint_arr
+		self.SharedDict["Temp_arr"]=self.Temp_arr
+		self.SharedDict["Time_arr"]=self.Time_arr
 
+		
 		
 		
 		# start monitoring function in QThread
@@ -264,14 +290,17 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Worker = BurnIn_Worker(self.configDict,self.logger, self.SharedDict, self.Julabo, self.FNALBox, self.CAENController)
 		self.Worker.moveToThread(self.WorkerThread)
 		self.WorkerThread.start()	
-		
+		###########################################
 		#connecting local signals to local slots
+		###########################################
 		
+		#free test tab
 		self.JulaboTestCmd_btn.clicked.connect(self.SendJulaboCmd)	
 		self.FNALBoxTestCmd_btn.clicked.connect(self.SendFNALBoxCmd)
 		self.CAENControllerTestCmd_btn.clicked.connect(self.SendCAENControllerCmd)
 		self.ModuleTestCmd_btn.clicked.connect(self.SendModuleTestCmd)
 		
+		# manual operation tab
 		self.Ctrl_SetSp1_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(0,self.Ctrl_ValSp1_dsb.value()))
 		self.Ctrl_SetSp2_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(1,self.Ctrl_ValSp2_dsb.value()))
 		self.Ctrl_SetSp3_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(2,self.Ctrl_ValSp3_dsb.value()))
@@ -292,10 +321,17 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_LVSet_btn.clicked.connect(lambda : self.Ctrl_VSet_Cmd("LV"))
 		self.Ctrl_HVSet_btn.clicked.connect(lambda : self.Ctrl_VSet_Cmd("HV"))
 		
+		#BI tab
+		self.BI_Stop_btn.clicked.connect(self.BI_Stop_Cmd)
+		self.BI_Start_btn.clicked.connect(self.BI_Start_Cmd)
+		
+		#menu actions
 		self.actionExit.triggered.connect(self.close)
 		self.actionExpert.triggered.connect(self.expert)
 		
+		##############################################
 		#connecting local signals to worker slots
+		#############################################
 		self.SendJulaboCmd_sig.connect(self.Worker.SendJulaboCmd)
 		self.SendFNALBoxCmd_sig.connect(self.Worker.SendFNALBoxCmd)
 		self.SendCAENControllerCmd_sig.connect(self.Worker.SendCAENControllerCmd)
@@ -311,9 +347,14 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_VSet_sig.connect(self.Worker.Ctrl_VSet_Cmd)
 		
 		
+		self.BI_Start_sig.connect(self.Worker.BI_Start_Cmd)
+		
+		#################################################
 		#connecting worker signals to local slots
+		##################################################
 		self.Worker.Request_msg.connect(self.Show_msg)
 		self.Worker.Request_input_dsb.connect(self.Show_input_dsb)
+		self.Worker.Update_graph.connect(self.Update_graph)
 		
 		
 		self.statusBar().showMessage("System ready")
@@ -353,6 +394,22 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	
 	def Ctrl_VSet_Cmd(self,VType):
 		self.Ctrl_VSet_sig.emit(VType)
+	
+	def BI_Start_Cmd(self):
+		self.Temp_arr.clear()
+		self.Time_arr.clear()
+		self.DewPoint_arr.clear()
+		self.BI_Start_sig.emit()
+	
+	def BI_Stop_Cmd(self):
+		self.logger.info("Requesting BurnIn stop...")
+		if self.SharedDict["BI_Active"]:
+			self.SharedDict["BI_StopRequest"]=True
+			self.logger.info("BURN IN stop request issued")
+		else:
+			self.logger.info("Burn In test ongoing. Request cancelled")
+			
+		
 	
 	def Ctrl_StartTest_Cmd(self):
 		self.logger.info("Starting module test...")
@@ -399,6 +456,11 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.FNALBoxTestCmd_btn.setEnabled(True)	
 			self.CAENControllerTestCmd_btn.setEnabled(True)	
 			self.ModuleTestCmd_btn.setEnabled(True)
+			
+	@pyqtSlot()
+	def Update_graph(self):
+		self.DewPoint_line.setData(self.Time_arr,self.DewPoint_arr)
+		self.Temp_line.setData(self.Time_arr,self.Temp_arr)
 			
 		
 
