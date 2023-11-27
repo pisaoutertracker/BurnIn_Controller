@@ -23,7 +23,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../Boss/.designer/backup/logo.png</normaloff>../../../../Boss/.designer/backup/logo.png</iconset>
+    <normaloff>../../../Boss/.designer/backup/logo.png</normaloff>../../../Boss/.designer/backup/logo.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -38,7 +38,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -46,30 +46,86 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
-         <widget class="QTextEdit" name="textEdit">
-          <property name="enabled">
-           <bool>false</bool>
+         <layout class="QGridLayout" name="gridLayout_11">
+          <item row="0" column="0">
+           <widget class="QPushButton" name="BI_Start_btn">
+            <property name="text">
+             <string>Start BurnIn</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="BI_Stop_btn">
+            <property name="text">
+             <string>PushButton</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
           </property>
-          <property name="maximumSize">
+          <property name="sizeHint" stdset="0">
            <size>
-            <width>16777215</width>
-            <height>500</height>
+            <width>20</width>
+            <height>40</height>
            </size>
           </property>
-          <property name="html">
-           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-hr { height: 1px; border-width: 0; }
-li.unchecked::marker { content: &quot;\2610&quot;; }
-li.checked::marker { content: &quot;\2612&quot;; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'MS Shell Dlg 2'; font-size:18pt;&quot;&gt;BurnIn controller Cycle tab under development....&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </spacer>
+        </item>
+        <item>
+         <widget class="PlotWidget" name="GraphWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>300</height>
+           </size>
+          </property>
+          <property name="tabletTracking">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="PlotWidget" name="GraphWidget" native="true"/>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QCheckBox" name="BI_DewPoint_CB">
+            <property name="text">
+             <string>Dew Point</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="BI_MinTemp_CB">
+            <property name="text">
+             <string>MinTemp</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="BI_MaxTemp_CB">
+            <property name="text">
+             <string>MaxTemp</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_12">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -804,6 +860,19 @@ li.checked::marker { content: &quot;\2612&quot;; }
              </item>
             </layout>
            </item>
+           <item>
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
          </widget>
         </item>
@@ -978,6 +1047,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
+                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -1380,6 +1450,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
+                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -2393,7 +2464,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <x>0</x>
      <y>0</y>
      <width>1120</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
@@ -2418,7 +2489,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <action name="actionExpert">
    <property name="icon">
     <iconset>
-     <normaloff>../../../../Boss/.designer/backup/expert.png</normaloff>../../../../Boss/.designer/backup/expert.png</iconset>
+     <normaloff>../../../Boss/.designer/backup/expert.png</normaloff>../../../Boss/.designer/backup/expert.png</iconset>
    </property>
    <property name="text">
     <string>Expert</string>
@@ -2430,7 +2501,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
   <action name="actionExit">
    <property name="icon">
     <iconset>
-     <normaloff>../../../../Boss/.designer/backup/exit.jpeg</normaloff>../../../../Boss/.designer/backup/exit.jpeg</iconset>
+     <normaloff>../../../Boss/.designer/backup/exit.jpeg</normaloff>../../../Boss/.designer/backup/exit.jpeg</iconset>
    </property>
    <property name="text">
     <string>Exit</string>

@@ -354,6 +354,11 @@ class BurnIn_Worker(QObject):
 			Reason_str = "CAEN infos are not updated"
 			self.Request_msg.emit(Warning_str,Reason_str)
 			return
+		if not (self.MonitorTags["Ctrl_StatusDoor"] == "CLOSED"):
+			Warning_str = "Operation can't be performed"
+			Reason_str = "BurnIn door is NOT CLOSED"
+			self.Request_msg.emit(Warning_str,Reason_str)
+			return
 		for row in range(10):
 			if self.MonitorTags["CAEN_table"].item(row,5).isSelected():
 				ch_name = self.MonitorTags["CAEN_table"].item(row,5).text() 
