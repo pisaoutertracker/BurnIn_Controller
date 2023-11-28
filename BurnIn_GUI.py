@@ -57,6 +57,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		uic.loadUi('GUI.ui', self) # Load the .ui file
 		self.show() # Show the GUI
 		
+		self.setWindowIcon(QtGui.QIcon('logo.png'))
+		self.actionExpert.setIcon(QtGui.QIcon('expert.png'))
+		self.actionExit.setIcon(QtGui.QIcon('exit.jpeg'))
+		
 		
 		
 		self.GraphWidget.setBackground("w")
@@ -332,6 +336,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		#menu actions
 		self.actionExit.triggered.connect(self.close)
 		self.actionExpert.triggered.connect(self.expert)
+
 		
 		##############################################
 		#connecting local signals to worker slots
