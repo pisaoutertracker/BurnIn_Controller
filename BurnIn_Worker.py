@@ -11,7 +11,7 @@ class BurnIn_Worker(QObject):
 
 	Request_msg = pyqtSignal(str,str)
 	Request_input_dsb = pyqtSignal(str,float,float,float)
-	Update_graph = pyqtSignal()
+	BI_terminated = pyqtSignal()
 	
 	def __init__(self,configDict,logger, SharedDict, Julabo, FNALBox, CAENController):
 
@@ -25,7 +25,8 @@ class BurnIn_Worker(QObject):
 		self.SharedDict = SharedDict
 		
 		self.logger.info("Worker class initialized")
-	
+		self.last_op_ok= True
+		
 	@pyqtSlot(str)
 	def SendJulaboCmd(self,cmd):
 		self.Julabo.lock.acquire()
@@ -35,6 +36,8 @@ class BurnIn_Worker(QObject):
 		if self.Julabo.is_connected :
 			self.Julabo.sendTCP(cmd)
 			self.logger.info(self.Julabo.receive())
+		else:	
+			self.last_op_ok= False	
 		self.Julabo.lock.release()
 	
 	@pyqtSlot(str)
@@ -48,6 +51,8 @@ class BurnIn_Worker(QObject):
 			time.sleep(0.250)
 			self.logger.info(self.CAENController.receive())
 			self.CAENController.close()
+		else:	
+			self.last_op_ok= False	
 		self.CAENController.lock.release()
 	
 	@pyqtSlot(str)
@@ -60,6 +65,8 @@ class BurnIn_Worker(QObject):
 			self.FNALBox.sendTCP(cmd)
 			time.sleep(0.250)
 			self.logger.info(self.FNALBox.receive())
+		else:	
+			self.last_op_ok= False	
 		self.FNALBox.lock.release()
 	
 	@pyqtSlot(str)
@@ -68,12 +75,15 @@ class BurnIn_Worker(QObject):
 		subprocess.run(cmd.split(" "))
 	
 	@pyqtSlot(int)	
-	def Ctrl_SelSp_Cmd(self,Sp_id):
+	def Ctrl_SelSp_Cmd(self,Sp_id, BI_Action=False):
+		self.last_op_ok= True
 		self.logger.info("WORKER: Selecting JULABO Sp"+str(Sp_id+1))
 		if not (self.SharedDict["Julabo_updated"] and self.SharedDict["FNALBox_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "Julabo and/or FNAL box info are not updated"
-			self.Request_msg.emit(Warning_str,Reason_str)
+			if not BI_Action:
+				self.Request_msg.emit(Warning_str,Reason_str)
+			self.last_op_ok= False
 			return
 		else:	
 			if (self.SharedDict["Ctrl_StatusJulabo"].text().find("START") != -1):
@@ -88,9 +98,9 @@ class BurnIn_Worker(QObject):
 				if targetT  < float(self.SharedDict["Ctrl_IntDewPoint"].text()):
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Set point is configured with a temperature below internal dew point"
-					self.logger.warning(Warning_str)
-					self.logger.warning(Reason_str)
-					self.Request_msg.emit(Warning_str,Reason_str)
+					if not BI_Action:
+						self.Request_msg.emit(Warning_str,Reason_str)
+					self.last_op_ok= False
 					return
 			self.Julabo.lock.acquire()
 			self.logger.debug("WORKER: Sending Julabo cmd" )
@@ -112,18 +122,28 @@ class BurnIn_Worker(QObject):
 					elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
 						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
 				except Exception as e:
-					self.logger.error(e)	
-						
+					self.logger.error(e)
+					self.last_op_ok= False
+			else:
+					Warning_str = "Operation can't be performed"
+					Reason_str = "Can't connect to JULABO"
+					if not BI_Action:
+						self.Request_msg.emit(Warning_str,Reason_str)
+					self.last_op_ok= False
+			
 			self.Julabo.lock.release()
 			
 	
 	@pyqtSlot(int,float)	
-	def Ctrl_SetSp_Cmd(self,Sp_id,value):
+	def Ctrl_SetSp_Cmd(self,Sp_id,value, BI_Action=False):
+		self.last_op_ok= True
 		self.logger.info("WORKER: Setting JULABO Sp"+str(Sp_id+1)+ " to " +str(value))
 		if not (self.SharedDict["Julabo_updated"] and self.SharedDict["FNALBox_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "Julabo and/or FNAL box info are not updated"
-			self.Request_msg.emit(Warning_str,Reason_str)
+			if not BI_Action:
+				self.Request_msg.emit(Warning_str,Reason_str)
+			self.last_op_ok= False
 			return
 		else:	
 			if (self.SharedDict["Ctrl_StatusJulabo"].text().find("START") != -1):
@@ -133,7 +153,9 @@ class BurnIn_Worker(QObject):
 					Reason_str = "Attempting to set target temperature of the active set point below internal dew point"
 					self.logger.warning(Warning_str)
 					self.logger.warning(Reason_str)
-					self.Request_msg.emit(Warning_str,Reason_str)
+					if not BI_Action:
+						self.Request_msg.emit(Warning_str,Reason_str)
+					self.last_op_ok= False
 					return
 			self.Julabo.lock.acquire()
 			self.logger.debug("WORKER: Sending Julabo cmd" )
@@ -154,13 +176,21 @@ class BurnIn_Worker(QObject):
 					elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
 						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
 				except Exception as e:
-					self.logger.error(e)	
-						
+					self.logger.error(e)
+					self.last_op_ok= False	
+			else:
+				
+					Warning_str = "Operation can't be performed"
+					Reason_str = "Can't connect to JULABO"
+					if not BI_Action:
+						self.Request_msg.emit(Warning_str,Reason_str)
+					self.last_op_ok= False
 			self.Julabo.lock.release()
 
 		
 	@pyqtSlot(bool)	
-	def Ctrl_PowerJulabo_Cmd(self,switch):
+	def Ctrl_PowerJulabo_Cmd(self,switch, BI_Action=False):
+		self.last_op_ok= True
 		
 		if not switch:
 			self.logger.info("WORKER: Powering Julabo OFF")
@@ -181,7 +211,8 @@ class BurnIn_Worker(QObject):
 					else:
 						self.SharedDict["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
 				except Exception as e:
-					self.logger.error(e)	
+					self.logger.error(e)
+					self.last_op_ok= False	
 						
 			self.Julabo.lock.release()
 		else:	
@@ -189,18 +220,24 @@ class BurnIn_Worker(QObject):
 			if not (self.SharedDict["Julabo_updated"] and self.SharedDict["FNALBox_updated"]):
 				Warning_str = "Operation can't be performed"
 				Reason_str = "Julabo and/or FNAL box info are not updated"
-				self.Request_msg.emit(Warning_str,Reason_str)
+				if not BI_Action:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
 				return
 			else:	
 				if float(self.SharedDict["Ctrl_TargetTemp"].text())< float(self.SharedDict["Ctrl_IntDewPoint"].text()):
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Attempting to start unit with target temperature below internal dew point"
-					self.Request_msg.emit(Warning_str,Reason_str)
+					if not BI_Action:
+						self.Request_msg.emit(Warning_str,Reason_str)
+					self.last_op_ok= False
 					return
 				if self.SharedDict["Ctrl_StatusLock"].text() != "LOCKED":
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Attempting to start unit with door magnet not locked"
-					self.Request_msg.emit(Warning_str,Reason_str)
+					if not BI_Action:
+						self.Request_msg.emit(Warning_str,Reason_str)
+					self.last_op_ok= False
 					return
 				else:
 					self.Julabo.lock.acquire()
@@ -220,8 +257,16 @@ class BurnIn_Worker(QObject):
 							else:
 								self.SharedDict["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
 						except Exception as e:
-							self.logger.error(e)	
+							self.logger.error(e)
+							self.last_op_ok= False	
 					
+					else:
+				
+						Warning_str = "Operation can't be performed"
+						Reason_str = "Can't connect to JULABO"
+						if not BI_Action:
+							self.Request_msg.emit(Warning_str,Reason_str)
+						self.last_op_ok= False
 					self.Julabo.lock.release()
                     
 					
@@ -229,7 +274,8 @@ class BurnIn_Worker(QObject):
 					
 		
 	@pyqtSlot(bool)	
-	def Ctrl_SetLock_Cmd(self,switch):
+	def Ctrl_SetLock_Cmd(self,switch, BI_Action=False):
+		self.last_op_ok= True
 		
 		lock = "LOCKED" if switch else "UNLOCK"
 		cmd = "[5011]" if switch else "[5010]"
@@ -240,7 +286,9 @@ class BurnIn_Worker(QObject):
 			if not (self.SharedDict["Julabo_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["M5_updated"]):
 				Warning_str = "Operation can't be performed"
 				Reason_str = "Julabo, FNAL box or M5 infos are not updated"
-				self.Request_msg.emit(Warning_str,Reason_str)
+				if not BI_Action:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
 				return
 			try:
 				IntTemp_arr = [float(self.SharedDict["LastFNALBoxTemp1"].text()),float(self.SharedDict["LastFNALBoxTemp0"].text())]
@@ -249,21 +297,23 @@ class BurnIn_Worker(QObject):
 				IntTemp_min = min(IntTemp_arr)
 			except Exception as e:
 				self.logger.error(e)
+				self.last_op_ok= False
 				return
 			if (self.SharedDict["Ctrl_StatusJulabo"].text().find("START")!=-1) and (float(self.SharedDict["Ctrl_TargetTemp"].text()) < float(self.SharedDict["Ctrl_ExtDewPoint"].text())):
 				Warning_str = "Operation can't be performed"
 				Reason_str = "JULABO is ON with target temp below external dew point"
-				self.Request_msg.emit(Warning_str,Reason_str)
+				if not BI_Action:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
 				return
 			if IntTemp_min < float(self.SharedDict["Ctrl_ExtDewPoint"].text()):
 				Warning_str = "Operation can't be performed"
 				Reason_str = "Internal minimum temperature below external dew point. Retry later"
-				self.Request_msg.emit(Warning_str,Reason_str)
+				if not BI_Action:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
 				return
 				
-
-
-
 		self.FNALBox.lock.acquire()
 		self.logger.debug("WORKER: Sending FNAL Box cmd" )
 		if not self.FNALBox.is_connected :
@@ -280,16 +330,25 @@ class BurnIn_Worker(QObject):
 				else:
 					self.SharedDict["Ctrl_StatusLock"].setText("?")
 					self.logger.error("WORKER: uncorrect reply from FNAL Box: "+reply)
+					self.last_op_ok= False
 
 			except Exception as e:
 				self.logger.error(e)
 				self.SharedDict["Ctrl_StatusLock"].setText("?")	
-					
+				self.last_op_ok= False
+		
+		else:
+			Warning_str = "Operation can't be performed"
+			Reason_str = "Can't connect to FNAL box"
+			if not BI_Action:
+				self.Request_msg.emit(Warning_str,Reason_str)
+			self.last_op_ok= False			
 		self.FNALBox.lock.release()
 		
 		
 	@pyqtSlot(bool)	
-	def Ctrl_SetHighFlow_Cmd(self,switch):
+	def Ctrl_SetHighFlow_Cmd(self,switch, BI_Action=False):
+		self.last_op_ok= True
 		
 		flow = "HIGH" if switch else "LOW"
 		cmd = "[5021]" if switch else "[5020]"
@@ -311,153 +370,362 @@ class BurnIn_Worker(QObject):
 				else:
 					self.SharedDict["Ctrl_StatusFlow"].setText("?")
 					self.logger.error("WORKER: uncorrect reply from FNAL Box: "+reply)
+					self.last_op_ok= False
 
 			except Exception as e:
 				self.logger.error(e)
-				self.SharedDict["Ctrl_StatusFlow"].setText("?")	
+				self.SharedDict["Ctrl_StatusFlow"].setText("?")
+				self.last_op_ok= False
+
+		else:	
+			Warning_str = "Operation can't be performed"
+			Reason_str = "Can't connect to FNAL box"
+			if not BI_Action:
+				self.Request_msg.emit(Warning_str,Reason_str)
+			self.last_op_ok= False				
 					
 		self.FNALBox.lock.release()
 
 	@pyqtSlot(bool)	
-	def Ctrl_PowerLV_Cmd(self,switch):
-		Channel_list=[]
+	def Ctrl_PowerLV_Cmd(self,switch,Channel_list=[], BI_Action=False):
+		self.last_op_ok= True
+		if not BI_Action:
+			Channel_list.clear()
 		power = "On" if switch else "Off"
 		if not (self.SharedDict["CAEN_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "CAEN infos are not updated"
-			self.Request_msg.emit(Warning_str,Reason_str)
+			if not BI_Action:
+				self.Request_msg.emit(Warning_str,Reason_str)
+			self.last_op_ok= False
 			return
-		for row in range(10):
-			if self.SharedDict["CAEN_table"].item(row,0).isSelected():
-				ch_name = self.SharedDict["CAEN_table"].item(row,0).text()
-				if (ch_name == "?"):
-					Warning_str = "Operation can't be performed"
-					Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
-					self.Request_msg.emit(Warning_str,Reason_str)
-					return
-				HV_defined = True if self.SharedDict["CAEN_table"].item(row,5).text() != "?" else False	
-				if (not switch) and  HV_defined and (self.SharedDict["CAEN_table"].item(row,6).text() != "OFF"):  # attempt to power down LV with HV not off
-					Warning_str = "Operation can't be performed"
-					Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause HV is ON or UNKNOWN"
-					self.Request_msg.emit(Warning_str,Reason_str)
-					return
-				Channel_list.append(ch_name)
+		if self.SharedDict["Ctrl_StatusJulabo"].text().find("START")==-1:
+			Warning_str = "Operation can't be performed"
+			Reason_str = "JULABO is not ON"
+			if not BI_Action:
+				self.Request_msg.emit(Warning_str,Reason_str)
+			self.last_op_ok= False
+			return	
+		if len(Channel_list)==0:
+			for row in range(10):
+				if self.SharedDict["CAEN_table"].item(row,0).isSelected():
+					ch_name = self.SharedDict["CAEN_table"].item(row,0).text()
+					if (ch_name == "?"):
+						Warning_str = "Operation can't be performed"
+						Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
+						if not BI_Action:
+							self.Request_msg.emit(Warning_str,Reason_str)
+						self.last_op_ok= False
+						return
+					HV_defined = True if self.SharedDict["CAEN_table"].item(row,5).text() != "?" else False	
+					if (not switch) and  HV_defined and (self.SharedDict["CAEN_table"].item(row,6).text() != "OFF"):  # attempt to power down LV with HV not off
+						Warning_str = "Operation can't be performed"
+						Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause HV is ON or UNKNOWN"
+						if not BI_Action:
+							self.Request_msg.emit(Warning_str,Reason_str)
+						self.last_op_ok= False
+						return
+					Channel_list.append(ch_name)
 				
 		self.logger.info("WORKER: Setting LV "+power+ " for ch " +str(Channel_list))
 		for channel in Channel_list:
 			self.SendCAENControllerCmd("Turn"+power+",PowerSupplyId:caen,ChannelId:"+channel)	
 
 	@pyqtSlot(bool)	
-	def Ctrl_PowerHV_Cmd(self,switch):
-		Channel_list=[]
+	def Ctrl_PowerHV_Cmd(self,switch,Channel_list=[],BI_Action=False):
+		self.last_op_ok= True
+		if not BI_Action:
+			Channel_list.clear()
 		power = "On" if switch else "Off"
 		if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "CAEN and/or FNAL infos are not updated"
-			self.Request_msg.emit(Warning_str,Reason_str)
+			if not BI_Action:
+				self.Request_msg.emit(Warning_str,Reason_str)
+			self.last_op_ok= False
 			return
-		if not (self.SharedDict["Ctrl_StatusDoor"] == "CLOSED"):
+		if not (self.SharedDict["Ctrl_StatusDoor"].text() == "CLOSED"):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "BurnIn door is NOT CLOSED"
-			self.Request_msg.emit(Warning_str,Reason_str)
+			if not BI_Action:
+				self.Request_msg.emit(Warning_str,Reason_str)
+			self.last_op_ok= False
 			return
-		for row in range(10):
-			if self.SharedDict["CAEN_table"].item(row,5).isSelected():
-				ch_name = self.SharedDict["CAEN_table"].item(row,5).text() 
-				if (ch_name == "?"):
-					Warning_str = "Operation can't be performed"
-					Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause HV ch. name is UNKNOWN"
-					self.Request_msg.emit(Warning_str,Reason_str)
-					return
-				if (switch) and (self.SharedDict["CAEN_table"].item(row,1).text() != "ON"):  # attempt to power up HV with LV not on
-					Warning_str = "Operation can't be performed"
-					Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause LV is OFF or UNKNOWN"
-					self.Request_msg.emit(Warning_str,Reason_str)
-					return
-				Channel_list.append(ch_name)
+		
+		if len(Channel_list)==0:
+			for row in range(10):
+				if self.SharedDict["CAEN_table"].item(row,5).isSelected():
+					ch_name = self.SharedDict["CAEN_table"].item(row,5).text() 
+					if (ch_name == "?"):
+						Warning_str = "Operation can't be performed"
+						Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause HV ch. name is UNKNOWN"
+						if not BI_Action:
+							self.Request_msg.emit(Warning_str,Reason_str)
+						self.last_op_ok= False
+						return
+					if (switch) and (self.SharedDict["CAEN_table"].item(row,1).text() != "ON"):  # attempt to power up HV with LV not on
+						Warning_str = "Operation can't be performed"
+						Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause LV is OFF or UNKNOWN"
+						if not BI_Action:
+							self.Request_msg.emit(Warning_str,Reason_str)
+						self.last_op_ok= False
+						return
+					Channel_list.append(ch_name)
 				
-		self.logger.info("WORKER: Setting LV "+power+ " for ch " +str(Channel_list))
+		self.logger.info("WORKER: Setting HV "+power+ " for ch " +str(Channel_list))
 		for channel in Channel_list:
 			self.SendCAENControllerCmd("Turn"+power+",PowerSupplyId:caen,ChannelId:"+channel)
 	
 
 	@pyqtSlot(str)	
-	def Ctrl_VSet_Cmd(self,VType):
+	def Ctrl_VSet_Cmd(self,VType,Channel_list=[],NewValue_list=[], BI_Action=False):
+		self.last_op_ok= True
+		if not BI_Action:
+			Channel_list.clear()
+			NewValue_list.clear()
 	
 		if VType != "LV" and VType != "HV":
 			self.logger.error("WORKER: Received unknow Voltage type string ")
 			return
 			
-		Channel_list=[]
-		NewValue_list=[]
 		ColOffset = 0 if VType=="LV" else 5;
 		if not (self.SharedDict["CAEN_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "CAEN infos are not updated"
-			self.Request_msg.emit(Warning_str,Reason_str)
+			if not BI_Action:
+				self.Request_msg.emit(Warning_str,Reason_str)
+			self.last_op_ok= False
 			return
-		for row in range(10):
-			if self.SharedDict["CAEN_table"].item(row,ColOffset).isSelected():
-				ch_name = self.SharedDict["CAEN_table"].item(row,ColOffset).text() 
-				if (ch_name == "?"):
-					Warning_str = "Operation can't be performed"
-					Reason_str = "Can't set LV for  slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
-					self.Request_msg.emit(Warning_str,Reason_str)
-					return
-				if (self.SharedDict["CAEN_table"].item(row,2+ColOffset).text() == "?"):  # Unknown HV set
-					Warning_str = "Operation can't be performed"
-					Reason_str = "Can't set LV for  slot "+str(row)+ " beacause current setpoint is UNKNOWN"
-					self.Request_msg.emit(Warning_str,Reason_str)
-					return
-				self.SharedDict["WaitInput"]=True
-				Request_str="New " +VType+ " Slot "+str(row)
-				ValueNow = 0.0
-				try :
-					ValueNow = float(self.SharedDict["CAEN_table"].item(row,2+ColOffset).text())
-				except Exception as e:
-					self.logger.error(e)
-					
-				if VType == "LV":
-					self.Request_input_dsb.emit(Request_str,ValueNow,0,15)
-				else:
-					self.Request_input_dsb.emit(Request_str,ValueNow,0,500)
-					
-				while self.SharedDict["WaitInput"]:
-					time.sleep(0.1)
-				if self.SharedDict["Input"]!=-1:
-					NewValue_list.append(self.SharedDict["Input"])
-					Channel_list.append(ch_name)
+		if len(Channel_list) != len(NewValue_list):
+			Warning_str = "Operation can't be performed"
+			Reason_str = "Provided ch list and value list doesn not match in length"
+			if not BI_Action:
+				self.Request_msg.emit(Warning_str,Reason_str)
+			self.last_op_ok= False
+			return
+			
+		if len(Channel_list)==0:
+			for row in range(10):
+				if self.SharedDict["CAEN_table"].item(row,ColOffset).isSelected():
+					ch_name = self.SharedDict["CAEN_table"].item(row,ColOffset).text() 
+					if (ch_name == "?"):
+						Warning_str = "Operation can't be performed"
+						Reason_str = "Can't set LV for  slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
+						if not BI_Action:
+							self.Request_msg.emit(Warning_str,Reason_str)
+						self.last_op_ok= False
+						return
+					if (self.SharedDict["CAEN_table"].item(row,2+ColOffset).text() == "?"):  # Unknown HV set
+						Warning_str = "Operation can't be performed"
+						Reason_str = "Can't set LV for  slot "+str(row)+ " beacause current setpoint is UNKNOWN"
+						if not BI_Action:
+							self.Request_msg.emit(Warning_str,Reason_str)
+						self.last_op_ok= False
+						return
+					self.SharedDict["WaitInput"]=True
+					Request_str="New " +VType+ " Slot "+str(row)
+					ValueNow = 0.0
+					try :
+						ValueNow = float(self.SharedDict["CAEN_table"].item(row,2+ColOffset).text())
+					except Exception as e:
+						self.logger.error(e)
+						
+					if VType == "LV":
+						self.Request_input_dsb.emit(Request_str,ValueNow,0,15)
+					else:
+						self.Request_input_dsb.emit(Request_str,ValueNow,0,500)
+						
+					while self.SharedDict["WaitInput"]:
+						time.sleep(0.1)
+					if self.SharedDict["Input"]!=-1:
+						NewValue_list.append(self.SharedDict["Input"])
+						Channel_list.append(ch_name)
 		
 		self.logger.info("WORKER: Setting LV for ch " +str(Channel_list))
 		self.logger.info("WORKER: New values: " +str(NewValue_list))
 		for idx,channel in enumerate(Channel_list):
 			self.SendCAENControllerCmd("SetVoltage,PowerSupplyId:caen,ChannelId:"+channel+",Voltage:"+str(NewValue_list[idx]))
-			#print("SetVoltage,PowerSupplyId:caen,ChannelId:"+channel+",Voltage:"+str(NewValue_list[idx]))
 
 	@pyqtSlot()			
 	def BI_Start_Cmd(self):
 		self.logger.info("Starting BurnIN...")
-		#if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["JULABO_updated"]):
-		#	Warning_str = "Operation can't be performed"
-		#	Reason_str = "CAEN/FNAL/JULABO infos are not updated"
-		#	self.Request_msg.emit(Warning_str,Reason_str)
-		#	return
-		self.logger.info("BurnIn test started...")
+		
+			
+	
+		LowTemp=-30.0
+		TempRumpOffset=10
+		TempMantainOffset=5
+		TempTolerance=5
+		HighTemp=10.0
+		NCycles=1
+		
 		self.SharedDict["BI_Active"]=True
 		
-		self.SharedDict["Time_arr"].append(time.time())
-		self.SharedDict["DewPoint_arr"].append(0)
-		self.SharedDict["Temp_arr"].append(0)
 		
+			
+			
+		if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
+			self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
+			return
+		if not (self.SharedDict["Ctrl_StatusDoor"].text() == "CLOSED"):
+			self.BI_Abort("DOOR is not closed!")
+			return
+		self.logger.info("BurnIn test started...")
 		
-		while (not self.SharedDict["BI_StopRequest"]):
-			self.SharedDict["Time_arr"].append(time.time())
-			self.SharedDict["DewPoint_arr"].append(self.SharedDict["DewPoint_arr"][-1]+1)
-			self.SharedDict["Temp_arr"].append(self.SharedDict["Temp_arr"][-1]+0.5)
-			self.Update_graph.emit()
-			time.sleep(2)
+		LV_Channel_list=[]
+		HV_Channel_list=[]
+		Slot_list=[]
 		
-		self.logger.info("BurnIn test COMPLETED!")
+		for row in range(10):
+			LV_ch_name = self.SharedDict["CAEN_table"].item(row,0).text()
+			HV_ch_name = self.SharedDict["CAEN_table"].item(row,5).text() 
+			if (LV_ch_name != "?" and HV_ch_name != "?" ):
+				LV_Channel_list.append(LV_ch_name)
+				HV_Channel_list.append(HV_ch_name)
+				Slot_list.append(row)
+
+		
+		self.logger.info("BurnIn test active slots: "+str(Slot_list))
+		self.logger.info("BurnIn test HV names: "+str(HV_Channel_list))
+		self.logger.info("BurnIn test LV names: "+str(LV_Channel_list))			   
+		
+		BI_Action=True
+		
+		#lock magnet
+		if not self.BI_Action(self.Ctrl_SetLock_Cmd,True,BI_Action):
+			return
+			
+		#start high flow	
+		if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,BI_Action):
+			return
+			
+		#sel SP	
+		if not self.BI_Action(self.Ctrl_SelSp_Cmd,0,BI_Action):
+			return
+				
+		#start JULABO	
+		if not self.BI_Action(self.Ctrl_PowerJulabo_Cmd,True,BI_Action):
+			return
+		
+		##start LV
+		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,LV_Channel_list,BI_Action):
+			return
+		time.sleep(60)
+		
+		#check all LVs are ON
+		for row in Slot_list:
+			if(self.SharedDict["CAEN_table"].item(row,1).text()!="ON"):
+				self.BI_Abort("BI aborted: some LVs was not turned ON")
+				return
+		
+		#start HV
+		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,HV_Channel_list,BI_Action):
+			return
+		
+		time.sleep(60)
+		#check all HVs are ON
+		for row in Slot_list:
+			if(self.SharedDict["CAEN_table"].item(row,6).text()!="ON"):
+				self.BI_Abort("BI aborted: some HVs was not turned ON")
+				return
+			
+			
+		for cycle in range (NCycles):
+			self.logger.info("BI: starting cycle "+str(cycle+1) + " of "+str(NCycles))
+		
+			# set target temperature rump down
+			
+			self.logger.info("BI: runmping down")
+			if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,LowTemp-TempRumpOffset,BI_Action):
+				return	
+				
+			while (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-LowTemp) > TempTolerance):
+				if self.SharedDict["BI_StopRequest"]:
+					self.BI_Abort("BI aborted: user request")
+					return	
+				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
+					self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
+					return
+				time.sleep(10)	
+				
+			# set target temperature manatain
+			self.logger.info("BI: keep temperature and test (DUMMY)")
+			if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,LowTemp-TempMantainOffset,BI_Action):
+				return
+
+			time.sleep(120)  # test dummy
+			
+			#do test here...
+			
+			
+			self.logger.info("BI: going to high temp")
+			if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,HighTemp):
+				return
+				
+			while (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-HighTemp) > TempTolerance):
+				if self.SharedDict["BI_StopRequest"]:
+					self.BI_Abort("BI aborted: user request")
+					return	
+				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
+					self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
+					return
+				time.sleep(2)
+				
+			
+			self.logger.info("BI: testing (DUMMY)")
+			time.sleep(120)  # test dummy
+			#do test here...
+			
+			self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
+		#stop HV
+		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,False,HV_Channel_list,BI_Action):
+			return
+		time.sleep(60)
+		#check HV stop
+		for row in Slot_list:
+			if(self.SharedDict["CAEN_table"].item(row,6).text()!="OFF"):
+				self.BI_Abort("BI aborted: some LVs was not turned OFF")
+				return
+			
+		
+		#stop LV
+		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,False,LV_Channel_list,BI_Action):
+			return
+		time.sleep(60)
+		#check LV stop	
+		for row in Slot_list:
+			if(self.SharedDict["CAEN_table"].item(row,1).text()!="OFF"):
+				self.BI_Abort("BI aborted: some HVs was not turned OFF")
+				return
+				
+		#start JULABO	
+		if not self.BI_Action(self.Ctrl_PowerJulabo_Cmd,False,BI_Action):
+			return
+		
+		self.logger.info("BurnIn test COMPLETED SUCCESFULLY!")
 		self.SharedDict["BI_Active"]=False
 		self.SharedDict["BI_StopRequest"]=False
+		self.BI_terminated.emit()
+		
+	def BI_Abort(self,Reason_str):
 	
+			Warning_str = "BURN IN test failed"
+			self.Request_msg.emit(Warning_str,Reason_str)
+			self.SharedDict["BI_Active"]=False
+			self.SharedDict["BI_StopRequest"]=False
+			self.BI_terminated.emit()
+		
+	
+		
+	def BI_Action(self,Action,*args):
+		retry=3
+		while retry:
+			Action(*args)
+			if not (self.last_op_ok):
+				self.logger.warning("BI: failed to do action...new try in 10 sec")
+				time.sleep(10)
+				retry=retry-1
+			else:
+				return True
+		self.BI_Abort("BI: failed to do action...aborting")
+		return False
