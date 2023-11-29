@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1120</width>
-    <height>971</height>
+    <width>1300</width>
+    <height>827</height>
    </rect>
   </property>
   <property name="font">
@@ -38,7 +38,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -95,8 +95,44 @@
        <attribute name="title">
         <string>Module Test</string>
        </attribute>
-       <layout class="QGridLayout" name="gridLayout_10">
-        <item row="0" column="0">
+       <layout class="QVBoxLayout" name="verticalLayout_16">
+        <item>
+         <widget class="QGroupBox" name="groupBox_15">
+          <property name="title">
+           <string>GroupBox</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_18">
+           <item>
+            <widget class="QLabel" name="label_72">
+             <property name="text">
+              <string>Session ID:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="Ctrl_SeshID_tag">
+             <property name="text">
+              <string>?</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="Ctrl_StartSesh_btn">
+             <property name="minimumSize">
+              <size>
+               <width>400</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Start Session</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <widget class="QGroupBox" name="groupBox_13">
           <property name="title">
            <string>Module test</string>
@@ -114,6 +150,156 @@
             </layout>
            </item>
           </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_14">
+          <property name="title">
+           <string>Status Summary</string>
+          </property>
+          <widget class="QLabel" name="label_66">
+           <property name="geometry">
+            <rect>
+             <x>19</x>
+             <y>30</y>
+             <width>91</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Flow</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="Ctrl_StatusFlow_tag_2">
+           <property name="geometry">
+            <rect>
+             <x>120</x>
+             <y>30</y>
+             <width>5</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>?</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_67">
+           <property name="geometry">
+            <rect>
+             <x>19</x>
+             <y>60</y>
+             <width>91</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Magnetic Lock</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="Ctrl_StatusFlow_tag_3">
+           <property name="geometry">
+            <rect>
+             <x>120</x>
+             <y>60</y>
+             <width>5</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>?</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="Ctrl_StatusDoor_tag_2">
+           <property name="geometry">
+            <rect>
+             <x>120</x>
+             <y>90</y>
+             <width>33</width>
+             <height>11</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>?</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_68">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>90</y>
+             <width>73</width>
+             <height>11</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Door:</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_69">
+           <property name="geometry">
+            <rect>
+             <x>180</x>
+             <y>30</y>
+             <width>88</width>
+             <height>11</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Ext Dew Point (C°):</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="Ctrl_ExtDewPoint_tag_2">
+           <property name="geometry">
+            <rect>
+             <x>280</x>
+             <y>30</y>
+             <width>75</width>
+             <height>11</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>?</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="Ctrl_IntDewPoint_tag_2">
+           <property name="geometry">
+            <rect>
+             <x>280</x>
+             <y>60</y>
+             <width>5</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>?</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_70">
+           <property name="geometry">
+            <rect>
+             <x>180</x>
+             <y>60</y>
+             <width>86</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Int Dew Point (C°):</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_71">
+           <property name="geometry">
+            <rect>
+             <x>180</x>
+             <y>90</y>
+             <width>86</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Temperature</string>
+           </property>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -453,38 +639,31 @@
            <string>FNAL box control</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
-           <item row="0" column="1">
-            <widget class="QPushButton" name="Ctrl_SetHighFlow_btn">
+           <item row="1" column="4">
+            <widget class="QLabel" name="Ctrl_StatusLock_tag">
              <property name="text">
-              <string>High Flow</string>
+              <string>?</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="2">
-            <widget class="QPushButton" name="Ctrl_SetLowFlow_btn">
+           <item row="2" column="3">
+            <widget class="QLabel" name="Ctrl_StatusDoor_tag">
              <property name="text">
-              <string>Low Flow</string>
+              <string>?</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="3">
-            <widget class="QLabel" name="label_45">
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_53">
              <property name="text">
-              <string>Status</string>
+              <string>Ext Dew Point (C°):</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_49">
+           <item row="1" column="3">
+            <widget class="QLabel" name="label_47">
              <property name="text">
-              <string>Dry air flow</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_50">
-             <property name="text">
-              <string>Magnetic lock</string>
+              <string>Status:</string>
              </property>
             </widget>
            </item>
@@ -501,13 +680,6 @@
              </property>
             </spacer>
            </item>
-           <item row="1" column="1">
-            <widget class="QPushButton" name="Ctrl_SetLock_btn">
-             <property name="text">
-              <string>Lock</string>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="4">
             <widget class="QLabel" name="Ctrl_StatusFlow_tag">
              <property name="text">
@@ -522,31 +694,17 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="4">
-            <widget class="QLabel" name="Ctrl_StatusLock_tag">
+           <item row="0" column="1">
+            <widget class="QPushButton" name="Ctrl_SetHighFlow_btn">
              <property name="text">
-              <string>?</string>
+              <string>High Flow</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="3">
-            <widget class="QLabel" name="label_47">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_49">
              <property name="text">
-              <string>Status:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_53">
-             <property name="text">
-              <string>Ext Dew Point (C°):</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLabel" name="Ctrl_ExtDewPoint_tag">
-             <property name="text">
-              <string>?</string>
+              <string>Dry air flow</string>
              </property>
             </widget>
            </item>
@@ -557,10 +715,38 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="3">
-            <widget class="QLabel" name="Ctrl_StatusDoor_tag">
+           <item row="1" column="1">
+            <widget class="QPushButton" name="Ctrl_SetLock_btn">
+             <property name="text">
+              <string>Lock</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QPushButton" name="Ctrl_SetLowFlow_btn">
+             <property name="text">
+              <string>Low Flow</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_50">
+             <property name="text">
+              <string>Magnetic lock</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLabel" name="Ctrl_ExtDewPoint_tag">
              <property name="text">
               <string>?</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="3">
+            <widget class="QLabel" name="label_45">
+             <property name="text">
+              <string>Status</string>
              </property>
             </widget>
            </item>
@@ -1009,7 +1195,6 @@
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
-                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -1412,7 +1597,6 @@
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
-                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -1813,81 +1997,238 @@
               </layout>
              </widget>
             </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_17">
             <item>
-             <widget class="QGroupBox" name="groupBox_8">
+             <widget class="QGroupBox" name="groupBox_5">
               <property name="title">
-               <string>MQTT readings - M5</string>
+               <string>FNAL Box</string>
               </property>
-              <layout class="QGridLayout" name="gridLayout_6">
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_30">
-                 <property name="text">
-                  <string>Humidity (%)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_28">
-                 <property name="text">
-                  <string>Temprature (C°)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_29">
-                 <property name="text">
-                  <string>Pressure (hPa)</string>
-                 </property>
-                </widget>
-               </item>
+              <layout class="QGridLayout" name="gridLayout_4">
                <item row="4" column="1">
-                <widget class="QLabel" name="LastM5Humi_tag">
+                <widget class="QLabel" name="LastFNALBoxOW0_tag">
                  <property name="text">
                   <string>?</string>
                  </property>
                 </widget>
                </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_27">
+               <item row="6" column="0">
+                <widget class="QLabel" name="label_42">
                  <property name="text">
-                  <string>Last message timestamp: </string>
+                  <string>OneWire 2</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW2_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="11" column="0">
+                <widget class="QLabel" name="label_54">
+                 <property name="text">
+                  <string>OneWire 7</string>
                  </property>
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QLabel" name="LastM5Pres_tag">
+                <widget class="QLabel" name="LastFNALBoxDP_tag">
                  <property name="text">
                   <string>?</string>
                  </property>
                 </widget>
                </item>
-               <item row="2" column="1">
-                <widget class="QLabel" name="LastM5Temp_tag">
+               <item row="11" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW7_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="0">
+                <widget class="QLabel" name="label_44">
+                 <property name="text">
+                  <string>OneWire 3</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="14" column="0">
+                <widget class="QLabel" name="label_58">
+                 <property name="text">
+                  <string>Door</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="14" column="1">
+                <widget class="QLabel" name="LastFNALBoxDoor_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="9" column="0">
+                <widget class="QLabel" name="label_48">
+                 <property name="text">
+                  <string>OneWire 5</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_6">
+                 <property name="text">
+                  <string>Temp 0 (C°)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_17">
+                 <property name="text">
+                  <string>Last valid readout: </string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW1_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_19">
+                 <property name="text">
+                  <string>Dew Point  (C°)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="9" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW5_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="8" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW4_tag">
                  <property name="text">
                   <string>?</string>
                  </property>
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QLabel" name="LastMQTTM5MsgTS_tag">
+                <widget class="QLabel" name="LastFNALBoxMsgTS_tag">
                  <property name="text">
                   <string>NEVER</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_31">
-                 <property name="text">
-                  <string>Dew Point (C°)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QLabel" name="LastM5DP_tag">
+               <item row="13" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW9_tag">
                  <property name="text">
                   <string>?</string>
                  </property>
                 </widget>
+               </item>
+               <item row="7" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW3_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLabel" name="LastFNALBoxTemp1_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="12" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW8_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_36">
+                 <property name="text">
+                  <string>OneWire 0</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="10" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW6_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="13" column="0">
+                <widget class="QLabel" name="label_56">
+                 <property name="text">
+                  <string>OneWire 9</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLabel" name="LastFNALBoxTemp0_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_18">
+                 <property name="text">
+                  <string>Temp 1  (C°)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="10" column="0">
+                <widget class="QLabel" name="label_52">
+                 <property name="text">
+                  <string>OneWire 6</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="8" column="0">
+                <widget class="QLabel" name="label_46">
+                 <property name="text">
+                  <string>OneWire 4</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="12" column="0">
+                <widget class="QLabel" name="label_55">
+                 <property name="text">
+                  <string>OneWire 8</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="label_37">
+                 <property name="text">
+                  <string>OneWire 1</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="15" column="0">
+                <spacer name="verticalSpacer_6">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </widget>
@@ -2018,216 +2359,76 @@
              </widget>
             </item>
             <item>
-             <widget class="QGroupBox" name="groupBox_5">
+             <widget class="QGroupBox" name="groupBox_8">
               <property name="title">
-               <string>FNAL Box</string>
+               <string>MQTT readings - M5</string>
               </property>
-              <layout class="QGridLayout" name="gridLayout_4">
-               <item row="13" column="0">
-                <widget class="QLabel" name="label_56">
+              <layout class="QGridLayout" name="gridLayout_6">
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_30">
                  <property name="text">
-                  <string>OneWire 9</string>
+                  <string>Humidity (%)</string>
                  </property>
                 </widget>
                </item>
-               <item row="5" column="0">
-                <widget class="QLabel" name="label_37">
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_28">
                  <property name="text">
-                  <string>OneWire 1</string>
+                  <string>Temprature (C°)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_29">
+                 <property name="text">
+                  <string>Pressure (hPa)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLabel" name="LastM5Humi_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_27">
+                 <property name="text">
+                  <string>Last message timestamp: </string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLabel" name="LastM5Pres_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLabel" name="LastM5Temp_tag">
+                 <property name="text">
+                  <string>?</string>
                  </property>
                 </widget>
                </item>
                <item row="0" column="1">
-                <widget class="QLabel" name="LastFNALBoxMsgTS_tag">
+                <widget class="QLabel" name="LastMQTTM5MsgTS_tag">
                  <property name="text">
                   <string>NEVER</string>
                  </property>
                 </widget>
                </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_19">
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_31">
                  <property name="text">
-                  <string>Dew Point  (C°)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="8" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW4_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW2_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="9" column="0">
-                <widget class="QLabel" name="label_48">
-                 <property name="text">
-                  <string>OneWire 5</string>
+                  <string>Dew Point (C°)</string>
                  </property>
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QLabel" name="LastFNALBoxTemp0_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW0_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="12" column="0">
-                <widget class="QLabel" name="label_55">
-                 <property name="text">
-                  <string>OneWire 8</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QLabel" name="LastFNALBoxTemp1_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_18">
-                 <property name="text">
-                  <string>Temp 1  (C°)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="11" column="0">
-                <widget class="QLabel" name="label_54">
-                 <property name="text">
-                  <string>OneWire 7</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="8" column="0">
-                <widget class="QLabel" name="label_46">
-                 <property name="text">
-                  <string>OneWire 4</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_17">
-                 <property name="text">
-                  <string>Last valid readout: </string>
-                 </property>
-                </widget>
-               </item>
-               <item row="9" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW5_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QLabel" name="LastFNALBoxDP_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_36">
-                 <property name="text">
-                  <string>OneWire 0</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_6">
-                 <property name="text">
-                  <string>Temp 0 (C°)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="10" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW6_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="label_42">
-                 <property name="text">
-                  <string>OneWire 2</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="11" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW7_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="13" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW9_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="0">
-                <widget class="QLabel" name="label_44">
-                 <property name="text">
-                  <string>OneWire 3</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="12" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW8_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="10" column="0">
-                <widget class="QLabel" name="label_52">
-                 <property name="text">
-                  <string>OneWire 6</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW3_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW1_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="14" column="0">
-                <widget class="QLabel" name="label_58">
-                 <property name="text">
-                  <string>Door</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="14" column="1">
-                <widget class="QLabel" name="LastFNALBoxDoor_tag">
+                <widget class="QLabel" name="LastM5DP_tag">
                  <property name="text">
                   <string>?</string>
                  </property>
@@ -2425,8 +2626,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1120</width>
-     <height>21</height>
+     <width>1300</width>
+     <height>24</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
