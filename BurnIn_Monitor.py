@@ -309,7 +309,11 @@ class BurnIn_Monitor(QObject):
 							
 							self.MonitorTags["LastFNALBoxDoor"].setText(reply_list[2][1:])
 							self.MQTT_FNALBox_dict["Door"]=float(reply_list[2][1:])
-							self.MonitorTags["Ctrl_StatusDoor"].setText(reply_list[2][1:])
+							if float(reply_list[2][1:]) > 100.0:
+								self.MonitorTags["Ctrl_StatusDoor"].setText("OPEN")
+							else:
+								self.MonitorTags["Ctrl_StatusDoor"].setText("CLOSED")
+                                
 							for i in range(10):
 								self.MonitorTags["LastFNALBoxOW"+str(i)].setText(reply_list[i+4][1:])
 								self.MQTT_FNALBox_dict["OW"+str(i)]=float(reply_list[i+4][1:])

@@ -3,6 +3,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
 import time
+import datetime
 import subprocess
 
 
@@ -10,8 +11,9 @@ class BurnIn_Worker(QObject):
 
 	Request_msg = pyqtSignal(str,str)
 	Request_input_dsb = pyqtSignal(str,float,float,float)
+	Update_graph = pyqtSignal()
 	
-	def __init__(self,configDict,logger, MonitorTags, Julabo, FNALBox, CAENController):
+	def __init__(self,configDict,logger, SharedDict, Julabo, FNALBox, CAENController):
 
 	
 		super(BurnIn_Worker,self).__init__();
@@ -20,7 +22,7 @@ class BurnIn_Worker(QObject):
 		self.Julabo = Julabo
 		self.FNALBox = FNALBox
 		self.CAENController = CAENController
-		self.MonitorTags = MonitorTags
+		self.SharedDict = SharedDict
 		
 		self.logger.info("Worker class initialized")
 	
@@ -68,22 +70,22 @@ class BurnIn_Worker(QObject):
 	@pyqtSlot(int)	
 	def Ctrl_SelSp_Cmd(self,Sp_id):
 		self.logger.info("WORKER: Selecting JULABO Sp"+str(Sp_id+1))
-		if not (self.MonitorTags["Julabo_updated"] and self.MonitorTags["FNALBox_updated"]):
+		if not (self.SharedDict["Julabo_updated"] and self.SharedDict["FNALBox_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "Julabo and/or FNAL box info are not updated"
 			self.Request_msg.emit(Warning_str,Reason_str)
 			return
 		else:	
-			if (self.MonitorTags["Ctrl_StatusJulabo"].text().find("START") != -1):
+			if (self.SharedDict["Ctrl_StatusJulabo"].text().find("START") != -1):
 				targetT = -100.0
 				if Sp_id == 0 :
-					targetT = float(self.MonitorTags["Ctrl_Sp1"].text())
+					targetT = float(self.SharedDict["Ctrl_Sp1"].text())
 				elif Sp_id == 1 :
-					targetT = float(self.MonitorTags["Ctrl_Sp2"].text())
+					targetT = float(self.SharedDict["Ctrl_Sp2"].text())
 				elif Sp_id == 2 :
-					targetT = float(self.MonitorTags["Ctrl_Sp3"].text())
+					targetT = float(self.SharedDict["Ctrl_Sp3"].text())
 
-				if targetT  < float(self.MonitorTags["Ctrl_IntDewPoint"].text()):
+				if targetT  < float(self.SharedDict["Ctrl_IntDewPoint"].text()):
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Set point is configured with a temperature below internal dew point"
 					self.logger.warning(Warning_str)
@@ -102,13 +104,13 @@ class BurnIn_Worker(QObject):
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
 						Sp = str(int(reply.replace(" ", ""))+1)
-						self.MonitorTags["Ctrl_TSp"].setText(Sp)
-					if self.MonitorTags["Ctrl_TSp"].text()[:1]=="1":
-						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["Ctrl_Sp1"].text())
-					elif self.MonitorTags["Ctrl_TSp"].text()[:1]=="2":
-						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["Ctrl_Sp2"].text())
-					elif self.MonitorTags["Ctrl_TSp"].text()[:1]=="3":
-						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["Ctrl_Sp3"].text())
+						self.SharedDict["Ctrl_TSp"].setText(Sp)
+					if self.SharedDict["Ctrl_TSp"].text()[:1]=="1":
+						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp1"].text())
+					elif self.SharedDict["Ctrl_TSp"].text()[:1]=="2":
+						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp2"].text())
+					elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
+						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
 				except Exception as e:
 					self.logger.error(e)	
 						
@@ -118,15 +120,15 @@ class BurnIn_Worker(QObject):
 	@pyqtSlot(int,float)	
 	def Ctrl_SetSp_Cmd(self,Sp_id,value):
 		self.logger.info("WORKER: Setting JULABO Sp"+str(Sp_id+1)+ " to " +str(value))
-		if not (self.MonitorTags["Julabo_updated"] and self.MonitorTags["FNALBox_updated"]):
+		if not (self.SharedDict["Julabo_updated"] and self.SharedDict["FNALBox_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "Julabo and/or FNAL box info are not updated"
 			self.Request_msg.emit(Warning_str,Reason_str)
 			return
 		else:	
-			if (self.MonitorTags["Ctrl_StatusJulabo"].text().find("START") != -1):
-				Sp_actual = int(self.MonitorTags["Ctrl_TSp"].text())-1
-				if Sp_actual==Sp_id and  value  < float(self.MonitorTags["Ctrl_IntDewPoint"].text()):
+			if (self.SharedDict["Ctrl_StatusJulabo"].text().find("START") != -1):
+				Sp_actual = int(self.SharedDict["Ctrl_TSp"].text())-1
+				if Sp_actual==Sp_id and  value  < float(self.SharedDict["Ctrl_IntDewPoint"].text()):
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Attempting to set target temperature of the active set point below internal dew point"
 					self.logger.warning(Warning_str)
@@ -144,13 +146,13 @@ class BurnIn_Worker(QObject):
 					self.Julabo.sendTCP("in_sp_0"+str(Sp_id))
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
-						self.MonitorTags["Ctrl_Sp"+str(Sp_id+1)].setText(reply.replace(" ", ""))
-					if self.MonitorTags["Ctrl_TSp"].text()[:1]=="1":
-						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["Ctrl_Sp1"].text())
-					elif self.MonitorTags["Ctrl_TSp"].text()[:1]=="2":
-						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["Ctrl_Sp2"].text())
-					elif self.MonitorTags["Ctrl_TSp"].text()[:1]=="3":
-						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["Ctrl_Sp3"].text())
+						self.SharedDict["Ctrl_Sp"+str(Sp_id+1)].setText(reply.replace(" ", ""))
+					if self.SharedDict["Ctrl_TSp"].text()[:1]=="1":
+						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp1"].text())
+					elif self.SharedDict["Ctrl_TSp"].text()[:1]=="2":
+						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp2"].text())
+					elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
+						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
 				except Exception as e:
 					self.logger.error(e)	
 						
@@ -173,29 +175,29 @@ class BurnIn_Worker(QObject):
 					self.Julabo.sendTCP("status")
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
-						self.MonitorTags["Ctrl_StatusJulabo"].setText(reply)
-					if self.MonitorTags["Ctrl_StatusJulabo"].text().find("START")!=-1:
-						self.MonitorTags["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+						self.SharedDict["Ctrl_StatusJulabo"].setText(reply)
+					if self.SharedDict["Ctrl_StatusJulabo"].text().find("START")!=-1:
+						self.SharedDict["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
 					else:
-						self.MonitorTags["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+						self.SharedDict["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
 				except Exception as e:
 					self.logger.error(e)	
 						
 			self.Julabo.lock.release()
 		else:	
 			self.logger.info("WORKER: Powering Julabo ON")
-			if not (self.MonitorTags["Julabo_updated"] and self.MonitorTags["FNALBox_updated"]):
+			if not (self.SharedDict["Julabo_updated"] and self.SharedDict["FNALBox_updated"]):
 				Warning_str = "Operation can't be performed"
 				Reason_str = "Julabo and/or FNAL box info are not updated"
 				self.Request_msg.emit(Warning_str,Reason_str)
 				return
 			else:	
-				if float(self.MonitorTags["Ctrl_TargetTemp"].text())< float(self.MonitorTags["Ctrl_IntDewPoint"].text()):
+				if float(self.SharedDict["Ctrl_TargetTemp"].text())< float(self.SharedDict["Ctrl_IntDewPoint"].text()):
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Attempting to start unit with target temperature below internal dew point"
 					self.Request_msg.emit(Warning_str,Reason_str)
 					return
-				if self.MonitorTags["Ctrl_StatusLock"].text() != "LOCKED":
+				if self.SharedDict["Ctrl_StatusLock"].text() != "LOCKED":
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Attempting to start unit with door magnet not locked"
 					self.Request_msg.emit(Warning_str,Reason_str)
@@ -212,11 +214,11 @@ class BurnIn_Worker(QObject):
 							self.Julabo.sendTCP("status")
 							reply = self.Julabo.receive()
 							if (reply != "None" and reply != "TCP error"):
-								self.MonitorTags["Ctrl_StatusJulabo"].setText(reply)
-							if self.MonitorTags["Ctrl_StatusJulabo"].text().find("START")!=-1:
-								self.MonitorTags["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+								self.SharedDict["Ctrl_StatusJulabo"].setText(reply)
+							if self.SharedDict["Ctrl_StatusJulabo"].text().find("START")!=-1:
+								self.SharedDict["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
 							else:
-								self.MonitorTags["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+								self.SharedDict["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
 						except Exception as e:
 							self.logger.error(e)	
 					
@@ -235,25 +237,25 @@ class BurnIn_Worker(QObject):
 		self.logger.info("WORKER: Setting door magnet to: "+lock)
 		if (not switch):
 			
-			if not (self.MonitorTags["Julabo_updated"] and self.MonitorTags["FNALBox_updated"] and self.MonitorTags["M5_updated"]):
+			if not (self.SharedDict["Julabo_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["M5_updated"]):
 				Warning_str = "Operation can't be performed"
 				Reason_str = "Julabo, FNAL box or M5 infos are not updated"
 				self.Request_msg.emit(Warning_str,Reason_str)
 				return
 			try:
-				IntTemp_arr = [float(self.MonitorTags["LastFNALBoxTemp1"].text()),float(self.MonitorTags["LastFNALBoxTemp0"].text())]
+				IntTemp_arr = [float(self.SharedDict["LastFNALBoxTemp1"].text()),float(self.SharedDict["LastFNALBoxTemp0"].text())]
 				for i in range (10):
-					IntTemp_arr.append(float(self.MonitorTags["LastFNALBoxOW"+str(i)].text())) 
+					IntTemp_arr.append(float(self.SharedDict["LastFNALBoxOW"+str(i)].text())) 
 				IntTemp_min = min(IntTemp_arr)
 			except Exception as e:
 				self.logger.error(e)
 				return
-			if (self.MonitorTags["Ctrl_StatusJulabo"].text().find("START")!=-1) and (float(self.MonitorTags["Ctrl_TargetTemp"].text()) < float(self.MonitorTags["Ctrl_ExtDewPoint"].text())):
+			if (self.SharedDict["Ctrl_StatusJulabo"].text().find("START")!=-1) and (float(self.SharedDict["Ctrl_TargetTemp"].text()) < float(self.SharedDict["Ctrl_ExtDewPoint"].text())):
 				Warning_str = "Operation can't be performed"
 				Reason_str = "JULABO is ON with target temp below external dew point"
 				self.Request_msg.emit(Warning_str,Reason_str)
 				return
-			if IntTemp_min < float(self.MonitorTags["Ctrl_ExtDewPoint"].text()):
+			if IntTemp_min < float(self.SharedDict["Ctrl_ExtDewPoint"].text()):
 				Warning_str = "Operation can't be performed"
 				Reason_str = "Internal minimum temperature below external dew point. Retry later"
 				self.Request_msg.emit(Warning_str,Reason_str)
@@ -273,15 +275,15 @@ class BurnIn_Worker(QObject):
 				time.sleep(0.250)
 				reply = self.FNALBox.receive()
 				if reply[-3:]=="[*]":
-					self.MonitorTags["Ctrl_StatusLock"].setText(lock)
+					self.SharedDict["Ctrl_StatusLock"].setText(lock)
 					self.logger.info("WORKER: Done")
 				else:
-					self.MonitorTags["Ctrl_StatusLock"].setText("?")
+					self.SharedDict["Ctrl_StatusLock"].setText("?")
 					self.logger.error("WORKER: uncorrect reply from FNAL Box: "+reply)
 
 			except Exception as e:
 				self.logger.error(e)
-				self.MonitorTags["Ctrl_StatusLock"].setText("?")	
+				self.SharedDict["Ctrl_StatusLock"].setText("?")	
 					
 		self.FNALBox.lock.release()
 		
@@ -304,15 +306,15 @@ class BurnIn_Worker(QObject):
 				time.sleep(0.250)
 				reply = self.FNALBox.receive()
 				if reply[-3:]=="[*]":
-					self.MonitorTags["Ctrl_StatusFlow"].setText(flow)
+					self.SharedDict["Ctrl_StatusFlow"].setText(flow)
 					self.logger.info("WORKER: Done")
 				else:
-					self.MonitorTags["Ctrl_StatusFlow"].setText("?")
+					self.SharedDict["Ctrl_StatusFlow"].setText("?")
 					self.logger.error("WORKER: uncorrect reply from FNAL Box: "+reply)
 
 			except Exception as e:
 				self.logger.error(e)
-				self.MonitorTags["Ctrl_StatusFlow"].setText("?")	
+				self.SharedDict["Ctrl_StatusFlow"].setText("?")	
 					
 		self.FNALBox.lock.release()
 
@@ -320,21 +322,21 @@ class BurnIn_Worker(QObject):
 	def Ctrl_PowerLV_Cmd(self,switch):
 		Channel_list=[]
 		power = "On" if switch else "Off"
-		if not (self.MonitorTags["CAEN_updated"]):
+		if not (self.SharedDict["CAEN_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "CAEN infos are not updated"
 			self.Request_msg.emit(Warning_str,Reason_str)
 			return
 		for row in range(10):
-			if self.MonitorTags["CAEN_table"].item(row,0).isSelected():
-				ch_name = self.MonitorTags["CAEN_table"].item(row,0).text()
+			if self.SharedDict["CAEN_table"].item(row,0).isSelected():
+				ch_name = self.SharedDict["CAEN_table"].item(row,0).text()
 				if (ch_name == "?"):
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
 					self.Request_msg.emit(Warning_str,Reason_str)
 					return
-				HV_defined = True if self.MonitorTags["CAEN_table"].item(row,5).text() != "?" else False	
-				if (not switch) and  HV_defined and (self.MonitorTags["CAEN_table"].item(row,6).text() != "OFF"):  # attempt to power down LV with HV not off
+				HV_defined = True if self.SharedDict["CAEN_table"].item(row,5).text() != "?" else False	
+				if (not switch) and  HV_defined and (self.SharedDict["CAEN_table"].item(row,6).text() != "OFF"):  # attempt to power down LV with HV not off
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause HV is ON or UNKNOWN"
 					self.Request_msg.emit(Warning_str,Reason_str)
@@ -349,20 +351,25 @@ class BurnIn_Worker(QObject):
 	def Ctrl_PowerHV_Cmd(self,switch):
 		Channel_list=[]
 		power = "On" if switch else "Off"
-		if not (self.MonitorTags["CAEN_updated"]):
+		if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"]):
 			Warning_str = "Operation can't be performed"
-			Reason_str = "CAEN infos are not updated"
+			Reason_str = "CAEN and/or FNAL infos are not updated"
+			self.Request_msg.emit(Warning_str,Reason_str)
+			return
+		if not (self.SharedDict["Ctrl_StatusDoor"] == "CLOSED"):
+			Warning_str = "Operation can't be performed"
+			Reason_str = "BurnIn door is NOT CLOSED"
 			self.Request_msg.emit(Warning_str,Reason_str)
 			return
 		for row in range(10):
-			if self.MonitorTags["CAEN_table"].item(row,5).isSelected():
-				ch_name = self.MonitorTags["CAEN_table"].item(row,5).text() 
+			if self.SharedDict["CAEN_table"].item(row,5).isSelected():
+				ch_name = self.SharedDict["CAEN_table"].item(row,5).text() 
 				if (ch_name == "?"):
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause HV ch. name is UNKNOWN"
 					self.Request_msg.emit(Warning_str,Reason_str)
 					return
-				if (switch) and (self.MonitorTags["CAEN_table"].item(row,1).text() != "ON"):  # attempt to power up HV with LV not on
+				if (switch) and (self.SharedDict["CAEN_table"].item(row,1).text() != "ON"):  # attempt to power up HV with LV not on
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause LV is OFF or UNKNOWN"
 					self.Request_msg.emit(Warning_str,Reason_str)
@@ -384,29 +391,29 @@ class BurnIn_Worker(QObject):
 		Channel_list=[]
 		NewValue_list=[]
 		ColOffset = 0 if VType=="LV" else 5;
-		if not (self.MonitorTags["CAEN_updated"]):
+		if not (self.SharedDict["CAEN_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "CAEN infos are not updated"
 			self.Request_msg.emit(Warning_str,Reason_str)
 			return
 		for row in range(10):
-			if self.MonitorTags["CAEN_table"].item(row,ColOffset).isSelected():
-				ch_name = self.MonitorTags["CAEN_table"].item(row,ColOffset).text() 
+			if self.SharedDict["CAEN_table"].item(row,ColOffset).isSelected():
+				ch_name = self.SharedDict["CAEN_table"].item(row,ColOffset).text() 
 				if (ch_name == "?"):
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Can't set LV for  slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
 					self.Request_msg.emit(Warning_str,Reason_str)
 					return
-				if (self.MonitorTags["CAEN_table"].item(row,2+ColOffset).text() == "?"):  # Unknown HV set
+				if (self.SharedDict["CAEN_table"].item(row,2+ColOffset).text() == "?"):  # Unknown HV set
 					Warning_str = "Operation can't be performed"
 					Reason_str = "Can't set LV for  slot "+str(row)+ " beacause current setpoint is UNKNOWN"
 					self.Request_msg.emit(Warning_str,Reason_str)
 					return
-				self.MonitorTags["WaitInput"]=True
+				self.SharedDict["WaitInput"]=True
 				Request_str="New " +VType+ " Slot "+str(row)
 				ValueNow = 0.0
 				try :
-					ValueNow = float(self.MonitorTags["CAEN_table"].item(row,2+ColOffset).text())
+					ValueNow = float(self.SharedDict["CAEN_table"].item(row,2+ColOffset).text())
 				except Exception as e:
 					self.logger.error(e)
 					
@@ -415,10 +422,10 @@ class BurnIn_Worker(QObject):
 				else:
 					self.Request_input_dsb.emit(Request_str,ValueNow,0,500)
 					
-				while self.MonitorTags["WaitInput"]:
+				while self.SharedDict["WaitInput"]:
 					time.sleep(0.1)
-				if self.MonitorTags["Input"]!=-1:
-					NewValue_list.append(self.MonitorTags["Input"])
+				if self.SharedDict["Input"]!=-1:
+					NewValue_list.append(self.SharedDict["Input"])
 					Channel_list.append(ch_name)
 		
 		self.logger.info("WORKER: Setting LV for ch " +str(Channel_list))
@@ -426,7 +433,31 @@ class BurnIn_Worker(QObject):
 		for idx,channel in enumerate(Channel_list):
 			self.SendCAENControllerCmd("SetVoltage,PowerSupplyId:caen,ChannelId:"+channel+",Voltage:"+str(NewValue_list[idx]))
 			#print("SetVoltage,PowerSupplyId:caen,ChannelId:"+channel+",Voltage:"+str(NewValue_list[idx]))
+
+	@pyqtSlot()			
+	def BI_Start_Cmd(self):
+		self.logger.info("Starting BurnIN...")
+		#if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["JULABO_updated"]):
+		#	Warning_str = "Operation can't be performed"
+		#	Reason_str = "CAEN/FNAL/JULABO infos are not updated"
+		#	self.Request_msg.emit(Warning_str,Reason_str)
+		#	return
+		self.logger.info("BurnIn test started...")
+		self.SharedDict["BI_Active"]=True
+		
+		self.SharedDict["Time_arr"].append(time.time())
+		self.SharedDict["DewPoint_arr"].append(0)
+		self.SharedDict["Temp_arr"].append(0)
 		
 		
-	
+		while (not self.SharedDict["BI_StopRequest"]):
+			self.SharedDict["Time_arr"].append(time.time())
+			self.SharedDict["DewPoint_arr"].append(self.SharedDict["DewPoint_arr"][-1]+1)
+			self.SharedDict["Temp_arr"].append(self.SharedDict["Temp_arr"][-1]+0.5)
+			self.Update_graph.emit()
+			time.sleep(2)
+		
+		self.logger.info("BurnIn test COMPLETED!")
+		self.SharedDict["BI_Active"]=False
+		self.SharedDict["BI_StopRequest"]=False
 	
