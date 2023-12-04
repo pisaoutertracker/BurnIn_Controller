@@ -58,8 +58,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     
         uic.loadUi('GUI.ui', self) # Load the .ui file
         self.show() # Show the GUI
-        
-        
+
+        self.setWindowIcon(QtGui.QIcon('logo.png'))
+        self.actionExpert.setIcon(QtGui.QIcon('expert.png'))
+        self.actionExit.setIcon(QtGui.QIcon('exit.jpeg'))  
         
         self.GraphWidget.setBackground("w")
         styles = { "font-size": "13px"}
@@ -69,11 +71,14 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.GraphWidgetLegend=self.GraphWidget.addLegend(offset=1,colCount=4)
         self.Temp_arr=[]
         self.Time_arr=[]
+        self.Targ_arr=[]
         self.DewPoint_arr=[]
         pen = pg.mkPen(color='r',width=3)
         self.DewPoint_line=self.GraphWidget.plot(self.Time_arr, self.DewPoint_arr,name="Dew Point", pen=pen)
         pen1 = pg.mkPen(color='g',width=3)
         self.Temp_line=self.GraphWidget.plot(self.Time_arr, self.Temp_arr,name="Temp", pen=pen1)
+        pen = pg.mkPen(color='b',width=3)
+        self.Targ_line=self.GraphWidget.plot(self.Time_arr, self.Targ_arr,name="Target", pen=pen)      
         
         #adjust GUI table elements
         for row in range(10):
@@ -275,9 +280,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["DewPoint_arr"]=self.DewPoint_arr
         self.SharedDict["Temp_arr"]=self.Temp_arr
         self.SharedDict["Time_arr"]=self.Time_arr
-
-        
-        
+        self.SharedDict["Targ_arr"]=self.Targ_arr
         
         # start monitoring function in QThread
         self.MonitorThread = QThread()
@@ -323,6 +326,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.Ctrl_LVOff_btn.clicked.connect (lambda : self.Ctrl_PowerLV_Cmd(False))
         self.Ctrl_HVOn_btn.clicked.connect(lambda : self.Ctrl_PowerHV_Cmd(True))
         self.Ctrl_HVOff_btn.clicked.connect (lambda : self.Ctrl_PowerHV_Cmd(False))
+        self.Ctrl_StartTest_btn.clicked.connect(self.Ctrl_StartTest_Cmd)
         self.Ctrl_LVSet_btn.clicked.connect(lambda : self.Ctrl_VSet_Cmd("LV"))
         self.Ctrl_HVSet_btn.clicked.connect(lambda : self.Ctrl_VSet_Cmd("HV"))
         
@@ -355,11 +359,14 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.BI_Start_sig.connect(self.Worker.BI_Start_Cmd)
         
         #################################################
-        #connecting worker signals to local slots
+        #connecting worker/monitor signals to local slots
         ##################################################
         self.Worker.Request_msg.connect(self.Show_msg)
         self.Worker.Request_input_dsb.connect(self.Show_input_dsb)
-        self.Worker.Update_graph.connect(self.Update_graph)
+        self.Worker.BI_terminated.connect(self.BI_terminated)
+        self.Monitor.Update_graph.connect(self.Update_graph)
+        #self.Monitor.Update_manualOp_tab.connect(self.Update_manualOp_tab)
+        #self.Worker.Update_graph.connect(self.Update_graph)
         
         
         self.statusBar().showMessage("System ready")
@@ -403,7 +410,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     def BI_Start_Cmd(self):
         self.Temp_arr.clear()
         self.Time_arr.clear()
+        self.Targ_arr.clear()
         self.DewPoint_arr.clear()
+        self.ManualOp_tab.setEnabled(False) 
         self.BI_Start_sig.emit()
     
     def BI_Stop_Cmd(self):
@@ -412,8 +421,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
             self.SharedDict["BI_StopRequest"]=True
             self.logger.info("BURN IN stop request issued")
         else:
-            self.logger.info("Burn In test ongoing. Request cancelled")
+            self.logger.info("NO Burn In test ongoing. Request cancelled")
 
+    @pyqtSlot()
+    def BI_terminated(self):
+        self.ManualOp_tab.setEnabled(True) 
+        
                         
     def Ctrl_StartSesh_Cmd(self):
         self.logger.info("Starting database session....")
@@ -475,7 +488,13 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     def Update_graph(self):
         self.DewPoint_line.setData(self.Time_arr,self.DewPoint_arr)
         self.Temp_line.setData(self.Time_arr,self.Temp_arr)
-            
+        self.Targ_line.setData(self.Time_arr,self.Targ_arr)
+
+    	#@pyqtSlot()
+        #def Update_manualOp_tab(self):
+        #	self.ManualOp_tab.update()
+        #	self.Ctrl_CAEN_table.update()
+        #	self.Ctrl_CAEN_table.repaint()
         
 
 if __name__== '__main__':

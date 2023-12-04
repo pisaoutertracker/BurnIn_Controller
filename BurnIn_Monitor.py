@@ -1,6 +1,6 @@
 import sys, os
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtCore import QObject
+from PyQt5.QtCore import QObject, pyqtSignal
 import time
 from datetime import datetime
 import json
@@ -10,7 +10,10 @@ from MQTT_interface import *
 
 class BurnIn_Monitor(QObject):
 
-	def __init__(self,configDict,logger, MonitorTags, Julabo, FNALBox, LVNames, HVNames):
+	Update_graph = pyqtSignal()
+	#Update_manualOp_tab = pyqtSignal()
+
+	def __init__(self,configDict,logger, SharedDict, Julabo, FNALBox, LVNames, HVNames):
 	
 		super(BurnIn_Monitor,self).__init__();
 		self.configDict=configDict
@@ -18,8 +21,8 @@ class BurnIn_Monitor(QObject):
 		self.logger.info("MONITOR: Monitoring class initialized")
 		
 		self.MQTT =  MQTT_interface(configDict,logger)
-		self.MonitorTags = MonitorTags
-		self.MonitorTags = MonitorTags
+		self.SharedDict = SharedDict
+		self.SharedDict = SharedDict
 		self.Julabo = Julabo
 		self.FNALBox = FNALBox
 		self.LVNames = LVNames
@@ -35,13 +38,13 @@ class BurnIn_Monitor(QObject):
 		self.logger.info("MONITOR: Attempting first connection to MQTT server...")
 		self.MQTT.connect()
 		if self.MQTT.is_connected :
-			self.MonitorTags["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-			self.MonitorTags["MQTTConn"].setText("Connected")
+			self.SharedDict["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+			self.SharedDict["MQTTConn"].setText("Connected")
 			
 		while(1):		
 		
-			self.MonitorTags["LastMonitor"].setStyleSheet("");
-			self.MonitorTags["LastMonitor"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+			self.SharedDict["LastMonitor"].setStyleSheet("");
+			self.SharedDict["LastMonitor"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 			
 			#MQTT reception cycle
 			if (self.configDict.get(("MQTT","EnableMonitor"),"NOKEY").upper() == "TRUE"):
@@ -49,15 +52,15 @@ class BurnIn_Monitor(QObject):
 					self.logger.info("MONITOR: Attempting first connection to MQTT server...")
 					self.MQTT.connect()
 					if self.MQTT.is_connected :
-						self.MonitorTags["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-						self.MonitorTags["MQTTConn"].setText("Connected")
+						self.SharedDict["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+						self.SharedDict["MQTTConn"].setText("Connected")
 				else:
 					if self.MQTT.is_connected :
-						self.MonitorTags["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-						self.MonitorTags["MQTTConn"].setText("Connected")
+						self.SharedDict["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+						self.SharedDict["MQTTConn"].setText("Connected")
 					else:
-						self.MonitorTags["MQTTConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
-						self.MonitorTags["MQTTConn"].setText("Disconnected")
+						self.SharedDict["MQTTConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+						self.SharedDict["MQTTConn"].setText("Disconnected")
 				
 				if (self.MQTT.LastCAENMessageTS != "NEVER"):
 					try:
@@ -69,34 +72,34 @@ class BurnIn_Monitor(QObject):
 								if key in CAEN_dict:
 									is_active = CAEN_dict[key]
 									if is_active >0 :
-										self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"Status"].setText("ON")
-										self.MonitorTags["CAEN_table"].item(i,1).setText("ON")
-										self.MonitorTags["CAEN_table"].item(i,5).setBackground(QtGui.QColor("white"))		
+										self.SharedDict["LastLV"+str((int)(i)).zfill(2)+"Status"].setText("ON")
+										self.SharedDict["CAEN_table"].item(i,1).setText("ON")
+										self.SharedDict["CAEN_table"].item(i,5).setBackground(QtGui.QColor("white"))		
 									else:
-										self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"Status"].setText("OFF")
-										self.MonitorTags["CAEN_table"].item(i,1).setText("OFF")
-										self.MonitorTags["CAEN_table"].item(i,5).setBackground(QtGui.QColor("lightgray"))	
+										self.SharedDict["LastLV"+str((int)(i)).zfill(2)+"Status"].setText("OFF")
+										self.SharedDict["CAEN_table"].item(i,1).setText("OFF")
+										self.SharedDict["CAEN_table"].item(i,5).setBackground(QtGui.QColor("lightgray"))	
 								else:
 									self.logger.warning("MONITOR: Status of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
 									
 								key = "caen_"+self.LVNames[i]+"_VoltageCompliance"
 								if (key) in CAEN_dict:
-									self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"VoltageSet"].setText(str(CAEN_dict[key]))
-									self.MonitorTags["CAEN_table"].item(i,2).setText(str(CAEN_dict[key]))
+									self.SharedDict["LastLV"+str((int)(i)).zfill(2)+"VoltageSet"].setText(str(CAEN_dict[key]))
+									self.SharedDict["CAEN_table"].item(i,2).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Voltage Compliance of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.LVNames[i]+"_Voltage"
 								if (key) in CAEN_dict:
-									self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"Voltage"].setText(str(CAEN_dict[key]))
-									self.MonitorTags["CAEN_table"].item(i,3).setText(str(CAEN_dict[key]))
+									self.SharedDict["LastLV"+str((int)(i)).zfill(2)+"Voltage"].setText(str(CAEN_dict[key]))
+									self.SharedDict["CAEN_table"].item(i,3).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Voltage of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.LVNames[i]+"_Current"
 								if (key) in CAEN_dict:
-									self.MonitorTags["LastLV"+str((int)(i)).zfill(2)+"Current"].setText(str(CAEN_dict[key]))
-									self.MonitorTags["CAEN_table"].item(i,4).setText(str(CAEN_dict[key]))
+									self.SharedDict["LastLV"+str((int)(i)).zfill(2)+"Current"].setText(str(CAEN_dict[key]))
+									self.SharedDict["CAEN_table"].item(i,4).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Current of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
 							
@@ -105,46 +108,46 @@ class BurnIn_Monitor(QObject):
 								if key in CAEN_dict:
 									is_active = CAEN_dict[key]
 									if is_active >0 :
-										self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"Status"].setText("ON")
-										self.MonitorTags["CAEN_table"].item(i,6).setText("ON")
-										self.MonitorTags["CAEN_table"].item(i,0).setBackground(QtGui.QColor("lightgrey"))	
+										self.SharedDict["LastHV"+str((int)(i)).zfill(2)+"Status"].setText("ON")
+										self.SharedDict["CAEN_table"].item(i,6).setText("ON")
+										self.SharedDict["CAEN_table"].item(i,0).setBackground(QtGui.QColor("lightgrey"))	
 									else:
-										self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"Status"].setText("OFF")
-										self.MonitorTags["CAEN_table"].item(i,6).setText("OFF")
-										self.MonitorTags["CAEN_table"].item(i,0).setBackground(QtGui.QColor("white"))		
+										self.SharedDict["LastHV"+str((int)(i)).zfill(2)+"Status"].setText("OFF")
+										self.SharedDict["CAEN_table"].item(i,6).setText("OFF")
+										self.SharedDict["CAEN_table"].item(i,0).setBackground(QtGui.QColor("white"))		
 								else:
 									self.logger.warning("MONITOR: Status of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.HVNames[i]+"_VoltageCompliance"
 								if (key) in CAEN_dict:
-									self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"VoltageSet"].setText(str(CAEN_dict[key]))
-									self.MonitorTags["CAEN_table"].item(i,7).setText(str(CAEN_dict[key]))
+									self.SharedDict["LastHV"+str((int)(i)).zfill(2)+"VoltageSet"].setText(str(CAEN_dict[key]))
+									self.SharedDict["CAEN_table"].item(i,7).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Voltage of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.HVNames[i]+"_Voltage"
 								if (key) in CAEN_dict:
-									self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"Voltage"].setText(str(CAEN_dict[key]))
-									self.MonitorTags["CAEN_table"].item(i,8).setText(str(CAEN_dict[key]))
+									self.SharedDict["LastHV"+str((int)(i)).zfill(2)+"Voltage"].setText(str(CAEN_dict[key]))
+									self.SharedDict["CAEN_table"].item(i,8).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Voltage of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.HVNames[i]+"_Current"
 								if (key) in CAEN_dict:
-									self.MonitorTags["LastHV"+str((int)(i)).zfill(2)+"Current"].setText(str(CAEN_dict[key]))
-									self.MonitorTags["CAEN_table"].item(i,9).setText(str(CAEN_dict[key]))
+									self.SharedDict["LastHV"+str((int)(i)).zfill(2)+"Current"].setText(str(CAEN_dict[key]))
+									self.SharedDict["CAEN_table"].item(i,9).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Current of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
 
 					
-						self.MonitorTags["LastMQTTCAENMsgTS"].setText(self.MQTT.LastCAENMessageTS)
+						self.SharedDict["LastMQTTCAENMsgTS"].setText(self.MQTT.LastCAENMessageTS)
 						deltaSec = (datetime.now()-self.MQTT.LastCAENMessageDT).total_seconds()
 						if (deltaSec < 60):
-							self.MonitorTags["CAEN_updated"] = True
-							self.MonitorTags["LastMQTTCAENMsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
+							self.SharedDict["CAEN_updated"] = True
+							self.SharedDict["LastMQTTCAENMsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
 						else:
-							self.MonitorTags["CAEN_updated"] = False
-							self.MonitorTags["LastMQTTCAENMsgTS"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ")
+							self.SharedDict["CAEN_updated"] = False
+							self.SharedDict["LastMQTTCAENMsgTS"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ")
 							
 
 					except Exception as e:
@@ -157,20 +160,20 @@ class BurnIn_Monitor(QObject):
 						
 						M5_dict = json.loads(self.MQTT.LastM5Message)
 
-						self.MonitorTags["LastM5DP"].setText(str(M5_dict["dewpoint"]))
-						self.MonitorTags["Ctrl_ExtDewPoint"].setText(str(M5_dict["dewpoint"]))
-						self.MonitorTags["LastM5Temp"].setText(str(M5_dict["temperature"]))
-						self.MonitorTags["LastM5Humi"].setText(str(M5_dict["RH"]))
-						self.MonitorTags["LastM5Pres"].setText(str(M5_dict["Pressure"]))
+						self.SharedDict["LastM5DP"].setText(str(M5_dict["dewpoint"]))
+						self.SharedDict["Ctrl_ExtDewPoint"].setText(str(M5_dict["dewpoint"]))
+						self.SharedDict["LastM5Temp"].setText(str(M5_dict["temperature"]))
+						self.SharedDict["LastM5Humi"].setText(str(M5_dict["RH"]))
+						self.SharedDict["LastM5Pres"].setText(str(M5_dict["Pressure"]))
 					
-						self.MonitorTags["LastMQTTM5MsgTS"].setText(self.MQTT.LastM5MessageTS)
+						self.SharedDict["LastMQTTM5MsgTS"].setText(self.MQTT.LastM5MessageTS)
 						deltaSec = (datetime.now()-self.MQTT.LastM5MessageDT).total_seconds()
 						if deltaSec < 60:
-							self.MonitorTags["M5_updated"] = True
-							self.MonitorTags["LastMQTTM5MsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
+							self.SharedDict["M5_updated"] = True
+							self.SharedDict["LastMQTTM5MsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
 						else:
-							self.MonitorTags["M5_updated"] = False
-							self.MonitorTags["LastMQTTM5MsgTS"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ")
+							self.SharedDict["M5_updated"] = False
+							self.SharedDict["LastMQTTM5MsgTS"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ")
 
 					except Exception as e:
 						self.logger.warning("MONITOR: error splitting MQTT M5 message. Details below.")
@@ -183,19 +186,19 @@ class BurnIn_Monitor(QObject):
 				if not self.Julabo.is_connected :
 					self.Julabo.connect()
 				if self.Julabo.is_connected :
-					self.MonitorTags["JULABOConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-					self.MonitorTags["JULABOConn"].setText("Connected")
+					self.SharedDict["JULABOConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+					self.SharedDict["JULABOConn"].setText("Connected")
 					self.Julabo.sendTCP("status")
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
-						self.MonitorTags["LastJulaboStatus"].setText(reply)
+						self.SharedDict["LastJulaboStatus"].setText(reply)
 						self.MQTT_JULABO_dict["status"]=reply
-						if self.MonitorTags["LastJulaboStatus"].text().find("START")!=-1:
-							self.MonitorTags["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-							self.MonitorTags["Ctrl_StatusJulabo"].setText(self.MonitorTags["LastJulaboStatus"].text())
+						if self.SharedDict["LastJulaboStatus"].text().find("START")!=-1:
+							self.SharedDict["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+							self.SharedDict["Ctrl_StatusJulabo"].setText(self.SharedDict["LastJulaboStatus"].text())
 						else:
-							self.MonitorTags["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
-							self.MonitorTags["Ctrl_StatusJulabo"].setText(self.MonitorTags["LastJulaboStatus"].text())
+							self.SharedDict["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+							self.SharedDict["Ctrl_StatusJulabo"].setText(self.SharedDict["LastJulaboStatus"].text())
 					else:
 						self.JulaboCycleOK = False
 							
@@ -205,8 +208,8 @@ class BurnIn_Monitor(QObject):
 					self.Julabo.sendTCP("in_sp_00")
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
-						self.MonitorTags["LastJulaboSP1"].setText(reply.replace(" ", ""))
-						self.MonitorTags["Ctrl_Sp1"].setText(self.MonitorTags["LastJulaboSP1"].text())
+						self.SharedDict["LastJulaboSP1"].setText(reply.replace(" ", ""))
+						self.SharedDict["Ctrl_Sp1"].setText(self.SharedDict["LastJulaboSP1"].text())
 						self.MQTT_JULABO_dict["Temp_SP1"]=float(reply.replace(" ", ""))
 					else:
 						self.JulaboCycleOK = False
@@ -214,8 +217,8 @@ class BurnIn_Monitor(QObject):
 					self.Julabo.sendTCP("in_sp_01")
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
-						self.MonitorTags["LastJulaboSP2"].setText(reply.replace(" ", ""))
-						self.MonitorTags["Ctrl_Sp2"].setText(self.MonitorTags["LastJulaboSP2"].text())
+						self.SharedDict["LastJulaboSP2"].setText(reply.replace(" ", ""))
+						self.SharedDict["Ctrl_Sp2"].setText(self.SharedDict["LastJulaboSP2"].text())
 						self.MQTT_JULABO_dict["Temp_SP2"]=float(reply.replace(" ", ""))
 					else:
 						self.JulaboCycleOK = False
@@ -223,8 +226,8 @@ class BurnIn_Monitor(QObject):
 					self.Julabo.sendTCP("in_sp_02")
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
-						self.MonitorTags["LastJulaboSP3"].setText(reply.replace(" ", ""))
-						self.MonitorTags["Ctrl_Sp3"].setText(self.MonitorTags["LastJulaboSP3"].text())
+						self.SharedDict["LastJulaboSP3"].setText(reply.replace(" ", ""))
+						self.SharedDict["Ctrl_Sp3"].setText(self.SharedDict["LastJulaboSP3"].text())
 						self.MQTT_JULABO_dict["Temp_SP3"]=float(reply.replace(" ", ""))
 					else:
 						self.JulaboCycleOK = False
@@ -232,7 +235,7 @@ class BurnIn_Monitor(QObject):
 					self.Julabo.sendTCP("in_pv_00")
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
-						self.MonitorTags["LastJulaboBT"].setText(reply.replace(" ", ""))
+						self.SharedDict["LastJulaboBT"].setText(reply.replace(" ", ""))
 						self.MQTT_JULABO_dict["Temp_bath"]=float(reply.replace(" ", ""))
 					else:
 						self.JulaboCycleOK = False
@@ -240,7 +243,7 @@ class BurnIn_Monitor(QObject):
 					self.Julabo.sendTCP("in_pv_01")
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
-						self.MonitorTags["LastJulaboHP"].setText(reply.replace(" ", ""))
+						self.SharedDict["LastJulaboHP"].setText(reply.replace(" ", ""))
 						self.MQTT_JULABO_dict["HP"]=float(reply.replace(" ", ""))
 					else:
 						self.JulaboCycleOK = False
@@ -249,37 +252,37 @@ class BurnIn_Monitor(QObject):
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
 						Sp = str(int(reply.replace(" ", ""))+1)
-						self.MonitorTags["LastJulaboTSP"].setText(Sp)
-						self.MonitorTags["Ctrl_TSp"].setText(Sp)
+						self.SharedDict["LastJulaboTSP"].setText(Sp)
+						self.SharedDict["Ctrl_TSp"].setText(Sp)
 						self.MQTT_JULABO_dict["target_SP"]=float(reply.replace(" ", ""))
 					else:
 						self.JulaboCycleOK = False
 						
-					if self.MonitorTags["LastJulaboTSP"].text()[:1]=="1":
-						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["LastJulaboSP1"].text())
-					elif self.MonitorTags["LastJulaboTSP"].text()[:1]=="2":
-						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["LastJulaboSP2"].text())
-					elif self.MonitorTags["LastJulaboTSP"].text()[:1]=="3":
-						self.MonitorTags["Ctrl_TargetTemp"].setText(self.MonitorTags["LastJulaboSP3"].text())
+					if self.SharedDict["LastJulaboTSP"].text()[:1]=="1":
+						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["LastJulaboSP1"].text())
+					elif self.SharedDict["LastJulaboTSP"].text()[:1]=="2":
+						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["LastJulaboSP2"].text())
+					elif self.SharedDict["LastJulaboTSP"].text()[:1]=="3":
+						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["LastJulaboSP3"].text())
 							
 						
 				else:
-					self.MonitorTags["JULABOConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
-					self.MonitorTags["JULABOConn"].setText("Disconnected")
+					self.SharedDict["JULABOConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+					self.SharedDict["JULABOConn"].setText("Disconnected")
 					self.JulaboCycleOK = False
 				self.Julabo.lock.release()
 				
 				if self.JulaboCycleOK:
 					self.LastJulaboCycleDT = datetime.now()
-					self.MonitorTags["LastJulaboMsgTS"].setText(self.LastJulaboCycleDT.strftime("%d/%m/%Y %H:%M:%S"))
+					self.SharedDict["LastJulaboMsgTS"].setText(self.LastJulaboCycleDT.strftime("%d/%m/%Y %H:%M:%S"))
 					if self.MQTT.is_connected:
 						self.MQTT.publish("/julabo/full",json.dumps(self.MQTT_JULABO_dict))
 				if (datetime.now()-self.LastJulaboCycleDT).total_seconds() < 60:
-					self.MonitorTags["LastJulaboMsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
-					self.MonitorTags["Julabo_updated"] = True
+					self.SharedDict["LastJulaboMsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
+					self.SharedDict["Julabo_updated"] = True
 				else:
-					self.MonitorTags["LastJulaboMsgTS"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ")
-					self.MonitorTags["Julabo_updated"] = False
+					self.SharedDict["LastJulaboMsgTS"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ")
+					self.SharedDict["Julabo_updated"] = False
 					
 					
 					
@@ -295,55 +298,74 @@ class BurnIn_Monitor(QObject):
 				if not self.FNALBox.is_connected :
 					self.FNALBox.connect()
 				if self.FNALBox.is_connected :
-					self.MonitorTags["FNALConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-					self.MonitorTags["FNALConn"].setText("Connected")
+					self.SharedDict["FNALConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+					self.SharedDict["FNALConn"].setText("Connected")
 					self.FNALBox.sendTCP("[10]")
 					reply = self.FNALBox.receive()
 					if (reply != "None" and reply != "TCP error"):
 						reply_list = reply[1:-1].split(",")
 						try:
-							self.MonitorTags["LastFNALBoxTemp0"].setText(reply_list[0])
+							self.SharedDict["LastFNALBoxTemp0"].setText(reply_list[0])
 							self.MQTT_FNALBox_dict["Temp0"]=float(reply_list[0])
-							self.MonitorTags["LastFNALBoxTemp1"].setText(reply_list[1][1:])
+							self.SharedDict["LastFNALBoxTemp1"].setText(reply_list[1][1:])
 							self.MQTT_FNALBox_dict["Temp1"]=float(reply_list[1][1:])
 							
-							self.MonitorTags["LastFNALBoxDoor"].setText(reply_list[2][1:])
+							self.SharedDict["LastFNALBoxDoor"].setText(reply_list[2][1:])
 							self.MQTT_FNALBox_dict["Door"]=float(reply_list[2][1:])
 							if float(reply_list[2][1:]) > 100.0:
-								self.MonitorTags["Ctrl_StatusDoor"].setText("OPEN")
+								self.SharedDict["Ctrl_StatusDoor"].setText("OPEN")
 							else:
-								self.MonitorTags["Ctrl_StatusDoor"].setText("CLOSED")
+								self.SharedDict["Ctrl_StatusDoor"].setText("CLOSED")
                                 
 							for i in range(10):
-								self.MonitorTags["LastFNALBoxOW"+str(i)].setText(reply_list[i+4][1:])
+								self.SharedDict["LastFNALBoxOW"+str(i)].setText(reply_list[i+4][1:])
 								self.MQTT_FNALBox_dict["OW"+str(i)]=float(reply_list[i+4][1:])
-							self.MonitorTags["LastFNALBoxDP"].setText(reply_list[14][1:])
+							self.SharedDict["LastFNALBoxDP"].setText(reply_list[14][1:])
 							self.MQTT_FNALBox_dict["DewPoint"]=float(reply_list[14][1:])
-							self.MonitorTags["Ctrl_IntDewPoint"].setText(reply_list[14][1:])
+							self.SharedDict["Ctrl_IntDewPoint"].setText(reply_list[14][1:])
+							
+							
+							
+							
 						except Exception as e:
 							self.logger.warning("MONITOR: error splitting FNAL reply "+reply)
 							self.FNALBoxCycleOK = False
-					self.MonitorTags["LastFNALBoxMsgTS"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+					self.SharedDict["LastFNALBoxMsgTS"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 				else:
 					self.FNALBoxCycleOK = False
-					self.MonitorTags["FNALConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
-					self.MonitorTags["FNALConn"].setText("Disconnected")
+					self.SharedDict["FNALConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+					self.SharedDict["FNALConn"].setText("Disconnected")
 				self.FNALBox.lock.release()
 				self.logger.debug("MONITOR: FNAL lock released")	
 				
 				if self.FNALBoxCycleOK:
 					self.LastFNALBoxCycleDT = datetime.now()
-					self.MonitorTags["LastFNALBoxMsgTS"].setText(self.LastFNALBoxCycleDT.strftime("%d/%m/%Y %H:%M:%S"))
+					self.SharedDict["LastFNALBoxMsgTS"].setText(self.LastFNALBoxCycleDT.strftime("%d/%m/%Y %H:%M:%S"))
 					if self.MQTT.is_connected:
-						self.MQTT_FNALBox_dict["StatusLock"]=self.MonitorTags["Ctrl_StatusLock"].text()
-						self.MQTT_FNALBox_dict["AirFlow"]=self.MonitorTags["Ctrl_StatusFlow"].text()
-						self.MQTT.publish("/fnalbox/full",json.dumps(self.MQTT_FNALBox_dict))
+						self.MQTT_FNALBox_dict["StatusLock"]=self.SharedDict["Ctrl_StatusLock"].text()
+						self.MQTT_FNALBox_dict["AirFlow"]=self.SharedDict["Ctrl_StatusFlow"].text()
+						self.MQTT.publish("/fnalbox/full",json.dumps(self.MQTT_FNALBox_dict))						
 				if (datetime.now()-self.LastFNALBoxCycleDT).total_seconds() < 60:
-					self.MonitorTags["LastFNALBoxMsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
-					self.MonitorTags["FNALBox_updated"] = True
+					self.SharedDict["LastFNALBoxMsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
+					self.SharedDict["FNALBox_updated"] = True
 				else:
-					self.MonitorTags["LastFNALBoxMsgTS"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ")
-					self.MonitorTags["FNALBox_updated"] = False
+					self.SharedDict["LastFNALBoxMsgTS"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ")
+					self.SharedDict["FNALBox_updated"] = False
+					
+					
+					
+			if self.JulaboCycleOK and self.FNALBoxCycleOK and self.SharedDict["BI_Active"]:
+				self.SharedDict["Time_arr"].append(time.time())
+				self.SharedDict["DewPoint_arr"].append(float(self.SharedDict["Ctrl_IntDewPoint"].text()))
+				self.SharedDict["Temp_arr"].append(float(self.SharedDict["LastFNALBoxTemp0"].text()))
+				
+				try:
+					self.SharedDict["Targ_arr"].append(float(self.SharedDict["Ctrl_TargetTemp"].text()))
+				except Exception as e:
+					self.SharedDict["Targ_arr"].append(0.0)
+					self.logger.error(e)
+				self.Update_graph.emit()
 			
+			#self.Update_manualOp_tab.emit()
 			self.logger.debug("MONITOR: Monitoring cycle done")
 			time.sleep(3)
