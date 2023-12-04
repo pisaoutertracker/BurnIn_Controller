@@ -29,7 +29,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	Ctrl_PowerHV_sig = pyqtSignal(bool)
 	Ctrl_VSet_sig = pyqtSignal(str)
 	
-	BI_Start_sig = pyqtSignal()
+	BI_Start_sig = pyqtSignal(dict)
 	
 
 
@@ -413,7 +413,13 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Targ_arr.clear()
 		self.DewPoint_arr.clear()
 		self.ManualOp_tab.setEnabled(False)
-		self.BI_Start_sig.emit()
+		BI_Options={}
+		BI_Options["LowTemp"]= self.BI_LowTemp_dsb.value()
+		BI_Options["HighTemp"]= self.BI_HighTemp_dsb.value()
+		BI_Options["UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
+		BI_Options["UnderKeep"]=self.BI_UnderRampTemp_dsb.value()
+		BI_Options["NCycles"]=self.BI_NCycles_sb.value()
+		self.BI_Start_sig.emit(BI_Options)
 	
 	def BI_Stop_Cmd(self):
 		self.logger.info("Requesting BurnIn stop...")
