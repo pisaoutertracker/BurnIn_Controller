@@ -38,7 +38,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -66,13 +66,6 @@
                 <widget class="QLabel" name="label_69">
                  <property name="text">
                   <string>Undershoot Ramp (C°):</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_70">
-                 <property name="text">
-                  <string>Undershoot keep (C°):</string>
                  </property>
                 </widget>
                </item>
@@ -105,6 +98,13 @@
                  </property>
                 </widget>
                </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_70">
+                 <property name="text">
+                  <string>Undershoot keep (C°):</string>
+                 </property>
+                </widget>
+               </item>
                <item row="3" column="1">
                 <widget class="QDoubleSpinBox" name="BI_UnderRampTemp_dsb">
                  <property name="singleStep">
@@ -122,6 +122,16 @@
                  </property>
                 </widget>
                </item>
+               <item row="5" column="1">
+                <widget class="QSpinBox" name="BI_NCycles_sb">
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                 <property name="value">
+                  <number>1</number>
+                 </property>
+                </widget>
+               </item>
                <item row="0" column="0">
                 <widget class="QLabel" name="label_66">
                  <property name="text">
@@ -136,13 +146,17 @@
                  </property>
                 </widget>
                </item>
-               <item row="5" column="1">
-                <widget class="QSpinBox" name="BI_NCycles_sb">
-                 <property name="minimum">
-                  <number>1</number>
+               <item row="6" column="0">
+                <widget class="QLabel" name="label_81">
+                 <property name="text">
+                  <string>Operator:</string>
                  </property>
-                 <property name="value">
-                  <number>1</number>
+                </widget>
+               </item>
+               <item row="6" column="1">
+                <widget class="QLineEdit" name="lineEdit">
+                 <property name="text">
+                  <string>Jonny Bravo</string>
                  </property>
                 </widget>
                </item>
@@ -187,7 +201,7 @@
             <item>
              <widget class="QGroupBox" name="groupBox_14">
               <property name="title">
-               <string>Architecture (NOT WORKING)</string>
+               <string>Architecture (Press to edit)</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
                <item>
@@ -200,72 +214,72 @@
                   </widget>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QPushButton" name="pushButton">
+                  <widget class="QPushButton" name="BI_Mod0ID_btn">
                    <property name="text">
-                    <string>Module #0</string>
+                    <string>Module ID</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="3">
-                  <widget class="QPushButton" name="pushButton_2">
+                  <widget class="QPushButton" name="BI_Mod5ID_btn">
                    <property name="text">
-                    <string>Module #0</string>
+                    <string>Module ID</string>
                    </property>
                   </widget>
                  </item>
                  <item row="2" column="2">
-                  <widget class="QPushButton" name="pushButton_3">
+                  <widget class="QPushButton" name="BI_Mod1ID_btn">
                    <property name="text">
-                    <string>Module #0</string>
+                    <string>Module ID</string>
                    </property>
                   </widget>
                  </item>
                  <item row="7" column="2">
-                  <widget class="QPushButton" name="pushButton_6">
+                  <widget class="QPushButton" name="BI_Mod4ID_btn">
                    <property name="text">
-                    <string>Module #0</string>
+                    <string>Module ID</string>
                    </property>
                   </widget>
                  </item>
                  <item row="2" column="3">
-                  <widget class="QPushButton" name="pushButton_7">
+                  <widget class="QPushButton" name="BI_Mod6ID_btn">
                    <property name="text">
-                    <string>Module #0</string>
+                    <string>Module ID</string>
                    </property>
                   </widget>
                  </item>
                  <item row="5" column="2">
-                  <widget class="QPushButton" name="pushButton_5">
+                  <widget class="QPushButton" name="BI_Mod3ID_btn">
                    <property name="text">
-                    <string>Module #0</string>
+                    <string>Module ID</string>
                    </property>
                   </widget>
                  </item>
                  <item row="3" column="2">
-                  <widget class="QPushButton" name="pushButton_4">
+                  <widget class="QPushButton" name="BI_Mod2ID_btn">
                    <property name="text">
-                    <string>Module #0</string>
+                    <string>Module ID</string>
                    </property>
                   </widget>
                  </item>
                  <item row="5" column="3">
-                  <widget class="QPushButton" name="pushButton_9">
+                  <widget class="QPushButton" name="BI_Mod8ID_btn">
                    <property name="text">
-                    <string>Module #0</string>
+                    <string>Module ID</string>
                    </property>
                   </widget>
                  </item>
                  <item row="3" column="3">
-                  <widget class="QPushButton" name="pushButton_8">
+                  <widget class="QPushButton" name="BI_Mod7ID_btn">
                    <property name="text">
-                    <string>Module #0</string>
+                    <string>Module ID</string>
                    </property>
                   </widget>
                  </item>
                  <item row="7" column="3">
-                  <widget class="QPushButton" name="pushButton_10">
+                  <widget class="QPushButton" name="BI_Mod9ID_btn">
                    <property name="text">
-                    <string>Module #0</string>
+                    <string>Module ID</string>
                    </property>
                   </widget>
                  </item>

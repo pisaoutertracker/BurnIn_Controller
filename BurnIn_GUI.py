@@ -114,6 +114,20 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.HV08ID_tag.setText(self.HVNames[8])
 		self.HV09ID_tag.setText(self.HVNames[9])
 		
+		
+		# pack module IDs button
+		self.ModuleId_btns = []
+		self.ModuleId_btns.append(self.BI_Mod0ID_btn)
+		self.ModuleId_btns.append(self.BI_Mod1ID_btn)
+		self.ModuleId_btns.append(self.BI_Mod2ID_btn)
+		self.ModuleId_btns.append(self.BI_Mod3ID_btn)
+		self.ModuleId_btns.append(self.BI_Mod4ID_btn)
+		self.ModuleId_btns.append(self.BI_Mod5ID_btn)
+		self.ModuleId_btns.append(self.BI_Mod6ID_btn)
+		self.ModuleId_btns.append(self.BI_Mod7ID_btn)
+		self.ModuleId_btns.append(self.BI_Mod8ID_btn)
+		self.ModuleId_btns.append(self.BI_Mod9ID_btn)
+		
 		self.JulaboTestCmd_btn.setEnabled(False)    
 		self.FNALBoxTestCmd_btn.setEnabled(False)    
 		self.CAENControllerTestCmd_btn.setEnabled(False)    
@@ -305,7 +319,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.CAENControllerTestCmd_btn.clicked.connect(self.SendCAENControllerCmd)
 		self.ModuleTestCmd_btn.clicked.connect(self.SendModuleTestCmd)
 	
-				# module test tab
+		# module test tab
 		self.Ctrl_StartSesh_btn.clicked.connect(self.Ctrl_StartSesh_Cmd)
 		self.Ctrl_StartTest_btn.clicked.connect(self.Ctrl_StartTest_Cmd)
 		
@@ -316,6 +330,16 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_SelSp1_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(0))
 		self.Ctrl_SelSp2_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(1))
 		self.Ctrl_SelSp3_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(2))
+		self.ModuleId_btns[0].clicked.connect(lambda : self.BI_SetModuleID(0))
+		self.ModuleId_btns[1].clicked.connect(lambda : self.BI_SetModuleID(1))
+		self.ModuleId_btns[2].clicked.connect(lambda : self.BI_SetModuleID(2))
+		self.ModuleId_btns[3].clicked.connect(lambda : self.BI_SetModuleID(3))
+		self.ModuleId_btns[4].clicked.connect(lambda : self.BI_SetModuleID(4))
+		self.ModuleId_btns[5].clicked.connect(lambda : self.BI_SetModuleID(5))
+		self.ModuleId_btns[6].clicked.connect(lambda : self.BI_SetModuleID(6))
+		self.ModuleId_btns[7].clicked.connect(lambda : self.BI_SetModuleID(7))
+		self.ModuleId_btns[8].clicked.connect(lambda : self.BI_SetModuleID(8))
+		self.ModuleId_btns[9].clicked.connect(lambda : self.BI_SetModuleID(9))
 		self.Ctrl_SetLowFlow_btn.clicked.connect(lambda : self.Ctrl_SetHighFlow_Cmd(False))
 		self.Ctrl_SetHighFlow_btn.clicked.connect(lambda : self.Ctrl_SetHighFlow_Cmd(True))
 		self.Ctrl_SetLock_btn.clicked.connect    (lambda : self.Ctrl_SetLock_Cmd(True))
@@ -432,6 +456,15 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	@pyqtSlot()
 	def BI_terminated(self):
 		self.ManualOp_tab.setEnabled(True) 
+		
+	def BI_SetModuleID(self,idx):
+		
+		Id, ok = QtWidgets.QInputDialog.getText(self,"Enter or scan module IDs","Module ID") 
+		if ok:
+			self.ModuleId_btns[idx].setText(Id)
+			self.logger.info("New Id for module "+str(idx)+": "+Id)
+		else:
+			self.logger.info("New Id for module "+str(idx)+" aborted by user")
 		
 						
 	def Ctrl_StartSesh_Cmd(self):
