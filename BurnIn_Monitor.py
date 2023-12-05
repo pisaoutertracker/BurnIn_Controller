@@ -4,6 +4,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 import time
 from datetime import datetime
 import json
+from __Constant import *
 
 from MQTT_interface import *
 
@@ -73,33 +74,33 @@ class BurnIn_Monitor(QObject):
 									is_active = CAEN_dict[key]
 									if is_active >0 :
 										self.SharedDict["LastLV"+str((int)(i)).zfill(2)+"Status"].setText("ON")
-										self.SharedDict["CAEN_table"].item(i,1).setText("ON")
-										self.SharedDict["CAEN_table"].item(i,5).setBackground(QtGui.QColor("white"))		
+										self.SharedDict["CAEN_table"].item(i,CTRLTABLE_LV_STAT_COL).setText("ON")
+										self.SharedDict["CAEN_table"].item(i,CTRLTABLE_HV_NAME_COL).setBackground(QtGui.QColor("white"))		
 									else:
 										self.SharedDict["LastLV"+str((int)(i)).zfill(2)+"Status"].setText("OFF")
-										self.SharedDict["CAEN_table"].item(i,1).setText("OFF")
-										self.SharedDict["CAEN_table"].item(i,5).setBackground(QtGui.QColor("lightgray"))	
+										self.SharedDict["CAEN_table"].item(i,CTRLTABLE_LV_STAT_COL).setText("OFF")
+										self.SharedDict["CAEN_table"].item(i,CTRLTABLE_HV_NAME_COL).setBackground(QtGui.QColor("lightgray"))	
 								else:
 									self.logger.warning("MONITOR: Status of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
 									
 								key = "caen_"+self.LVNames[i]+"_VoltageCompliance"
 								if (key) in CAEN_dict:
 									self.SharedDict["LastLV"+str((int)(i)).zfill(2)+"VoltageSet"].setText(str(CAEN_dict[key]))
-									self.SharedDict["CAEN_table"].item(i,2).setText(str(CAEN_dict[key]))
+									self.SharedDict["CAEN_table"].item(i,CTRLTABLE_LV_VSET_COL).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Voltage Compliance of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.LVNames[i]+"_Voltage"
 								if (key) in CAEN_dict:
 									self.SharedDict["LastLV"+str((int)(i)).zfill(2)+"Voltage"].setText(str(CAEN_dict[key]))
-									self.SharedDict["CAEN_table"].item(i,3).setText(str(CAEN_dict[key]))
+									self.SharedDict["CAEN_table"].item(i,CTRLTABLE_LV_VREAD_COL).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Voltage of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.LVNames[i]+"_Current"
 								if (key) in CAEN_dict:
 									self.SharedDict["LastLV"+str((int)(i)).zfill(2)+"Current"].setText(str(CAEN_dict[key]))
-									self.SharedDict["CAEN_table"].item(i,4).setText(str(CAEN_dict[key]))
+									self.SharedDict["CAEN_table"].item(i,CTRLTABLE_LV_CURR_COL).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Current of LV channel "+ self.LVNames[i]+" not found in last MQTT message")
 							
@@ -109,40 +110,40 @@ class BurnIn_Monitor(QObject):
 									is_active = CAEN_dict[key]
 									if is_active >0 :
 										self.SharedDict["LastHV"+str((int)(i)).zfill(2)+"Status"].setText("ON")
-										self.SharedDict["CAEN_table"].item(i,6).setText("ON")
-										self.SharedDict["CAEN_table"].item(i,0).setBackground(QtGui.QColor("lightgrey"))	
+										self.SharedDict["CAEN_table"].item(i,CTRLTABLE_HV_STAT_COL).setText("ON")
+										self.SharedDict["CAEN_table"].item(i,CTRLTABLE_LV_NAME_COL).setBackground(QtGui.QColor("lightgrey"))	
 									else:
 										self.SharedDict["LastHV"+str((int)(i)).zfill(2)+"Status"].setText("OFF")
-										self.SharedDict["CAEN_table"].item(i,6).setText("OFF")
-										self.SharedDict["CAEN_table"].item(i,0).setBackground(QtGui.QColor("white"))		
+										self.SharedDict["CAEN_table"].item(i,CTRLTABLE_HV_STAT_COL).setText("OFF")
+										self.SharedDict["CAEN_table"].item(i,CTRLTABLE_LV_NAME_COL).setBackground(QtGui.QColor("white"))		
 								else:
 									self.logger.warning("MONITOR: Status of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.HVNames[i]+"_VoltageCompliance"
 								if (key) in CAEN_dict:
 									self.SharedDict["LastHV"+str((int)(i)).zfill(2)+"VoltageSet"].setText(str(CAEN_dict[key]))
-									self.SharedDict["CAEN_table"].item(i,7).setText(str(CAEN_dict[key]))
+									self.SharedDict["CAEN_table"].item(i,CTRLTABLE_HV_VSET_COL).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Voltage of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.HVNames[i]+"_Voltage"
 								if (key) in CAEN_dict:
 									self.SharedDict["LastHV"+str((int)(i)).zfill(2)+"Voltage"].setText(str(CAEN_dict[key]))
-									self.SharedDict["CAEN_table"].item(i,8).setText(str(CAEN_dict[key]))
+									self.SharedDict["CAEN_table"].item(i,CTRLTABLE_HV_VREAD_COL).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Voltage of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
 
 								key = "caen_"+self.HVNames[i]+"_Current"
 								if (key) in CAEN_dict:
 									self.SharedDict["LastHV"+str((int)(i)).zfill(2)+"Current"].setText(str(CAEN_dict[key]))
-									self.SharedDict["CAEN_table"].item(i,9).setText(str(CAEN_dict[key]))
+									self.SharedDict["CAEN_table"].item(i,CTRLTABLE_HV_CURR_COL).setText(str(CAEN_dict[key]))
 								else:
 									self.logger.warning("MONITOR: Current of HV channel "+ self.HVNames[i]+" not found in last MQTT message")
 
 					
 						self.SharedDict["LastMQTTCAENMsgTS"].setText(self.MQTT.LastCAENMessageTS)
 						deltaSec = (datetime.now()-self.MQTT.LastCAENMessageDT).total_seconds()
-						if (deltaSec < 60):
+						if (deltaSec < MONITOR_UPDATE_LIMIT):
 							self.SharedDict["CAEN_updated"] = True
 							self.SharedDict["LastMQTTCAENMsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
 						else:
@@ -168,7 +169,7 @@ class BurnIn_Monitor(QObject):
 					
 						self.SharedDict["LastMQTTM5MsgTS"].setText(self.MQTT.LastM5MessageTS)
 						deltaSec = (datetime.now()-self.MQTT.LastM5MessageDT).total_seconds()
-						if deltaSec < 60:
+						if deltaSec < MONITOR_UPDATE_LIMIT:
 							self.SharedDict["M5_updated"] = True
 							self.SharedDict["LastMQTTM5MsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
 						else:
@@ -277,7 +278,7 @@ class BurnIn_Monitor(QObject):
 					self.SharedDict["LastJulaboMsgTS"].setText(self.LastJulaboCycleDT.strftime("%d/%m/%Y %H:%M:%S"))
 					if self.MQTT.is_connected:
 						self.MQTT.publish("/julabo/full",json.dumps(self.MQTT_JULABO_dict))
-				if (datetime.now()-self.LastJulaboCycleDT).total_seconds() < 60:
+				if (datetime.now()-self.LastJulaboCycleDT).total_seconds() < MONITOR_UPDATE_LIMIT:
 					self.SharedDict["LastJulaboMsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
 					self.SharedDict["Julabo_updated"] = True
 				else:
@@ -305,24 +306,24 @@ class BurnIn_Monitor(QObject):
 					if (reply != "None" and reply != "TCP error"):
 						reply_list = reply[1:-1].split(",")
 						try:
-							self.SharedDict["LastFNALBoxTemp0"].setText(reply_list[0])
-							self.MQTT_FNALBox_dict["Temp0"]=float(reply_list[0])
-							self.SharedDict["LastFNALBoxTemp1"].setText(reply_list[1][1:])
-							self.MQTT_FNALBox_dict["Temp1"]=float(reply_list[1][1:])
+							self.SharedDict["LastFNALBoxTemp0"].setText(reply_list[FNAL_T0_OFFSET])
+							self.MQTT_FNALBox_dict["Temp0"]=float(reply_list[FNAL_T0_OFFSET])
+							self.SharedDict["LastFNALBoxTemp1"].setText(reply_list[FNAL_T1_OFFSET][1:])
+							self.MQTT_FNALBox_dict["Temp1"]=float(reply_list[FNAL_T1_OFFSET][1:])
 							
-							self.SharedDict["LastFNALBoxDoor"].setText(reply_list[2][1:])
-							self.MQTT_FNALBox_dict["Door"]=float(reply_list[2][1:])
-							if float(reply_list[2][1:]) > 100.0:
+							self.SharedDict["LastFNALBoxDoor"].setText(reply_list[FNAL_RS_OFFSET][1:])
+							self.MQTT_FNALBox_dict["Door"]=float(reply_list[FNAL_RS_OFFSET][1:])
+							if float(reply_list[FNAL_RS_OFFSET][1:]) > FNAL_RS_THR:
 								self.SharedDict["Ctrl_StatusDoor"].setText("OPEN")
 							else:
 								self.SharedDict["Ctrl_StatusDoor"].setText("CLOSED")
                                 
-							for i in range(10):
-								self.SharedDict["LastFNALBoxOW"+str(i)].setText(reply_list[i+4][1:])
-								self.MQTT_FNALBox_dict["OW"+str(i)]=float(reply_list[i+4][1:])
-							self.SharedDict["LastFNALBoxDP"].setText(reply_list[14][1:])
-							self.MQTT_FNALBox_dict["DewPoint"]=float(reply_list[14][1:])
-							self.SharedDict["Ctrl_IntDewPoint"].setText(reply_list[14][1:])
+							for i in range(NUM_BI_SLOTS):
+								self.SharedDict["LastFNALBoxOW"+str(i)].setText(reply_list[i+FNAL_OW_OFFSET][1:])
+								self.MQTT_FNALBox_dict["OW"+str(i)]=float(reply_list[i+FNAL_OW_OFFSET][1:])
+							self.SharedDict["LastFNALBoxDP"].setText(reply_list[FNAL_DP_OFFSET][1:])
+							self.MQTT_FNALBox_dict["DewPoint"]=float(reply_list[FNAL_DP_OFFSET][1:])
+							self.SharedDict["Ctrl_IntDewPoint"].setText(reply_list[FNAL_DP_OFFSET][1:])
 							
 							
 							
@@ -345,7 +346,7 @@ class BurnIn_Monitor(QObject):
 						self.MQTT_FNALBox_dict["StatusLock"]=self.SharedDict["Ctrl_StatusLock"].text()
 						self.MQTT_FNALBox_dict["AirFlow"]=self.SharedDict["Ctrl_StatusFlow"].text()
 						self.MQTT.publish("/fnalbox/full",json.dumps(self.MQTT_FNALBox_dict))						
-				if (datetime.now()-self.LastFNALBoxCycleDT).total_seconds() < 60:
+				if (datetime.now()-self.LastFNALBoxCycleDT).total_seconds() < MONITOR_UPDATE_LIMIT:
 					self.SharedDict["LastFNALBoxMsgTS"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ")
 					self.SharedDict["FNALBox_updated"] = True
 				else:
@@ -368,4 +369,4 @@ class BurnIn_Monitor(QObject):
 			
 			#self.Update_manualOp_tab.emit()
 			self.logger.debug("MONITOR: Monitoring cycle done")
-			time.sleep(3)
+			time.sleep(MONITOR_SLEEP)

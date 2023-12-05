@@ -20,17 +20,17 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     SendModuleTestCmd_sig = pyqtSignal(str)
 
 
-    Ctrl_SetSp_sig = pyqtSignal(int,float)
-    Ctrl_SelSp_sig = pyqtSignal(int)
-    Ctrl_PowerJulabo_sig = pyqtSignal(bool)
-    Ctrl_SetHighFlow_sig = pyqtSignal(bool)
-    Ctrl_SetLock_sig = pyqtSignal(bool)
-    Ctrl_PowerLV_sig = pyqtSignal(bool)
-    Ctrl_PowerHV_sig = pyqtSignal(bool)
-    Ctrl_VSet_sig = pyqtSignal(str)
-    
-    BI_Start_sig = pyqtSignal()
-    
+
+	Ctrl_SetSp_sig = pyqtSignal(int,float)
+	Ctrl_SelSp_sig = pyqtSignal(int)
+	Ctrl_PowerJulabo_sig = pyqtSignal(bool)
+	Ctrl_SetHighFlow_sig = pyqtSignal(bool)
+	Ctrl_SetLock_sig = pyqtSignal(bool)
+	Ctrl_PowerLV_sig = pyqtSignal(bool)
+	Ctrl_PowerHV_sig = pyqtSignal(bool)
+	Ctrl_VSet_sig = pyqtSignal(str)
+	
+	BI_Start_sig = pyqtSignal(dict)
 
 
     def __init__(self,configDict,logger):
@@ -129,6 +129,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         ########## packing shared infrmation ################
         self.SharedDict = {}
 
+<<<<<<< HEAD
         # PYQT tags in Monitor tab
         self.SharedDict["LastMonitor"]=self.LastMonitor_tag
         self.SharedDict["MQTTConn"]=self.MQTTConn_tag
@@ -366,7 +367,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.Worker.BI_terminated.connect(self.BI_terminated)
         self.Monitor.Update_graph.connect(self.Update_graph)
         #self.Monitor.Update_manualOp_tab.connect(self.Update_manualOp_tab)
-        #self.Worker.Update_graph.connect(self.Update_graph)
         
         
         self.statusBar().showMessage("System ready")
@@ -408,12 +408,19 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.Ctrl_VSet_sig.emit(VType)
     
     def BI_Start_Cmd(self):
-        self.Temp_arr.clear()
-        self.Time_arr.clear()
-        self.Targ_arr.clear()
-        self.DewPoint_arr.clear()
-        self.ManualOp_tab.setEnabled(False) 
-        self.BI_Start_sig.emit()
+		self.Temp_arr.clear()
+		self.Time_arr.clear()
+		self.Targ_arr.clear()
+		self.DewPoint_arr.clear()
+		self.ManualOp_tab.setEnabled(False)
+		BI_Options={}
+		BI_Options["LowTemp"]= self.BI_LowTemp_dsb.value()
+		BI_Options["HighTemp"]= self.BI_HighTemp_dsb.value()
+		BI_Options["UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
+		BI_Options["UnderKeep"]=self.BI_UnderRampTemp_dsb.value()
+		BI_Options["NCycles"]=self.BI_NCycles_sb.value()
+		self.BI_Start_sig.emit(BI_Options)
+	
     
     def BI_Stop_Cmd(self):
         self.logger.info("Requesting BurnIn stop...")

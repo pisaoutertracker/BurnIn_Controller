@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QMessageBox
 import time
 import datetime
 import subprocess
+from __Constant import *
 
 
 class BurnIn_Worker(QObject):
@@ -48,7 +49,7 @@ class BurnIn_Worker(QObject):
 			self.CAENController.connect()
 		if self.CAENController.is_connected :
 			self.CAENController.sendTCP(cmd)
-			time.sleep(0.250)
+			time.sleep(CAEN_SLEEP_AFTER_TCP)
 			self.logger.info(self.CAENController.receive())
 			self.CAENController.close()
 		else:	
@@ -63,7 +64,7 @@ class BurnIn_Worker(QObject):
 			self.FNALBox.connect()
 		if self.FNALBox.is_connected :
 			self.FNALBox.sendTCP(cmd)
-			time.sleep(0.250)
+			time.sleep(FNAL_SLEEP_AFTER_TCP)
 			self.logger.info(self.FNALBox.receive())
 		else:	
 			self.last_op_ok= False	
@@ -292,7 +293,7 @@ class BurnIn_Worker(QObject):
 				return
 			try:
 				IntTemp_arr = [float(self.SharedDict["LastFNALBoxTemp1"].text()),float(self.SharedDict["LastFNALBoxTemp0"].text())]
-				for i in range (10):
+				for i in range (NUM_BI_SLOTS):
 					IntTemp_arr.append(float(self.SharedDict["LastFNALBoxOW"+str(i)].text())) 
 				IntTemp_min = min(IntTemp_arr)
 			except Exception as e:
@@ -322,7 +323,7 @@ class BurnIn_Worker(QObject):
 			try:
 				self.FNALBox.sendTCP(cmd)
 				self.logger.info("WORKER: FNAL Box cmd sent: " + cmd)
-				time.sleep(0.250)
+				time.sleep(FNAL_SLEEP_AFTER_TCP)
 				reply = self.FNALBox.receive()
 				if reply[-3:]=="[*]":
 					self.SharedDict["Ctrl_StatusLock"].setText(lock)
@@ -362,7 +363,7 @@ class BurnIn_Worker(QObject):
 			try:
 				self.FNALBox.sendTCP(cmd)
 				self.logger.info("WORKER: FNAL Box cmd sent: " + cmd)
-				time.sleep(0.250)
+				time.sleep(FNAL_SLEEP_AFTER_TCP)
 				reply = self.FNALBox.receive()
 				if reply[-3:]=="[*]":
 					self.SharedDict["Ctrl_StatusFlow"].setText(flow)
@@ -407,9 +408,9 @@ class BurnIn_Worker(QObject):
 			self.last_op_ok= False
 			return	
 		if len(Channel_list)==0:
-			for row in range(10):
-				if self.SharedDict["CAEN_table"].item(row,0).isSelected():
-					ch_name = self.SharedDict["CAEN_table"].item(row,0).text()
+			for row in range(NUM_BI_SLOTS):
+				if self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_NAME_COL).isSelected():
+					ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_NAME_COL).text()
 					if (ch_name == "?"):
 						Warning_str = "Operation can't be performed"
 						Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
@@ -417,8 +418,8 @@ class BurnIn_Worker(QObject):
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
-					HV_defined = True if self.SharedDict["CAEN_table"].item(row,5).text() != "?" else False	
-					if (not switch) and  HV_defined and (self.SharedDict["CAEN_table"].item(row,6).text() != "OFF"):  # attempt to power down LV with HV not off
+					HV_defined = True if self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_NAME_COL).text() != "?" else False	
+					if (not switch) and  HV_defined and (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text() != "OFF"):  # attempt to power down LV with HV not off
 						Warning_str = "Operation can't be performed"
 						Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause HV is ON or UNKNOWN"
 						if not BI_Action:
@@ -453,9 +454,9 @@ class BurnIn_Worker(QObject):
 			return
 		
 		if len(Channel_list)==0:
-			for row in range(10):
-				if self.SharedDict["CAEN_table"].item(row,5).isSelected():
-					ch_name = self.SharedDict["CAEN_table"].item(row,5).text() 
+			for row in range(NUM_BI_SLOTS):
+				if self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_NAME_COL).isSelected():
+					ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_NAME_COL).text() 
 					if (ch_name == "?"):
 						Warning_str = "Operation can't be performed"
 						Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause HV ch. name is UNKNOWN"
@@ -463,7 +464,7 @@ class BurnIn_Worker(QObject):
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
-					if (switch) and (self.SharedDict["CAEN_table"].item(row,1).text() != "ON"):  # attempt to power up HV with LV not on
+					if (switch) and (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text() != "ON"):  # attempt to power up HV with LV not on
 						Warning_str = "Operation can't be performed"
 						Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause LV is OFF or UNKNOWN"
 						if not BI_Action:
@@ -488,7 +489,7 @@ class BurnIn_Worker(QObject):
 			self.logger.error("WORKER: Received unknow Voltage type string ")
 			return
 			
-		ColOffset = 0 if VType=="LV" else 5;
+		ColOffset = CTRLTABLE_LV_NAME_COL if VType=="LV" else CTRLTABLE_HV_NAME_COL;
 		if not (self.SharedDict["CAEN_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "CAEN infos are not updated"
@@ -505,7 +506,7 @@ class BurnIn_Worker(QObject):
 			return
 			
 		if len(Channel_list)==0:
-			for row in range(10):
+			for row in range(NUM_BI_SLOTS):
 				if self.SharedDict["CAEN_table"].item(row,ColOffset).isSelected():
 					ch_name = self.SharedDict["CAEN_table"].item(row,ColOffset).text() 
 					if (ch_name == "?"):
@@ -515,7 +516,7 @@ class BurnIn_Worker(QObject):
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
-					if (self.SharedDict["CAEN_table"].item(row,2+ColOffset).text() == "?"):  # Unknown HV set
+					if (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_VSET_COL+ColOffset).text() == "?"):  # Unknown HV set
 						Warning_str = "Operation can't be performed"
 						Reason_str = "Can't set LV for  slot "+str(row)+ " beacause current setpoint is UNKNOWN"
 						if not BI_Action:
@@ -531,9 +532,9 @@ class BurnIn_Worker(QObject):
 						self.logger.error(e)
 						
 					if VType == "LV":
-						self.Request_input_dsb.emit(Request_str,ValueNow,0,15)
+						self.Request_input_dsb.emit(Request_str,ValueNow,MIN_LV,MAX_HV)
 					else:
-						self.Request_input_dsb.emit(Request_str,ValueNow,0,500)
+						self.Request_input_dsb.emit(Request_str,ValueNow,MIN_HV,MAX_HV)
 						
 					while self.SharedDict["WaitInput"]:
 						time.sleep(0.1)
@@ -546,18 +547,18 @@ class BurnIn_Worker(QObject):
 		for idx,channel in enumerate(Channel_list):
 			self.SendCAENControllerCmd("SetVoltage,PowerSupplyId:caen,ChannelId:"+channel+",Voltage:"+str(NewValue_list[idx]))
 
-	@pyqtSlot()			
-	def BI_Start_Cmd(self):
+	@pyqtSlot(dict)			
+	def BI_Start_Cmd(self,BI_Options):
 		self.logger.info("Starting BurnIN...")
 		
 			
 	
-		LowTemp=-30.0
-		TempRumpOffset=10
-		TempMantainOffset=5
-		TempTolerance=5
-		HighTemp=10.0
-		NCycles=1
+		TempTolerance= BI_TEMP_TOLERANCE
+		LowTemp				= BI_Options["LowTemp"]
+		TempRampOffset		= BI_Options["UnderRamp"]
+		TempMantainOffset	= BI_Options["UnderKeep"]
+		HighTemp			= BI_Options["HighTemp"]
+		NCycles				= BI_Options["NCycles"]
 		
 		self.SharedDict["BI_Active"]=True
 		
@@ -576,9 +577,9 @@ class BurnIn_Worker(QObject):
 		HV_Channel_list=[]
 		Slot_list=[]
 		
-		for row in range(10):
-			LV_ch_name = self.SharedDict["CAEN_table"].item(row,0).text()
-			HV_ch_name = self.SharedDict["CAEN_table"].item(row,5).text() 
+		for row in range(NUM_BI_SLOTS):
+			LV_ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_NAME_COL).text()
+			HV_ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_NAME_COL).text() 
 			if (LV_ch_name != "?" and HV_ch_name != "?" ):
 				LV_Channel_list.append(LV_ch_name)
 				HV_Channel_list.append(HV_ch_name)
@@ -610,11 +611,11 @@ class BurnIn_Worker(QObject):
 		##start LV
 		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,LV_Channel_list,BI_Action):
 			return
-		time.sleep(60)
+		time.sleep(BI_SLEEP_AFTER_VSET)
 		
 		#check all LVs are ON
 		for row in Slot_list:
-			if(self.SharedDict["CAEN_table"].item(row,1).text()!="ON"):
+			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="ON"):
 				self.BI_Abort("BI aborted: some LVs was not turned ON")
 				return
 		
@@ -622,10 +623,10 @@ class BurnIn_Worker(QObject):
 		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,HV_Channel_list,BI_Action):
 			return
 		
-		time.sleep(60)
+		time.sleep(BI_SLEEP_AFTER_VSET)
 		#check all HVs are ON
 		for row in Slot_list:
-			if(self.SharedDict["CAEN_table"].item(row,6).text()!="ON"):
+			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
 				self.BI_Abort("BI aborted: some HVs was not turned ON")
 				return
 			
@@ -633,29 +634,14 @@ class BurnIn_Worker(QObject):
 		for cycle in range (NCycles):
 			self.logger.info("BI: starting cycle "+str(cycle+1) + " of "+str(NCycles))
 		
-			# set target temperature rump down
-			
-			self.logger.info("BI: runmping down")
-			if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,LowTemp-TempRumpOffset,BI_Action):
-				return	
-				
-			while (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-LowTemp) > TempTolerance):
-				if self.SharedDict["BI_StopRequest"]:
-					self.BI_Abort("BI aborted: user request")
-					return	
-				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
-					self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
-					return
-				time.sleep(10)	
-				
-			# set target temperature manatain
-			self.logger.info("BI: keep temperature and test (DUMMY)")
-			if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,LowTemp-TempMantainOffset,BI_Action):
+			# ramp down
+			self.logger.info("BI: runmping down...")
+			if not self.BI_Action(self.BI_GoLowTemp,BI_Options,BI_Action):
 				return
-
-			time.sleep(120)  # test dummy
 			
 			#do test here...
+			self.logger.info("BI: keep temperature ....")
+			time.sleep(120)  # test dummy
 			
 			
 			self.logger.info("BI: going to high temp")
@@ -669,7 +655,7 @@ class BurnIn_Worker(QObject):
 				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
 					self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
 					return
-				time.sleep(2)
+				time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
 				
 			
 			self.logger.info("BI: testing (DUMMY)")
@@ -680,10 +666,10 @@ class BurnIn_Worker(QObject):
 		#stop HV
 		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,False,HV_Channel_list,BI_Action):
 			return
-		time.sleep(60)
+		time.sleep(BI_SLEEP_AFTER_VSET)
 		#check HV stop
 		for row in Slot_list:
-			if(self.SharedDict["CAEN_table"].item(row,6).text()!="OFF"):
+			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
 				self.BI_Abort("BI aborted: some LVs was not turned OFF")
 				return
 			
@@ -691,10 +677,10 @@ class BurnIn_Worker(QObject):
 		#stop LV
 		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,False,LV_Channel_list,BI_Action):
 			return
-		time.sleep(60)
+		time.sleep(BI_SLEEP_AFTER_VSET)
 		#check LV stop	
 		for row in Slot_list:
-			if(self.SharedDict["CAEN_table"].item(row,1).text()!="OFF"):
+			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
 				self.BI_Abort("BI aborted: some HVs was not turned OFF")
 				return
 				
@@ -718,14 +704,63 @@ class BurnIn_Worker(QObject):
 	
 		
 	def BI_Action(self,Action,*args):
-		retry=3
+		retry=BI_ACTION_RETRIES
 		while retry:
 			Action(*args)
 			if not (self.last_op_ok):
 				self.logger.warning("BI: failed to do action...new try in 10 sec")
-				time.sleep(10)
+				time.sleep(BI_ACTION_RETRY_SLEEP)
 				retry=retry-1
 			else:
 				return True
-		self.BI_Abort("BI: failed to do action...aborting")
+		self.BI_Abort("BI: failed to do action (3 times)...aborting")
 		return False
+
+	def BI_GoLowTemp(self,BI_Options):
+	
+		TempTolerance		= BI_TEMP_TOLERANCE
+		LowTemp				= test_option["LowTemp"]
+		TempRampOffset		= test_option["UnderRamp"]
+		TempMantainOffset	= test_option["UnderKeep"]
+		
+		last_step=False
+		self.last_op_ok= True
+		BI_Action=True
+		nextTemp = 0.0
+		
+		while (not last_step):
+			try:
+				dewPoint = float(self.SharedDict["Ctrl_IntDewPoint"].text())
+			except Exception as e:
+				self.logger.error(e)
+				self.last_op_ok= False
+				return
+			
+			if (lowtemp-TempRampOffset> dewPoint):
+				nextTemp = LowTemp-TempRampOffset
+				self.logger.info("BI: target low temp OK...")
+				last_step = True
+			else:
+				nextTemp = dewPoint
+				self.logger.info("BI: target low temp below dew point, going to dewPoint...")
+			
+			if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,nextTemp,BI_Action):
+				self.last_op_ok= False
+				return	
+				
+			while (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-LowTemp) > TempTolerance):
+				if self.SharedDict["BI_StopRequest"]:
+					self.BI_Abort("BI aborted: user request")
+					return	
+				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
+					self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
+					return
+				time.sleep(10)	
+			
+			
+			
+		# set target temperature mantain
+		self.logger.info("BI: keep temperature ....")
+		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,LowTemp-TempMantainOffset,BI_Action):
+			self.last_op_ok= False
+			return
