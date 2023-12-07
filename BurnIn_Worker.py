@@ -400,7 +400,7 @@ class BurnIn_Worker(QObject):
 				self.Request_msg.emit(Warning_str,Reason_str)
 			self.last_op_ok= False
 			return
-		if self.SharedDict["Ctrl_StatusJulabo"].text().find("START")==-1:
+		if switch and self.SharedDict["Ctrl_StatusJulabo"].text().find("START")==-1:
 			Warning_str = "Operation can't be performed"
 			Reason_str = "JULABO is not ON"
 			if not BI_Action:
@@ -580,7 +580,7 @@ class BurnIn_Worker(QObject):
 		for row in range(NUM_BI_SLOTS):
 			LV_ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_NAME_COL).text()
 			HV_ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_NAME_COL).text() 
-			if (LV_ch_name != "?" and HV_ch_name != "?" ):
+			if (LV_ch_name != "?" and HV_ch_name != "?" and BI_Options["ActiveSlots"][row]):
 				LV_Channel_list.append(LV_ch_name)
 				HV_Channel_list.append(HV_ch_name)
 				Slot_list.append(row)

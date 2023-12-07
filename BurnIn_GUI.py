@@ -128,6 +128,22 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.ModuleId_btns.append(self.BI_Mod8ID_btn)
 		self.ModuleId_btns.append(self.BI_Mod9ID_btn)
 		
+		
+		self.Module_cbs = []
+		self.Module_cbs.append(self.BI_Mod0_cb)
+		self.Module_cbs.append(self.BI_Mod1_cb)
+		self.Module_cbs.append(self.BI_Mod2_cb)
+		self.Module_cbs.append(self.BI_Mod3_cb)
+		self.Module_cbs.append(self.BI_Mod4_cb)
+		self.Module_cbs.append(self.BI_Mod5_cb)
+		self.Module_cbs.append(self.BI_Mod6_cb)
+		self.Module_cbs.append(self.BI_Mod7_cb)
+		self.Module_cbs.append(self.BI_Mod8_cb)
+		self.Module_cbs.append(self.BI_Mod9_cb)
+		
+		for cb in self.Module_cbs:
+			cb.setChecked(True)
+		
 		self.JulaboTestCmd_btn.setEnabled(False)    
 		self.FNALBoxTestCmd_btn.setEnabled(False)    
 		self.CAENControllerTestCmd_btn.setEnabled(False)    
@@ -442,6 +458,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		BI_Options["UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
 		BI_Options["UnderKeep"]=self.BI_UnderRampTemp_dsb.value()
 		BI_Options["NCycles"]=self.BI_NCycles_sb.value()
+		BI_Options["ActiveSlots"]=[]
+		for cb in self.Module_cbs:
+			BI_Options["ActiveSlots"].append(cb.isChecked)
 		self.BI_Start_sig.emit(BI_Options)
 	
 	

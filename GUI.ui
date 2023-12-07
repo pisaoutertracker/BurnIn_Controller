@@ -156,30 +156,12 @@
                <item row="6" column="1">
                 <widget class="QLineEdit" name="lineEdit">
                  <property name="text">
-                  <string>Jonny Bravo</string>
+                  <string>Scooby-Doo</string>
                  </property>
                 </widget>
                </item>
               </layout>
              </widget>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_12">
-              <item>
-               <widget class="QPushButton" name="BI_Start_btn">
-                <property name="text">
-                 <string>Start BurnIn</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="BI_Stop_btn">
-                <property name="text">
-                 <string>Stop BurnIn</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
             </item>
            </layout>
           </item>
@@ -201,7 +183,7 @@
             <item>
              <widget class="QGroupBox" name="groupBox_14">
               <property name="title">
-               <string>Architecture (Press to edit)</string>
+               <string>Architecture (Press to edit ID)</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
                <item>
@@ -213,73 +195,87 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="2">
-                  <widget class="QPushButton" name="BI_Mod0ID_btn">
-                   <property name="text">
-                    <string>Module ID</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="3">
-                  <widget class="QPushButton" name="BI_Mod5ID_btn">
-                   <property name="text">
-                    <string>Module ID</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="2">
+                 <item row="2" column="3">
                   <widget class="QPushButton" name="BI_Mod1ID_btn">
                    <property name="text">
                     <string>Module ID</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="2">
-                  <widget class="QPushButton" name="BI_Mod4ID_btn">
-                   <property name="text">
-                    <string>Module ID</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="3">
-                  <widget class="QPushButton" name="BI_Mod6ID_btn">
-                   <property name="text">
-                    <string>Module ID</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="2">
-                  <widget class="QPushButton" name="BI_Mod3ID_btn">
-                   <property name="text">
-                    <string>Module ID</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="2">
-                  <widget class="QPushButton" name="BI_Mod2ID_btn">
-                   <property name="text">
-                    <string>Module ID</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="3">
-                  <widget class="QPushButton" name="BI_Mod8ID_btn">
-                   <property name="text">
-                    <string>Module ID</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="3">
-                  <widget class="QPushButton" name="BI_Mod7ID_btn">
+                 <item row="1" column="5">
+                  <widget class="QPushButton" name="BI_Mod5ID_btn">
                    <property name="text">
                     <string>Module ID</string>
                    </property>
                   </widget>
                  </item>
                  <item row="7" column="3">
+                  <widget class="QPushButton" name="BI_Mod4ID_btn">
+                   <property name="text">
+                    <string>Module ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <widget class="QPushButton" name="BI_Mod0ID_btn">
+                   <property name="text">
+                    <string>Module ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="5">
+                  <widget class="QPushButton" name="BI_Mod6ID_btn">
+                   <property name="text">
+                    <string>Module ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="5">
                   <widget class="QPushButton" name="BI_Mod9ID_btn">
                    <property name="text">
                     <string>Module ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="5">
+                  <widget class="QPushButton" name="BI_Mod8ID_btn">
+                   <property name="text">
+                    <string>Module ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="3">
+                  <widget class="QPushButton" name="BI_Mod3ID_btn">
+                   <property name="text">
+                    <string>Module ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="3">
+                  <widget class="QPushButton" name="BI_Mod2ID_btn">
+                   <property name="text">
+                    <string>Module ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="5">
+                  <widget class="QPushButton" name="BI_Mod7ID_btn">
+                   <property name="text">
+                    <string>Module ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="7">
+                  <widget class="QLabel" name="label_77">
+                   <property name="text">
+                    <string>Slot 5</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="1">
+                  <widget class="QLabel" name="label_75">
+                   <property name="text">
+                    <string>Slot 3</string>
                    </property>
                   </widget>
                  </item>
@@ -297,13 +293,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="5" column="1">
-                  <widget class="QLabel" name="label_75">
-                   <property name="text">
-                    <string>Slot 3</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="7" column="1">
                   <widget class="QLabel" name="label_76">
                    <property name="text">
@@ -311,38 +300,136 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="4">
-                  <widget class="QLabel" name="label_77">
-                   <property name="text">
-                    <string>Slot 5</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="4">
+                 <item row="3" column="7">
                   <widget class="QLabel" name="label_79">
                    <property name="text">
                     <string>Slot 7</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="4">
-                  <widget class="QLabel" name="label_72">
-                   <property name="text">
-                    <string>Slot 9</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="4">
+                 <item row="2" column="7">
                   <widget class="QLabel" name="label_78">
                    <property name="text">
                     <string>Slot 6</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="5" column="4">
+                 <item row="7" column="7">
+                  <widget class="QLabel" name="label_72">
+                   <property name="text">
+                    <string>Slot 9</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="7">
                   <widget class="QLabel" name="label_80">
                    <property name="text">
                     <string>Slot 8</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="4">
+                  <widget class="Line" name="line_3">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="4">
+                  <widget class="Line" name="line_5">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="4">
+                  <widget class="Line" name="line_7">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="4">
+                  <widget class="Line" name="line_4">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QCheckBox" name="BI_Mod0_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="4">
+                  <widget class="Line" name="line_6">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="2">
+                  <widget class="QCheckBox" name="BI_Mod2_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="2">
+                  <widget class="QCheckBox" name="BI_Mod4_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="2">
+                  <widget class="QCheckBox" name="BI_Mod3_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="6">
+                  <widget class="QCheckBox" name="BI_Mod7_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="6">
+                  <widget class="QCheckBox" name="BI_Mod8_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="6">
+                  <widget class="QCheckBox" name="BI_Mod6_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="6">
+                  <widget class="QCheckBox" name="BI_Mod5_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="6">
+                  <widget class="QCheckBox" name="BI_Mod9_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="BI_Mod1_cb">
+                   <property name="text">
+                    <string/>
                    </property>
                   </widget>
                  </item>
@@ -367,6 +454,87 @@
            </spacer>
           </item>
          </layout>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_16">
+          <property name="title">
+           <string>BI control</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_14">
+             <item>
+              <widget class="QPushButton" name="BI_Start_btn">
+               <property name="minimumSize">
+                <size>
+                 <width>140</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Start BurnIn</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="BI_Stop_btn">
+               <property name="minimumSize">
+                <size>
+                 <width>140</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Stop BurnIn</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_13">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QProgressBar" name="progressBar">
+               <property name="maximumSize">
+                <size>
+                 <width>400</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="value">
+                <number>20</number>
+               </property>
+               <property name="textVisible">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_15">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
         </item>
         <item>
          <widget class="PlotWidget" name="GraphWidget" native="true">
