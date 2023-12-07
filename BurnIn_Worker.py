@@ -445,7 +445,7 @@ class BurnIn_Worker(QObject):
 				self.Request_msg.emit(Warning_str,Reason_str)
 			self.last_op_ok= False
 			return
-		if not (self.SharedDict["Ctrl_StatusDoor"].text() == "CLOSED"):
+		if switch and (not (self.SharedDict["Ctrl_StatusDoor"].text() == "CLOSED")):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "BurnIn door is NOT CLOSED"
 			if not BI_Action:
