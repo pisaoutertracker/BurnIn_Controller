@@ -292,6 +292,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["Ctrl_StatusFlow"]=self.Ctrl_StatusFlow_tag
 		self.SharedDict["Ctrl_StatusLock"]=self.Ctrl_StatusLock_tag
 		self.SharedDict["Ctrl_StatusDoor"]=self.Ctrl_StatusDoor_tag
+		self.SharedDict["Ctrl_LowerTemp"]=999.0
 		
 		# Status variable & parameter
 		

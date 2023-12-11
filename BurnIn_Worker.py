@@ -8,12 +8,18 @@ import subprocess
 from __Constant import *
 
 
+
+
+## Class implementation for the Worker module of the GUI controller.
+#
+#  The worker is a inheriting from pyQt library in order to create assign slots and signals
 class BurnIn_Worker(QObject):
 
 	Request_msg = pyqtSignal(str,str)
 	Request_input_dsb = pyqtSignal(str,float,float,float)
 	BI_terminated = pyqtSignal()
-	
+
+	## Init function.
 	def __init__(self,configDict,logger, SharedDict, Julabo, FNALBox, CAENController):
 
 	
@@ -28,6 +34,16 @@ class BurnIn_Worker(QObject):
 		self.logger.info("Worker class initialized")
 		self.last_op_ok= True
 		
+		
+	#################################################################
+	## Basic functions. directly called from "Test Operation tab"
+	#################################################################
+	
+	## Function to send a cmd string to the Julabo interface
+	# implemented as a is a Pyqt slot
+	# NOT executed if:
+	# - TCP socket is not connected and connection attempt fails
+	# Control on cmd execution: none
 	@pyqtSlot(str)
 	def SendJulaboCmd(self,cmd):
 		self.Julabo.lock.acquire()
@@ -40,7 +56,12 @@ class BurnIn_Worker(QObject):
 		else:	
 			self.last_op_ok= False	
 		self.Julabo.lock.release()
-	
+		
+	## Function to send a cmd string to the CAEN controller interface
+	# implemented as a is a Pyqt slot
+	# NOT executed if:
+	# - TCP socket is not connected and connection attempt fails	
+	# Control on cmd execution: none
 	@pyqtSlot(str)
 	def SendCAENControllerCmd(self,cmd):
 		self.CAENController.lock.acquire()
@@ -56,6 +77,12 @@ class BurnIn_Worker(QObject):
 			self.last_op_ok= False	
 		self.CAENController.lock.release()
 	
+
+	## Function to send a cmd string to the Julabo interface
+	# implemented as a is a Pyqt slot
+	# NOT executed if:
+	# - TCP socket is not connected and connection attempt fails	
+	# Control on cmd execution: none
 	@pyqtSlot(str)
 	def SendFNALBoxCmd(self,cmd):
 		self.FNALBox.lock.acquire()
@@ -69,131 +96,158 @@ class BurnIn_Worker(QObject):
 		else:	
 			self.last_op_ok= False	
 		self.FNALBox.lock.release()
-	
+		
+	## Function to start a test
+	# implemented as a is a Pyqt slot
 	@pyqtSlot(str)
 	def SendModuleTestCmd(self,cmd):
 		self.logger.info("WORKER: Executing "+cmd)
 		subprocess.run(cmd.split(" "))
+		
+		
+	###########################################################################
+	## Safe operation functions. Directly called from "Manual Operation tab"
+	###########################################################################
 	
+	## Function to select the SetPoint of the Julabo
+	# implemented as a is a Pyqt slot
+	# NOT Executed if:
+	# - JULABO and FNAL info are not updated	
+	# - JULABO is ON and the selected setpoint has a target temperature below the DewPoint
+	# - TCP socket is not connected and connection attempt fails	
+	# Control on cmd execution: read back from instrument
 	@pyqtSlot(int)	
-	def Ctrl_SelSp_Cmd(self,Sp_id, BI_Action=False):
+	def Ctrl_SelSp_Cmd(self,Sp_id, PopUp=True):
 		self.last_op_ok= True
 		self.logger.info("WORKER: Selecting JULABO Sp"+str(Sp_id+1))
 		if not (self.SharedDict["Julabo_updated"] and self.SharedDict["FNALBox_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "Julabo and/or FNAL box info are not updated"
-			if not BI_Action:
+			if PopUp:
 				self.Request_msg.emit(Warning_str,Reason_str)
 			self.last_op_ok= False
 			return
-		else:	
-			if (self.SharedDict["Ctrl_StatusJulabo"].text().find("START") != -1):
-				targetT = -100.0
-				if Sp_id == 0 :
-					targetT = float(self.SharedDict["Ctrl_Sp1"].text())
-				elif Sp_id == 1 :
-					targetT = float(self.SharedDict["Ctrl_Sp2"].text())
-				elif Sp_id == 2 :
-					targetT = float(self.SharedDict["Ctrl_Sp3"].text())
+			
+		if (self.SharedDict["Ctrl_StatusJulabo"].text().find("START") != -1):
+			targetT = -100.0
+			if Sp_id == 0 :
+				targetT = float(self.SharedDict["Ctrl_Sp1"].text())
+			elif Sp_id == 1 :
+				targetT = float(self.SharedDict["Ctrl_Sp2"].text())
+			elif Sp_id == 2 :
+				targetT = float(self.SharedDict["Ctrl_Sp3"].text())
 
-				if targetT  < float(self.SharedDict["Ctrl_IntDewPoint"].text()):
-					Warning_str = "Operation can't be performed"
-					Reason_str = "Set point is configured with a temperature below internal dew point"
-					if not BI_Action:
-						self.Request_msg.emit(Warning_str,Reason_str)
-					self.last_op_ok= False
-					return
-			self.Julabo.lock.acquire()
-			self.logger.debug("WORKER: Sending Julabo cmd" )
-			if not self.Julabo.is_connected :
-				self.Julabo.connect()
-			if self.Julabo.is_connected :
-				try:
-					self.Julabo.sendTCP("out_mode_01 "+str(Sp_id))
-					self.logger.info("WORKER: JULABO cmd sent")
-					self.Julabo.sendTCP("in_mode_01")
-					reply = self.Julabo.receive()
-					if (reply != "None" and reply != "TCP error"):
-						Sp = str(int(reply.replace(" ", ""))+1)
-						self.SharedDict["Ctrl_TSp"].setText(Sp)
-					if self.SharedDict["Ctrl_TSp"].text()[:1]=="1":
-						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp1"].text())
-					elif self.SharedDict["Ctrl_TSp"].text()[:1]=="2":
-						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp2"].text())
-					elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
-						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
-				except Exception as e:
-					self.logger.error(e)
-					self.last_op_ok= False
-			else:
-					Warning_str = "Operation can't be performed"
-					Reason_str = "Can't connect to JULABO"
-					if not BI_Action:
-						self.Request_msg.emit(Warning_str,Reason_str)
-					self.last_op_ok= False
+			if targetT  < float(self.SharedDict["Ctrl_IntDewPoint"].text()):
+				Warning_str = "Operation can't be performed"
+				Reason_str = "Set point is configured with a temperature below internal dew point"
+				if PopUp:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
+				return
+		self.Julabo.lock.acquire()
+		self.logger.debug("WORKER: Sending Julabo cmd" )
+		if not self.Julabo.is_connected :
+			self.Julabo.connect()
+		if self.Julabo.is_connected :
+			try:
+				self.Julabo.sendTCP("out_mode_01 "+str(Sp_id))
+				self.logger.info("WORKER: JULABO cmd sent")
+				self.Julabo.sendTCP("in_mode_01")
+				reply = self.Julabo.receive()
+				if (reply != "None" and reply != "TCP error"):
+					Sp = str(int(reply.replace(" ", ""))+1)
+					self.SharedDict["Ctrl_TSp"].setText(Sp)
+				if self.SharedDict["Ctrl_TSp"].text()[:1]=="1":
+					self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp1"].text())
+				elif self.SharedDict["Ctrl_TSp"].text()[:1]=="2":
+					self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp2"].text())
+				elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
+					self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
+			except Exception as e:
+				self.logger.error(e)
+				self.last_op_ok= False
+		else:
+				Warning_str = "Operation can't be performed"
+				Reason_str = "Can't connect to JULABO"
+				if PopUp:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
+		
+		self.Julabo.lock.release()
 			
-			self.Julabo.lock.release()
-			
-	
+	## Function to select the target temperature of a JULABO SetPoint
+	# implemented as a is a Pyqt slot
+	# NOT Executed if:
+	# - JULABO and FNAL info are not updated	
+	# - JULABO is ON and the selected setpoint has a target temperature below the DewPoint
+	# - TCP socket is not connected and connection attempt fails	
+	# Control on cmd execution: read back from instrument	
 	@pyqtSlot(int,float)	
-	def Ctrl_SetSp_Cmd(self,Sp_id,value, BI_Action=False):
+	def Ctrl_SetSp_Cmd(self,Sp_id,value, PopUp=True):
 		self.last_op_ok= True
 		self.logger.info("WORKER: Setting JULABO Sp"+str(Sp_id+1)+ " to " +str(value))
 		if not (self.SharedDict["Julabo_updated"] and self.SharedDict["FNALBox_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "Julabo and/or FNAL box info are not updated"
-			if not BI_Action:
+			if PopUp:
 				self.Request_msg.emit(Warning_str,Reason_str)
 			self.last_op_ok= False
-			return
-		else:	
-			if (self.SharedDict["Ctrl_StatusJulabo"].text().find("START") != -1):
-				Sp_actual = int(self.SharedDict["Ctrl_TSp"].text())-1
-				if Sp_actual==Sp_id and  value  < float(self.SharedDict["Ctrl_IntDewPoint"].text()):
-					Warning_str = "Operation can't be performed"
-					Reason_str = "Attempting to set target temperature of the active set point below internal dew point"
-					self.logger.warning(Warning_str)
-					self.logger.warning(Reason_str)
-					if not BI_Action:
-						self.Request_msg.emit(Warning_str,Reason_str)
-					self.last_op_ok= False
-					return
-			self.Julabo.lock.acquire()
-			self.logger.debug("WORKER: Sending Julabo cmd" )
-			if not self.Julabo.is_connected :
-				self.Julabo.connect()
-			if self.Julabo.is_connected :
-				try:
-					self.Julabo.sendTCP("out_sp_0"+str(Sp_id)+" "+str(value))
-					self.logger.info("WORKER: JULABO cmd sent")					
-					self.Julabo.sendTCP("in_sp_0"+str(Sp_id))
-					reply = self.Julabo.receive()
-					if (reply != "None" and reply != "TCP error"):
-						self.SharedDict["Ctrl_Sp"+str(Sp_id+1)].setText(reply.replace(" ", ""))
-					if self.SharedDict["Ctrl_TSp"].text()[:1]=="1":
-						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp1"].text())
-					elif self.SharedDict["Ctrl_TSp"].text()[:1]=="2":
-						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp2"].text())
-					elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
-						self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
-				except Exception as e:
-					self.logger.error(e)
-					self.last_op_ok= False	
-			else:
-				
-					Warning_str = "Operation can't be performed"
-					Reason_str = "Can't connect to JULABO"
-					if not BI_Action:
-						self.Request_msg.emit(Warning_str,Reason_str)
-					self.last_op_ok= False
-			self.Julabo.lock.release()
+			return	
+		if (self.SharedDict["Ctrl_StatusJulabo"].text().find("START") != -1):
+			Sp_actual = int(self.SharedDict["Ctrl_TSp"].text())-1
+			if Sp_actual==Sp_id and  value  < float(self.SharedDict["Ctrl_IntDewPoint"].text()):
+				Warning_str = "Operation can't be performed"
+				Reason_str = "Attempting to set target temperature of the active set point below internal dew point"
+				self.logger.warning(Warning_str)
+				self.logger.warning(Reason_str)
+				if PopUp:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
+				return
+		self.Julabo.lock.acquire()
+		self.logger.debug("WORKER: Sending Julabo cmd" )
+		if not self.Julabo.is_connected :
+			self.Julabo.connect()
+		if self.Julabo.is_connected :
+			try:
+				self.Julabo.sendTCP("out_sp_0"+str(Sp_id)+" "+str(value))
+				self.logger.info("WORKER: JULABO cmd sent")					
+				self.Julabo.sendTCP("in_sp_0"+str(Sp_id))
+				reply = self.Julabo.receive()
+				if (reply != "None" and reply != "TCP error"):
+					self.SharedDict["Ctrl_Sp"+str(Sp_id+1)].setText(reply.replace(" ", ""))
+				if self.SharedDict["Ctrl_TSp"].text()[:1]=="1":
+					self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp1"].text())
+				elif self.SharedDict["Ctrl_TSp"].text()[:1]=="2":
+					self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp2"].text())
+				elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
+					self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
+			except Exception as e:
+				self.logger.error(e)
+				self.last_op_ok= False	
+		else:
+			
+				Warning_str = "Operation can't be performed"
+				Reason_str = "Can't connect to JULABO"
+				if PopUp:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
+		self.Julabo.lock.release()
 
-		
+	## Function to select the target temperature of a JULABO SetPoint
+	# implemented as a is a Pyqt slot
+	# NOT Executed if:
+	# - POWERING ON with JULABO and FNAL info are not updated	
+	# - POWERING ON with target temp below DewPoint	
+	# - POWERING ON with door not locked	
+	# - POWERING ON with door not closed	
+	# - TCP socket is not connected and connection attempt fails
+	# Control on cmd execution: read back from instrument			
 	@pyqtSlot(bool)	
-	def Ctrl_PowerJulabo_Cmd(self,switch, BI_Action=False):
+	def Ctrl_PowerJulabo_Cmd(self,switch, PopUp=True):
 		self.last_op_ok= True
 		
-		if not switch:
+		if not switch:  # power off
 			self.logger.info("WORKER: Powering Julabo OFF")
 			self.Julabo.lock.acquire()
 			self.logger.debug("WORKER: Sending Julabo cmd" )
@@ -221,61 +275,74 @@ class BurnIn_Worker(QObject):
 			if not (self.SharedDict["Julabo_updated"] and self.SharedDict["FNALBox_updated"]):
 				Warning_str = "Operation can't be performed"
 				Reason_str = "Julabo and/or FNAL box info are not updated"
-				if not BI_Action:
+				if PopUp:
 					self.Request_msg.emit(Warning_str,Reason_str)
 				self.last_op_ok= False
 				return
-			else:	
-				if float(self.SharedDict["Ctrl_TargetTemp"].text())< float(self.SharedDict["Ctrl_IntDewPoint"].text()):
-					Warning_str = "Operation can't be performed"
-					Reason_str = "Attempting to start unit with target temperature below internal dew point"
-					if not BI_Action:
-						self.Request_msg.emit(Warning_str,Reason_str)
-					self.last_op_ok= False
-					return
-				if self.SharedDict["Ctrl_StatusLock"].text() != "LOCKED":
-					Warning_str = "Operation can't be performed"
-					Reason_str = "Attempting to start unit with door magnet not locked"
-					if not BI_Action:
-						self.Request_msg.emit(Warning_str,Reason_str)
-					self.last_op_ok= False
-					return
-				else:
-					self.Julabo.lock.acquire()
-					self.logger.debug("WORKER: Sending Julabo cmd" )
-					if not self.Julabo.is_connected :
-						self.Julabo.connect()
-					if self.Julabo.is_connected :
-						try:
-							self.Julabo.sendTCP("out_mode_05 1")
-							self.logger.info("WORKER: JULABO cmd sent")
-							self.Julabo.sendTCP("status")
-							reply = self.Julabo.receive()
-							if (reply != "None" and reply != "TCP error"):
-								self.SharedDict["Ctrl_StatusJulabo"].setText(reply)
-							if self.SharedDict["Ctrl_StatusJulabo"].text().find("START")!=-1:
-								self.SharedDict["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-							else:
-								self.SharedDict["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
-						except Exception as e:
-							self.logger.error(e)
-							self.last_op_ok= False	
-					
-					else:
+			if float(self.SharedDict["Ctrl_TargetTemp"].text())< float(self.SharedDict["Ctrl_IntDewPoint"].text()):
+				Warning_str = "Operation can't be performed"
+				Reason_str = "Attempting to start unit with target temperature below internal dew point"
+				if PopUp:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
+				return
+			if self.SharedDict["Ctrl_StatusLock"].text() != "LOCKED":
+				Warning_str = "Operation can't be performed"
+				Reason_str = "Attempting to start unit with door magnet not locked"
+				if PopUp:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
+				return
+			if not (self.SharedDict["Ctrl_StatusDoor"].text() == "CLOSED"):
+				Warning_str = "Operation can't be performed"
+				Reason_str = "BurnIn door is NOT CLOSED"
+				if PopUp:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
+				return
 				
-						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't connect to JULABO"
-						if not BI_Action:
-							self.Request_msg.emit(Warning_str,Reason_str)
-						self.last_op_ok= False
-					self.Julabo.lock.release()
+			self.Julabo.lock.acquire()
+			self.logger.debug("WORKER: Sending Julabo cmd" )
+			if not self.Julabo.is_connected :
+				self.Julabo.connect()
+			if self.Julabo.is_connected :
+				try:
+					self.Julabo.sendTCP("out_mode_05 1")
+					self.logger.info("WORKER: JULABO cmd sent")
+					self.Julabo.sendTCP("status")
+					reply = self.Julabo.receive()
+					if (reply != "None" and reply != "TCP error"):
+						self.SharedDict["Ctrl_StatusJulabo"].setText(reply)
+					if self.SharedDict["Ctrl_StatusJulabo"].text().find("START")!=-1:
+						self.SharedDict["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+					else:
+						self.SharedDict["Ctrl_StatusJulabo"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+				except Exception as e:
+					self.logger.error(e)
+					self.last_op_ok= False	
+			
+			else:
+			
+				Warning_str = "Operation can't be performed"
+				Reason_str = "Can't connect to JULABO"
+				if PopUp:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
+			self.Julabo.lock.release()
                     
 					
 
 					
-		
+	## Function to lock/unlock the door (magnet)
+	# implemented as a is a Pyqt slot
+	# NOT Executed if:
+	# - UNLOCK with JULABO/FNAL/M5 info not updated	
+	# - UNLOCK with minimal internal temp below EXTERNAL DewPoint
+	# - UNLOCK with JULABO ON and taget temp below external dewpoint
+	# - TCP socket is not connected and connection attempt fails	
+	# Control on cmd execution: reply check from FNAL Box	
 	@pyqtSlot(bool)	
-	def Ctrl_SetLock_Cmd(self,switch, BI_Action=False):
+	def Ctrl_SetLock_Cmd(self,switch, PopUp=True):
 		self.last_op_ok= True
 		
 		lock = "LOCKED" if switch else "UNLOCK"
@@ -287,30 +354,21 @@ class BurnIn_Worker(QObject):
 			if not (self.SharedDict["Julabo_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["M5_updated"]):
 				Warning_str = "Operation can't be performed"
 				Reason_str = "Julabo, FNAL box or M5 infos are not updated"
-				if not BI_Action:
+				if PopUp:
 					self.Request_msg.emit(Warning_str,Reason_str)
-				self.last_op_ok= False
-				return
-			try:
-				IntTemp_arr = [float(self.SharedDict["LastFNALBoxTemp1"].text()),float(self.SharedDict["LastFNALBoxTemp0"].text())]
-				for i in range (NUM_BI_SLOTS):
-					IntTemp_arr.append(float(self.SharedDict["LastFNALBoxOW"+str(i)].text())) 
-				IntTemp_min = min(IntTemp_arr)
-			except Exception as e:
-				self.logger.error(e)
 				self.last_op_ok= False
 				return
 			if (self.SharedDict["Ctrl_StatusJulabo"].text().find("START")!=-1) and (float(self.SharedDict["Ctrl_TargetTemp"].text()) < float(self.SharedDict["Ctrl_ExtDewPoint"].text())):
 				Warning_str = "Operation can't be performed"
 				Reason_str = "JULABO is ON with target temp below external dew point"
-				if not BI_Action:
+				if PopUp:
 					self.Request_msg.emit(Warning_str,Reason_str)
 				self.last_op_ok= False
 				return
-			if IntTemp_min < float(self.SharedDict["Ctrl_ExtDewPoint"].text()):
+			if self.SharedDict["Ctrl_LowerTemp"] < float(self.SharedDict["Ctrl_ExtDewPoint"].text()):
 				Warning_str = "Operation can't be performed"
 				Reason_str = "Internal minimum temperature below external dew point. Retry later"
-				if not BI_Action:
+				if PopUp:
 					self.Request_msg.emit(Warning_str,Reason_str)
 				self.last_op_ok= False
 				return
@@ -341,14 +399,18 @@ class BurnIn_Worker(QObject):
 		else:
 			Warning_str = "Operation can't be performed"
 			Reason_str = "Can't connect to FNAL box"
-			if not BI_Action:
+			if PopUp:
 				self.Request_msg.emit(Warning_str,Reason_str)
 			self.last_op_ok= False			
 		self.FNALBox.lock.release()
 		
-		
+	## Function to select LOW/HIGH dry air flow
+	# implemented as a is a Pyqt slot
+	# NOT Executed if:
+	# - TCP socket is not connected and connection attempt fails	
+	# Control on cmd execution: reply check from FNAL Box		
 	@pyqtSlot(bool)	
-	def Ctrl_SetHighFlow_Cmd(self,switch, BI_Action=False):
+	def Ctrl_SetHighFlow_Cmd(self,switch, PopUp=True):
 		self.last_op_ok= True
 		
 		flow = "HIGH" if switch else "LOW"
@@ -381,29 +443,37 @@ class BurnIn_Worker(QObject):
 		else:	
 			Warning_str = "Operation can't be performed"
 			Reason_str = "Can't connect to FNAL box"
-			if not BI_Action:
+			if PopUp:
 				self.Request_msg.emit(Warning_str,Reason_str)
 			self.last_op_ok= False				
 					
 		self.FNALBox.lock.release()
-
+		
+	## Function to power ON/OFF individual LV channels
+	# implemented as a is a Pyqt slot
+	# NOT Executed if:
+	# - CAEN INFO are not updated
+	# - POWER ON with JULABO OFF
+	# - one of the slots selected by the user does not have a definet LV channel
+	# - trying to switch off a slot with HV ON
+	# Control on cmd execution: none
 	@pyqtSlot(bool)	
-	def Ctrl_PowerLV_Cmd(self,switch,Channel_list=[], BI_Action=False):
+	def Ctrl_PowerLV_Cmd(self,switch,Channel_list=[], PopUp=True):
 		self.last_op_ok= True
-		if not BI_Action:
+		if PopUp:
 			Channel_list.clear()
 		power = "On" if switch else "Off"
 		if not (self.SharedDict["CAEN_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "CAEN infos are not updated"
-			if not BI_Action:
+			if PopUp:
 				self.Request_msg.emit(Warning_str,Reason_str)
 			self.last_op_ok= False
 			return
 		if switch and self.SharedDict["Ctrl_StatusJulabo"].text().find("START")==-1:
 			Warning_str = "Operation can't be performed"
 			Reason_str = "JULABO is not ON"
-			if not BI_Action:
+			if PopUp:
 				self.Request_msg.emit(Warning_str,Reason_str)
 			self.last_op_ok= False
 			return	
@@ -414,7 +484,7 @@ class BurnIn_Worker(QObject):
 					if (ch_name == "?"):
 						Warning_str = "Operation can't be performed"
 						Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
-						if not BI_Action:
+						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
@@ -422,7 +492,7 @@ class BurnIn_Worker(QObject):
 					if (not switch) and  HV_defined and (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text() != "OFF"):  # attempt to power down LV with HV not off
 						Warning_str = "Operation can't be performed"
 						Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause HV is ON or UNKNOWN"
-						if not BI_Action:
+						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
@@ -431,24 +501,32 @@ class BurnIn_Worker(QObject):
 		self.logger.info("WORKER: Setting LV "+power+ " for ch " +str(Channel_list))
 		for channel in Channel_list:
 			self.SendCAENControllerCmd("Turn"+power+",PowerSupplyId:caen,ChannelId:"+channel)	
-
+			
+	## Function to power ON/OFF individual HV channels
+	# implemented as a is a Pyqt slot
+	# NOT Executed if:
+	# - CAEN INFO are not updated
+	# - POWER ON with door not CLOSED
+	# - one of the slots selected by the user does not have a defined HV channel
+	# - trying to switch on a slot with LV OFF
+	# Control on cmd execution: none
 	@pyqtSlot(bool)	
-	def Ctrl_PowerHV_Cmd(self,switch,Channel_list=[],BI_Action=False):
+	def Ctrl_PowerHV_Cmd(self,switch,Channel_list=[],PopUp=True):
 		self.last_op_ok= True
-		if not BI_Action:
+		if PopUp:
 			Channel_list.clear()
 		power = "On" if switch else "Off"
 		if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "CAEN and/or FNAL infos are not updated"
-			if not BI_Action:
+			if PopUp:
 				self.Request_msg.emit(Warning_str,Reason_str)
 			self.last_op_ok= False
 			return
 		if switch and (not (self.SharedDict["Ctrl_StatusDoor"].text() == "CLOSED")):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "BurnIn door is NOT CLOSED"
-			if not BI_Action:
+			if PopUp:
 				self.Request_msg.emit(Warning_str,Reason_str)
 			self.last_op_ok= False
 			return
@@ -460,14 +538,14 @@ class BurnIn_Worker(QObject):
 					if (ch_name == "?"):
 						Warning_str = "Operation can't be performed"
 						Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause HV ch. name is UNKNOWN"
-						if not BI_Action:
+						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
 					if (switch) and (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text() != "ON"):  # attempt to power up HV with LV not on
 						Warning_str = "Operation can't be performed"
 						Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause LV is OFF or UNKNOWN"
-						if not BI_Action:
+						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
@@ -477,11 +555,17 @@ class BurnIn_Worker(QObject):
 		for channel in Channel_list:
 			self.SendCAENControllerCmd("Turn"+power+",PowerSupplyId:caen,ChannelId:"+channel)
 	
-
+	## Function to set indicidual LV/HV channels
+	# implemented as a is a Pyqt slot
+	# NOT Executed if:
+	# - CAEN INFO are not updated
+	# - POWER ON with door not CLOSED
+	# - one of the slots selected by the user does not have a defined LV/HV setpoint
+	# Control on cmd execution: none
 	@pyqtSlot(str)	
-	def Ctrl_VSet_Cmd(self,VType,Channel_list=[],NewValue_list=[], BI_Action=False):
+	def Ctrl_VSet_Cmd(self,VType,Channel_list=[],NewValue_list=[], PopUp=True):
 		self.last_op_ok= True
-		if not BI_Action:
+		if PopUp:
 			Channel_list.clear()
 			NewValue_list.clear()
 	
@@ -493,14 +577,14 @@ class BurnIn_Worker(QObject):
 		if not (self.SharedDict["CAEN_updated"]):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "CAEN infos are not updated"
-			if not BI_Action:
+			if PopUp:
 				self.Request_msg.emit(Warning_str,Reason_str)
 			self.last_op_ok= False
 			return
 		if len(Channel_list) != len(NewValue_list):
 			Warning_str = "Operation can't be performed"
 			Reason_str = "Provided ch list and value list doesn not match in length"
-			if not BI_Action:
+			if PopUp:
 				self.Request_msg.emit(Warning_str,Reason_str)
 			self.last_op_ok= False
 			return
@@ -512,14 +596,14 @@ class BurnIn_Worker(QObject):
 					if (ch_name == "?"):
 						Warning_str = "Operation can't be performed"
 						Reason_str = "Can't set LV for  slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
-						if not BI_Action:
+						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
-					if (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_VSET_COL+ColOffset).text() == "?"):  # Unknown HV set
+					if (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_VSET_COL+ColOffset).text() == "?"): 
 						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't set LV for  slot "+str(row)+ " beacause current setpoint is UNKNOWN"
-						if not BI_Action:
+						Reason_str = "Can't set LV/HV for  slot "+str(row)+ " beacause current setpoint is UNKNOWN"
+						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
@@ -547,6 +631,18 @@ class BurnIn_Worker(QObject):
 		for idx,channel in enumerate(Channel_list):
 			self.SendCAENControllerCmd("SetVoltage,PowerSupplyId:caen,ChannelId:"+channel+",Voltage:"+str(NewValue_list[idx]))
 
+
+
+
+
+	###########################################################################
+	## BI main function and related
+	###########################################################################
+	
+	
+	
+	## BI main function
+	# implemented as a is a Pyqt slot
 	@pyqtSlot(dict)			
 	def BI_Start_Cmd(self,BI_Options):
 		self.logger.info("Starting BurnIN...")
@@ -590,26 +686,26 @@ class BurnIn_Worker(QObject):
 		self.logger.info("BurnIn test HV names: "+str(HV_Channel_list))
 		self.logger.info("BurnIn test LV names: "+str(LV_Channel_list))			   
 		
-		BI_Action=True
+		PopUp=False
 		
 		#lock magnet
-		if not self.BI_Action(self.Ctrl_SetLock_Cmd,True,BI_Action):
+		if not self.BI_Action(self.Ctrl_SetLock_Cmd,True,PopUp):
 			return
 			
 		#start high flow	
-		if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,BI_Action):
+		if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,PopUp):
 			return
 			
 		#sel SP	
-		if not self.BI_Action(self.Ctrl_SelSp_Cmd,0,BI_Action):
+		if not self.BI_Action(self.Ctrl_SelSp_Cmd,0,PopUp):
 			return
 				
 		#start JULABO	
-		if not self.BI_Action(self.Ctrl_PowerJulabo_Cmd,True,BI_Action):
+		if not self.BI_Action(self.Ctrl_PowerJulabo_Cmd,True,PopUp):
 			return
 		
 		##start LV
-		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,LV_Channel_list,BI_Action):
+		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,LV_Channel_list,PopUp):
 			return
 		time.sleep(BI_SLEEP_AFTER_VSET)
 		
@@ -620,7 +716,7 @@ class BurnIn_Worker(QObject):
 				return
 		
 		#start HV
-		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,HV_Channel_list,BI_Action):
+		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,HV_Channel_list,PopUp):
 			return
 		
 		time.sleep(BI_SLEEP_AFTER_VSET)
@@ -636,7 +732,7 @@ class BurnIn_Worker(QObject):
 		
 			# ramp down
 			self.logger.info("BI: runmping down...")
-			if not self.BI_Action(self.BI_GoLowTemp,BI_Options,BI_Action):
+			if not self.BI_Action(self.BI_GoLowTemp,BI_Options,PopUp):
 				return
 			
 			#do test here...
@@ -663,8 +759,10 @@ class BurnIn_Worker(QObject):
 			#do test here...
 			
 			self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
+			
+			
 		#stop HV
-		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,False,HV_Channel_list,BI_Action):
+		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,False,HV_Channel_list,PopUp):
 			return
 		time.sleep(BI_SLEEP_AFTER_VSET)
 		#check HV stop
@@ -675,7 +773,7 @@ class BurnIn_Worker(QObject):
 			
 		
 		#stop LV
-		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,False,LV_Channel_list,BI_Action):
+		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,False,LV_Channel_list,PopUp):
 			return
 		time.sleep(BI_SLEEP_AFTER_VSET)
 		#check LV stop	
@@ -684,15 +782,16 @@ class BurnIn_Worker(QObject):
 				self.BI_Abort("BI aborted: some HVs was not turned OFF")
 				return
 				
-		#start JULABO	
-		if not self.BI_Action(self.Ctrl_PowerJulabo_Cmd,False,BI_Action):
+		#stop JULABO	
+		if not self.BI_Action(self.Ctrl_PowerJulabo_Cmd,False,PopUp):
 			return
 		
 		self.logger.info("BurnIn test COMPLETED SUCCESFULLY!")
 		self.SharedDict["BI_Active"]=False
 		self.SharedDict["BI_StopRequest"]=False
 		self.BI_terminated.emit()
-		
+	
+	## BI Abort function	
 	def BI_Abort(self,Reason_str):
 	
 			Warning_str = "BURN IN test failed"
@@ -702,7 +801,7 @@ class BurnIn_Worker(QObject):
 			self.BI_terminated.emit()
 		
 	
-		
+	## BI Action function. used to execute a defined operation.		
 	def BI_Action(self,Action,*args):
 		retry=BI_ACTION_RETRIES
 		while retry:
@@ -716,6 +815,7 @@ class BurnIn_Worker(QObject):
 		self.BI_Abort("BI: failed to do action (3 times)...aborting")
 		return False
 
+	## BI function to ramp down in temp
 	def BI_GoLowTemp(self,BI_Options):
 	
 		TempTolerance		= BI_TEMP_TOLERANCE
@@ -725,7 +825,7 @@ class BurnIn_Worker(QObject):
 		
 		last_step=False
 		self.last_op_ok= True
-		BI_Action=True
+		PopUp=False
 		nextTemp = 0.0
 		
 		while (not last_step):
@@ -744,7 +844,7 @@ class BurnIn_Worker(QObject):
 				nextTemp = dewPoint
 				self.logger.info("BI: target low temp below dew point, going to dewPoint...")
 			
-			if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,nextTemp,BI_Action):
+			if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,nextTemp,PopUp):
 				self.last_op_ok= False
 				return	
 				
@@ -758,9 +858,8 @@ class BurnIn_Worker(QObject):
 				time.sleep(10)	
 			
 			
-			
 		# set target temperature mantain
 		self.logger.info("BI: keep temperature ....")
-		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,LowTemp-TempMantainOffset,BI_Action):
+		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,LowTemp-TempMantainOffset,PopUp):
 			self.last_op_ok= False
 			return
