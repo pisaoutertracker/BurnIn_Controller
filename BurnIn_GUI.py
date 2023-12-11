@@ -39,7 +39,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.logger=logger
 		self.configDict=configDict
 	
-		self.dbID=6421357 #hardcoded (test value)
+		self.TestSessionID=65536 #hardcoded (test value)
 		
 		self.LVNames=["?"] * 10
 		self.LVNames[7]="BLV08"
@@ -468,13 +468,54 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 						
 	def Ctrl_StartSesh_Cmd(self):
-		self.logger.info("Starting database session....")
+		self.logger.info("Starting Test Session")
 		msg = QMessageBox()
 		msg.setWindowTitle("Database session starting. Please wait...")
 		msg.show()
-		#run command or subprocess that fetches a database ID
-		self.logger.info(self.dbID)
-		self.Ctrl_SeshID_tag.setText(str(self.dbID))
+		#define test session for DB
+		testSession = {
+                        "sessionID": int(self.SeshID.value()),
+                        "operator": self.BI_Operator_line.text(),
+                        "startTime": datetime.now(),
+                        "lowTemp": self.BI_LowTemp_dsb.value(),
+                        "hiTemp": self.BI_HighTemp_dsb.value(),
+                        "modules": {
+                                "module00": self.BI_Mod0ID_btn.text(), #need to check for correct formatting
+                                "module01": self.BI_Mod1ID_btn.text(),
+                                "module02": self.BI_Mod2ID_btn.text(),
+                                "module03": self.BI_Mod3ID_btn.text(),
+                                "module04": self.BI_Mod4ID_btn.text(),
+                                "module05": self.BI_Mod5ID_btn.text(),
+                                "module06": self.BI_Mod6ID_btn.text(),
+                                "module07": self.BI_Mod7ID_btn.text(),
+                                "module08": self.BI_Mod8ID_btn.text(),
+                                "module09": self.BI_Mod9ID_btn.text(),
+                                },
+
+                }
+
+                #send testSession to MongoDB here
+                #(placeholder code goes here)
+                #(make sure the Session ID doesn't already exist)
+                #now get it back to display
+		testSession_fromDB = testSession #this will be a database call in the future
+
+		self.TestSession=testSession_fromDB["sessionID"]
+		self.Ctrl_SeshID_db.setText("Session ID: "+str(self.TestSession))
+		self.Ctrl_Operator_db.setText("Operator: "+testSession_fromDB["operator"])
+		self.Ctrl_StartTime_db.setText("Start Time: "+testSession_fromDB["startTime"].strftime('%a %d %b %Y, %I:%M%p'))
+		self.Ctrl_lowTemp_db.setText("Low Temp (C°): "+str(testSession_fromDB["lowTemp"]))
+		self.Ctrl_hiTemp_db.setText("High Temp (C°): "+str(testSession_fromDB["hiTemp"]))
+		self.Ctrl_Module00_tag.setText("Module 00: #"+str(testSession_fromDB["modules"]["module00"]))
+		self.Ctrl_Module01_tag.setText("Module 01: #"+str(testSession_fromDB["modules"]["module01"]))
+		self.Ctrl_Module02_tag.setText("Module 02: #"+str(testSession_fromDB["modules"]["module02"]))
+		self.Ctrl_Module03_tag.setText("Module 03: #"+str(testSession_fromDB["modules"]["module03"]))
+		self.Ctrl_Module04_tag.setText("Module 04: #"+str(testSession_fromDB["modules"]["module04"]))
+		self.Ctrl_Module05_tag.setText("Module 05: #"+str(testSession_fromDB["modules"]["module05"]))
+		self.Ctrl_Module06_tag.setText("Module 06: #"+str(testSession_fromDB["modules"]["module06"]))
+		self.Ctrl_Module07_tag.setText("Module 07: #"+str(testSession_fromDB["modules"]["module07"]))
+		self.Ctrl_Module08_tag.setText("Module 08: #"+str(testSession_fromDB["modules"]["module08"]))
+		self.Ctrl_Module09_tag.setText("Module 09: #"+str(testSession_fromDB["modules"]["module09"]))
 		self.logger.info("Session started!")
 				
 	def Ctrl_StartTest_Cmd(self):
@@ -482,7 +523,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		msg = QMessageBox()
 		msg.setWindowTitle("Module test ongoing. Please wait...")
 		msg.show()
-		result = subprocess.run(["python3", "moduleTest.py"], capture_output=True, text=True)
+		result = subprocess.run(["python3", "BurnIn_moduleTest/moduleTest.py"], capture_output=True, text=True)
 		self.logger.info(result.stdout)
 		self.logger.error(result.stderr)
 		self.logger.info("Module test completed!")
