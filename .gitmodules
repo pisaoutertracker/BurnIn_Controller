@@ -1,0 +1,3 @@
+[submodule "BurnIn_moduleTest"]
+	path = BurnIn_moduleTest
+	url = https://github.com/pisaoutertracker/BurnIn_moduleTest.git
