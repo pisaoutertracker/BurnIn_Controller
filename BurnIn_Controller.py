@@ -43,10 +43,11 @@ if __name__ == '__main__':
 	if not os.path.exists(LogDir):
 		os.makedirs(LogDir)
 
-	if platform.system()=="Linux":
-		LogName = now.strftime("Logs/BurnIn_controller_%Y_%m_%d_%H_%M_%S.log")
-	else:
+	if platform.system()=="Windows":
 		LogName = now.strftime("Logs\BurnIn_controller_%Y_%m_%d_%H_%M_%S.log")
+	else:
+		LogName = now.strftime("Logs/BurnIn_controller_%Y_%m_%d_%H_%M_%S.log")
+
 	
 	if args.debug:
 		logging.basicConfig( format="%(asctime)s | %(name)s | %(levelname)s : %(message)s",datefmt="%Y-%m-%dT%H:%M:%S%z",
