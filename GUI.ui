@@ -764,7 +764,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_13">
            <item>
-            <spacer name="verticalSpacer_5">
+            <spacer name="verticalSpacer_8">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -777,7 +777,23 @@
             </spacer>
            </item>
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_15">
+            <layout class="QHBoxLayout" name="horizontalLayout_12">
+             <item>
+              <widget class="QCheckBox" name="Ctrl_DryRun_cb">
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Dry run</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QPushButton" name="Ctrl_StartTest_btn">
                <property name="text">
@@ -785,20 +801,20 @@
                </property>
               </widget>
              </item>
-             <item>
-              <spacer name="verticalSpacer_8">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
             </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -3086,7 +3102,7 @@
              <item>
               <widget class="QLineEdit" name="ModuleTestCmd_line">
                <property name="text">
-                <string>python3 moduleTest.py</string>
+                <string>cd BurnIn_moduleTest &amp;&amp; python3 moduleTest.py session1 --useExistingModuleTest T2023_12_04_16_26_11_224929</string>
                </property>
               </widget>
              </item>

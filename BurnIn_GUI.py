@@ -42,7 +42,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.logger=logger
 		self.configDict=configDict
 	
-		self.TestSessionID=65536 #hardcoded (test value)
+		self.TestSession="session1" #hardcoded (test value)
 		
 		self.LVNames=["?"] * 10
 		self.LVNames[7]="BLV08"
@@ -553,7 +553,13 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		msg = QMessageBox()
 		msg.setWindowTitle("Module test ongoing. Please wait...")
 		msg.show()
-		result = subprocess.run(["python3", "BurnIn_moduleTest/moduleTest.py"], capture_output=True, text=True)
+		session=self.TestSession
+		if self.Ctrl_DryRun_cb.isChecked()==True:
+			result = subprocess.run(["python3", "moduleTest.py", session, "--useExistingModuleTest T2023_12_04_16_26_11_224929"],
+                                                capture_output=True, text=True, cwd="BurnIn_moduleTest")
+		else:
+			result = subprocess.run(["python3", "moduleTest.py", session],
+                                                capture_output=True, text=True, cwd="BurnIn_moduleTest")
 		self.logger.info(result.stdout)
 		self.logger.error(result.stderr)
 		self.logger.info("Module test completed!")
