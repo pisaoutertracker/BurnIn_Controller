@@ -10,6 +10,7 @@ from BurnIn_TCP import *
 from BurnIn_Worker import *
 from BurnIn_Monitor import *
 
+import databaseTools
 
 class BurnIn_GUI(QtWidgets.QMainWindow):
 
@@ -554,7 +555,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
                 #(placeholder code goes here)
                 #(make sure the Session ID doesn't already exist)
                 #now get it back to display
-		session_fromDB = session #this will be a database call in the future
+		session_fromDB = databaseTools.getSessionFromDB()#default for testing
 
 		self.TestSession=session_fromDB["sessionKey"]
 		self.Ctrl_SeshID_db.setText("Session ID: "+str(self.TestSession))
