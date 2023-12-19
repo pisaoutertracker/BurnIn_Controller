@@ -719,7 +719,7 @@
              <item>
               <widget class="QLabel" name="label_72">
                <property name="text">
-                <string>Session ID:      </string>
+                <string>Session:      </string>
                </property>
               </widget>
              </item>
@@ -728,11 +728,14 @@
                <property name="decimals">
                 <number>0</number>
                </property>
+               <property name="minimum">
+                <double>-9999999.000000000000000</double>
+               </property>
                <property name="maximum">
                 <double>9999999.000000000000000</double>
                </property>
                <property name="value">
-                <double>1337.000000000000000</double>
+                <double>-99999.000000000000000</double>
                </property>
               </widget>
              </item>

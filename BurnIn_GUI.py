@@ -11,6 +11,8 @@ from BurnIn_Worker import *
 from BurnIn_Monitor import *
 
 import databaseTools
+from pprint import pprint
+import requests
 
 class BurnIn_GUI(QtWidgets.QMainWindow):
 
@@ -495,13 +497,13 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		msg.show()
 		#define test session for DB
 		session = {
-                        "sessionKey": int(self.SeshID.value()),
+                        "sessionName": int(self.SeshID.value()),
                         "operator": self.BI_Operator_line.text(),
-                        "timestamp": datetime.now(),
+                        "timestamp": datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
                         "description": self.SeshDescription_db.text(), 
                         "configuration": {
-                                "lowTemp": self.BI_LowTemp_dsb.value(),
-                                "hiTemp": self.BI_HighTemp_dsb.value(),
+#                                "lowTemp": self.BI_LowTemp_dsb.value(),
+#                                "hiTemp": self.BI_HighTemp_dsb.value(),
                         },                        
                         "modulesList": {
                                 "module00": self.BI_Mod0ID_btn.text(),
@@ -552,28 +554,29 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	       		session["modulesList"]["module09"]=""
                         
                 #send session to MongoDB here
-                #(placeholder code goes here)
+		pprint(session)
+#                uploadSessionToDB(session)
                 #(make sure the Session ID doesn't already exist)
                 #now get it back to display
-		session_fromDB = databaseTools.getSessionFromDB()#default for testing
-
-		self.TestSession=session_fromDB["sessionKey"]
+		session_fromDB = databaseTools.getSessionFromDB(sessionName="session1")#default for testing
+#		pprint(session_fromDB)
+		self.TestSession=session_fromDB["sessionName"]
 		self.Ctrl_SeshID_db.setText("Session ID: "+str(self.TestSession))
 		self.Ctrl_Operator_db.setText("Operator: "+session_fromDB["operator"])
-		self.Ctrl_StartTime_db.setText("Start Time: "+session_fromDB["timestamp"].strftime('%a %d %b %Y, %I:%M%p'))
+		self.Ctrl_StartTime_db.setText("Start Time: "+session_fromDB["timestamp"])
 		self.Ctrl_SeshDescription_db.setText("Session Description: "+session_fromDB["description"])
-		self.Ctrl_lowTemp_db.setText("Low Temp (C°): "+str(session_fromDB["configuration"]["lowTemp"]))
-		self.Ctrl_hiTemp_db.setText("High Temp (C°): "+str(session_fromDB["configuration"]["hiTemp"]))
-		self.Ctrl_Module00_tag.setText("Module 00: #"+str(session_fromDB["modulesList"]["module00"]))
-		self.Ctrl_Module01_tag.setText("Module 01: #"+str(session_fromDB["modulesList"]["module01"]))
-		self.Ctrl_Module02_tag.setText("Module 02: #"+str(session_fromDB["modulesList"]["module02"]))
-		self.Ctrl_Module03_tag.setText("Module 03: #"+str(session_fromDB["modulesList"]["module03"]))
-		self.Ctrl_Module04_tag.setText("Module 04: #"+str(session_fromDB["modulesList"]["module04"]))
-		self.Ctrl_Module05_tag.setText("Module 05: #"+str(session_fromDB["modulesList"]["module05"]))
-		self.Ctrl_Module06_tag.setText("Module 06: #"+str(session_fromDB["modulesList"]["module06"]))
-		self.Ctrl_Module07_tag.setText("Module 07: #"+str(session_fromDB["modulesList"]["module07"]))
-		self.Ctrl_Module08_tag.setText("Module 08: #"+str(session_fromDB["modulesList"]["module08"]))
-		self.Ctrl_Module09_tag.setText("Module 09: #"+str(session_fromDB["modulesList"]["module09"]))
+#		self.Ctrl_lowTemp_db.setText("Low Temp (C°): "+str(session_fromDB["configuration"]["lowTemp"]))
+#		self.Ctrl_hiTemp_db.setText("High Temp (C°): "+str(session_fromDB["configuration"]["hiTemp"]))
+		self.Ctrl_Module00_tag.setText("Module 00: #"+str(session_fromDB["modulesList"][0]))
+		self.Ctrl_Module01_tag.setText("Module 01: #"+str(session_fromDB["modulesList"][1]))
+#		self.Ctrl_Module02_tag.setText("Module 02: #"+str(session_fromDB["modulesList"][2]))
+#		self.Ctrl_Module03_tag.setText("Module 03: #"+str(session_fromDB["modulesList"][3]))
+#		self.Ctrl_Module04_tag.setText("Module 04: #"+str(session_fromDB["modulesList"][4]))
+#		self.Ctrl_Module05_tag.setText("Module 05: #"+str(session_fromDB["modulesList"][5]))
+#		self.Ctrl_Module06_tag.setText("Module 06: #"+str(session_fromDB["modulesList"][6]))
+#		self.Ctrl_Module07_tag.setText("Module 07: #"+str(session_fromDB["modulesList"][7]))
+#		self.Ctrl_Module08_tag.setText("Module 08: #"+str(session_fromDB["modulesList"][8]))
+#		self.Ctrl_Module09_tag.setText("Module 09: #"+str(session_fromDB["modulesList"][9]))
                 #don't bother calling the module logs
 		self.logger.info("Session started!")
 				
