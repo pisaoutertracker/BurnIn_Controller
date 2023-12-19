@@ -627,70 +627,70 @@
                  <item row="1" column="2">
                   <widget class="QLabel" name="Ctrl_Module07_tag">
                    <property name="text">
-                    <string>Module 07: #??</string>
+                    <string>Module 07: ??</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="0">
                   <widget class="QLabel" name="Ctrl_Module05_tag">
                    <property name="text">
-                    <string>Module 05: #??</string>
+                    <string>Module 05: ??</string>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="0">
                   <widget class="QLabel" name="Ctrl_Module00_tag">
                    <property name="text">
-                    <string>Module 00: #??</string>
+                    <string>Module 00: ??</string>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="4">
                   <widget class="QLabel" name="Ctrl_Module04_tag">
                    <property name="text">
-                    <string>Module 04: #??</string>
+                    <string>Module 04: ??</string>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="3">
                   <widget class="QLabel" name="Ctrl_Module03_tag">
                    <property name="text">
-                    <string>Module 03: #??</string>
+                    <string>Module 03: ??</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="4">
                   <widget class="QLabel" name="Ctrl_Module09_tag">
                    <property name="text">
-                    <string>Module 09: #??</string>
+                    <string>Module 09: ??</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="1">
                   <widget class="QLabel" name="Ctrl_Module06_tag">
                    <property name="text">
-                    <string>Module 06: #??</string>
+                    <string>Module 06: ??</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="3">
                   <widget class="QLabel" name="Ctrl_Module08_tag">
                    <property name="text">
-                    <string>Module 08: #??</string>
+                    <string>Module 08: ??</string>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="1">
                   <widget class="QLabel" name="Ctrl_Module01_tag">
                    <property name="text">
-                    <string>Module 01: #??</string>
+                    <string>Module 01: ??</string>
                    </property>
                   </widget>
                  </item>
                  <item row="0" column="2">
                   <widget class="QLabel" name="Ctrl_Module02_tag">
                    <property name="text">
-                    <string>Module 02: #??</string>
+                    <string>Module 02: ??</string>
                    </property>
                   </widget>
                  </item>
@@ -713,46 +713,6 @@
               </item>
              </layout>
             </widget>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_14">
-             <item>
-              <widget class="QLabel" name="label_72">
-               <property name="text">
-                <string>Session:      </string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QDoubleSpinBox" name="SeshID">
-               <property name="decimals">
-                <number>0</number>
-               </property>
-               <property name="minimum">
-                <double>-9999999.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>9999999.000000000000000</double>
-               </property>
-               <property name="value">
-                <double>-99999.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_15">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
            </item>
            <item>
             <widget class="QLabel" name="label_82">
