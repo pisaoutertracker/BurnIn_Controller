@@ -746,7 +746,6 @@ class BurnIn_Worker(QObject):
 				return
 			
 			#do test here...
-			self.logger.info("BI: keep temperature ....")
 			self.logger.info("BI: testing...")
 			self.SharedDict["BI_Action"].setText("Module test")
 			self.MT_StartTest_Cmd(False,False)
@@ -754,7 +753,7 @@ class BurnIn_Worker(QObject):
 			
 			self.logger.info("BI: going to high temp")
 			self.SharedDict["BI_Action"].setText("Heating")
-			if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,HighTemp):
+			if not self.BI_Action(self.BI_GoHighTemp,BI_Options):
 				return
 				
 			while (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-HighTemp) > TempTolerance):
@@ -883,7 +882,40 @@ class BurnIn_Worker(QObject):
 		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,LowTemp-TempMantainOffset,PopUp):
 			self.last_op_ok= False
 			return
-
+	
+	## BI function to ramp up in temp
+	def BI_GoHighTemp(self,BI_Options):
+	
+		TempTolerance		= BI_TEMP_TOLERANCE
+		HighTemp			= BI_Options["HighTemp"]
+		TempRampOffset		= BI_Options["UnderRamp"]
+		TempMantainOffset	= BI_Options["UnderKeep"]
+		
+		self.last_op_ok= True
+		PopUp=False
+		
+		nextTemp=HighTemp+TempMantainOffset
+		
+		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,nextTemp,PopUp):
+			self.last_op_ok= False
+			return	
+		
+		self.logger.info("BI: heating....")	
+		while (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-HighTemp) > TempTolerance):
+			if self.SharedDict["BI_StopRequest"]:
+				self.BI_Abort("BI aborted: user request")
+				return	
+			if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
+				self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
+				return
+			time.sleep(10)	
+			
+			
+		# set target temperature mantain
+		self.logger.info("BI: keep temperature ....")
+		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,HighTemp,PopUp):
+			self.last_op_ok= False
+			return
 
 	@pyqtSlot(bool)				
 	def MT_StartTest_Cmd(self, dry=False, PupUp=True):

@@ -482,6 +482,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Time_arr.clear()
 		self.Targ_arr.clear()
 		self.DewPoint_arr.clear()
+		self.SeshDescription_db.setText(BI_Desc_line.text())
 		self.ManualOp_tab.setEnabled(False)
 		self.ModuleTest_tab.setEnabled(False)
 		BI_Options={}
