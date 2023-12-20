@@ -824,7 +824,13 @@ class BurnIn_Worker(QObject):
 				self.logger.warning("BI: failed to do action...new try in 10 sec")
 				time.sleep(BI_ACTION_RETRY_SLEEP)
 				retry=retry-1
+				if self.SharedDict["BI_StopRequest"]:
+					self.BI_Abort("BI: aborted for user request")
+					return False
 			else:
+				if self.SharedDict["BI_StopRequest"]:
+					self.BI_Abort("BI: aborted for user request")
+					return False
 				return True
 		self.BI_Abort("BI: failed to do action (3 times)...aborting")
 		return False
@@ -867,10 +873,10 @@ class BurnIn_Worker(QObject):
 					if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-LowTemp) < TempTolerance):
 						break
 					if self.SharedDict["BI_StopRequest"]:
-						self.BI_Abort("BI aborted: user request")
+						self.last_op_ok= False
 						return	
 					if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
-						self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
+						self.last_op_ok= False
 						return
 					time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
 				except Exception as e:
@@ -906,10 +912,10 @@ class BurnIn_Worker(QObject):
 				if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-HighTemp) < TempTolerance):
 					break
 				if self.SharedDict["BI_StopRequest"]:
-					self.BI_Abort("BI aborted: user request")
+					self.last_op_ok= False
 					return	
 				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
-					self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
+					self.last_op_ok= False
 					return
 				time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
 			except Exception as e:
