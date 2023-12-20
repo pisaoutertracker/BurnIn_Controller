@@ -737,7 +737,8 @@ class BurnIn_Worker(QObject):
 			
 			#do test here...
 			self.logger.info("BI: keep temperature ....")
-			time.sleep(120)  # test dummy
+			self.logger.info("BI: testing...")
+			self.MT_StartTest_Cmd()
 			
 			
 			self.logger.info("BI: going to high temp")
@@ -754,9 +755,8 @@ class BurnIn_Worker(QObject):
 				time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
 				
 			
-			self.logger.info("BI: testing (DUMMY)")
-			time.sleep(120)  # test dummy
-			#do test here...
+			self.logger.info("BI: testing...")
+			self.MT_StartTest_Cmd()
 			
 			self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
 			
@@ -863,3 +863,25 @@ class BurnIn_Worker(QObject):
 		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,LowTemp-TempMantainOffset,PopUp):
 			self.last_op_ok= False
 			return
+
+
+	@pyqtSlot(bool)				
+	def MT_StartTest_Cmd(self, dry=False):
+			self.logger.info("Starting module test...")
+			msg = QMessageBox()
+			msg.setWindowTitle("Module test ongoing. Please wait...")
+			msg.show()
+			session=self.SharedDict["TestSession"]
+			if dry:
+				result = subprocess.run(["python3", "moduleTest.py", session, "--useExistingModuleTest T2023_12_04_16_26_11_224929"],
+													cwd="BurnIn_moduleTest")
+			else:
+				result = subprocess.run(["python3", "moduleTest.py", session],
+													cwd="BurnIn_moduleTest")
+			self.logger.info(result.stdout)
+			self.logger.error(result.stderr)
+			self.logger.info("Module test completed!")
+			
+			
+	def MT_UploadDB_Cmd(self):
+		pass

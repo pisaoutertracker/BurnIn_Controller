@@ -33,6 +33,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	Ctrl_PowerHV_sig = pyqtSignal(bool)
 	Ctrl_VSet_sig = pyqtSignal(str)
 	
+	
+	MT_UploadDB_sig = pyqtSignal()
+	MT_StartTest_sig = pyqtSignal(bool)
+	
 	BI_Start_sig = pyqtSignal(dict)
 
 
@@ -308,6 +312,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_StopRequest"]=False
 		
 		self.SharedDict["Input"]=0.0
+		self.SharedDict["TestSession"]="0"
 		
 		self.SharedDict["CAEN_table"]=self.Ctrl_CAEN_table
 		self.SharedDict["BI_Graph"]=self.GraphWidget
@@ -340,8 +345,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.ModuleTestCmd_btn.clicked.connect(self.SendModuleTestCmd)
 	
 		# module test tab
+		#self.Ctrl_StartSesh_btn.clicked.connect(self.MT_UploadDB_Cmd)
 		self.Ctrl_StartSesh_btn.clicked.connect(self.Ctrl_StartSesh_Cmd)
-		self.Ctrl_StartTest_btn.clicked.connect(self.Ctrl_StartTest_Cmd)
+		self.Ctrl_StartTest_btn.clicked.connect(self.MT_StartTest_Cmd)
 		
 		# manual operation tab
 		self.Ctrl_SetSp1_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(0,self.Ctrl_ValSp1_dsb.value()))
@@ -370,7 +376,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_LVOff_btn.clicked.connect (lambda : self.Ctrl_PowerLV_Cmd(False))
 		self.Ctrl_HVOn_btn.clicked.connect(lambda : self.Ctrl_PowerHV_Cmd(True))
 		self.Ctrl_HVOff_btn.clicked.connect (lambda : self.Ctrl_PowerHV_Cmd(False))
-		self.Ctrl_StartTest_btn.clicked.connect(self.Ctrl_StartTest_Cmd)
 		self.Ctrl_LVSet_btn.clicked.connect(lambda : self.Ctrl_VSet_Cmd("LV"))
 		self.Ctrl_HVSet_btn.clicked.connect(lambda : self.Ctrl_VSet_Cmd("HV"))
 		
@@ -398,6 +403,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_PowerLV_sig.connect(self.Worker.Ctrl_PowerLV_Cmd)
 		self.Ctrl_PowerHV_sig.connect(self.Worker.Ctrl_PowerHV_Cmd)
 		self.Ctrl_VSet_sig.connect(self.Worker.Ctrl_VSet_Cmd)
+		
+		self.MT_UploadDB_sig.connect(self.Worker.MT_UploadDB_Cmd)
+		self.MT_StartTest_sig.connect(self.Worker.MT_StartTest_Cmd)
 		
 		
 		self.BI_Start_sig.connect(self.Worker.BI_Start_Cmd)
@@ -449,6 +457,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	
 	def Ctrl_VSet_Cmd(self,VType):
 		self.Ctrl_VSet_sig.emit(VType)
+	
+	def MT_StartTest_Cmd(self):
+		self.MT_StartTest_sig.emit(self.Ctrl_DryRun_cb.isChecked())
+	
+	def MT_UploadDB_Cmd(self):
+		self.MT_UploadDB_sig.emit()
 	
 	def BI_Start_Cmd(self):
 		self.Temp_arr.clear()
@@ -524,10 +538,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		if uploadResponse=="timeout": #if it times out, display a dummy status
 			session_fromDB=session
 			self.TestSession=uploadResponse
+			self.SharedDict["TestSession"]=self.TestSession
 			self.logger.info("Session timed out!")
 		else:
 			session_fromDB=databaseTools.getSessionFromDB(sessionName=uploadResponse)#default for testing
 			self.TestSession=session_fromDB["sessionName"]
+			self.SharedDict["TestSession"]=self.TestSession
 			self.logger.info("Session started!")
 			pprint(session_fromDB)
 		#
@@ -547,22 +563,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_Module07_tag.setText("Module 07: "+str(session_fromDB["modulesList"][7]))
 		self.Ctrl_Module08_tag.setText("Module 08: "+str(session_fromDB["modulesList"][8]))
 		self.Ctrl_Module09_tag.setText("Module 09: "+str(session_fromDB["modulesList"][9]))
-				
-	def Ctrl_StartTest_Cmd(self):
-		self.logger.info("Starting module test...")
-		msg = QMessageBox()
-		msg.setWindowTitle("Module test ongoing. Please wait...")
-		msg.show()
-		session=self.TestSession
-		if self.Ctrl_DryRun_cb.isChecked()==True:
-			result = subprocess.run(["python3", "moduleTest.py", session, "--useExistingModuleTest T2023_12_04_16_26_11_224929"],
-                                                cwd="BurnIn_moduleTest")
-		else:
-			result = subprocess.run(["python3", "moduleTest.py", session],
-                                                cwd="BurnIn_moduleTest")
-		self.logger.info(result.stdout)
-		self.logger.error(result.stderr)
-		self.logger.info("Module test completed!")
 		
 	@pyqtSlot(str,str)
 	def Show_msg(self,warn_msg,rsn_msg):
