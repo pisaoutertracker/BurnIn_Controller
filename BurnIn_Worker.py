@@ -18,6 +18,8 @@ class BurnIn_Worker(QObject):
 	Request_msg = pyqtSignal(str,str)
 	Request_input_dsb = pyqtSignal(str,float,float,float)
 	BI_terminated = pyqtSignal()
+	
+	UploadDB_sig = pyqtSignal()
 
 	## Init function.
 	def __init__(self,configDict,logger, SharedDict, Julabo, FNALBox, CAENController):
@@ -658,7 +660,7 @@ class BurnIn_Worker(QObject):
 		
 		self.SharedDict["BI_Active"]=True
 		
-		
+		UploadDB_sig.emit()
 			
 			
 		if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
@@ -873,11 +875,11 @@ class BurnIn_Worker(QObject):
 			msg.show()
 			session=self.SharedDict["TestSession"]
 			if dry:
-				result = subprocess.run(["python3", "moduleTest.py", session, "--useExistingModuleTest T2023_12_04_16_26_11_224929"],
-													cwd="BurnIn_moduleTest")
+				result = subprocess.run(["python3", "moduleTest.py", session, "--useExistingModuleTest","T2023_12_04_16_26_11_224929"],
+													cwd="/home/thermal/Ph2_ACF_docker/BurnIn_moduleTest")
 			else:
 				result = subprocess.run(["python3", "moduleTest.py", session],
-													cwd="BurnIn_moduleTest")
+													cwd="/home/thermal/Ph2_ACF_docker/BurnIn_moduleTest")
 			self.logger.info(result.stdout)
 			self.logger.error(result.stderr)
 			self.logger.info("Module test completed!")

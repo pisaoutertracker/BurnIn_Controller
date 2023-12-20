@@ -419,6 +419,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Monitor.Update_graph.connect(self.Update_graph)
 		#self.Monitor.Update_manualOp_tab.connect(self.Update_manualOp_tab)
 		
+		self.Worker.UploadDB_sig.connect(self.Ctrl_StartSesh_Cmd)
+		
 		
 		self.statusBar().showMessage("System ready")
 		
@@ -476,6 +478,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		BI_Options["UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
 		BI_Options["UnderKeep"]=self.BI_UnderRampTemp_dsb.value()
 		BI_Options["NCycles"]=self.BI_NCycles_sb.value()
+		BI_Options["Operator"]=self.BI_Operator_line.text()
 		BI_Options["ActiveSlots"]=[]
 		for cb in self.Module_cbs:
 			BI_Options["ActiveSlots"].append(cb.isChecked)
@@ -503,7 +506,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		else:
 			self.logger.info("New Id for module "+str(idx)+" aborted by user")
 		
-						
+	@pyqtSlot()					
 	def Ctrl_StartSesh_Cmd(self):
 		self.logger.info("Starting Test Session")
 		msg = QMessageBox()
