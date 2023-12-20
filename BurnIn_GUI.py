@@ -491,7 +491,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.TimeTest_arr.clear()
 		self.TempTest_arr.clear()
 		self.DewPoint_arr.clear()
-		self.SeshDescription_db.setText(BI_Desc_line.text())
+		self.SeshDescription_db.setText(self.BI_Desc_line.text())
 		self.ManualOp_tab.setEnabled(False)
 		self.ModuleTest_tab.setEnabled(False)
 		BI_Options={}
@@ -631,7 +631,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.DewPoint_line.setData(self.Time_arr,self.DewPoint_arr)
 		self.Temp_line.setData(self.Time_arr,self.Temp_arr)
 		self.Targ_line.setData(self.Time_arr,self.Targ_arr)
-		self.Test_line.setData(self.TimeTest_arr,self.TargTest_arr)
+		self.Test_line.setData(self.TimeTest_arr,self.TempTest_arr)
 	
 		#@pyqtSlot()
 		#def Update_manualOp_tab(self):

@@ -862,14 +862,19 @@ class BurnIn_Worker(QObject):
 				self.last_op_ok= False
 				return	
 				
-			while (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-LowTemp) > TempTolerance):
-				if self.SharedDict["BI_StopRequest"]:
-					self.BI_Abort("BI aborted: user request")
-					return	
-				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
-					self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
-					return
-				time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)	
+			while(True):
+				try:
+					if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-LowTemp) < TempTolerance):
+						break
+					if self.SharedDict["BI_StopRequest"]:
+						self.BI_Abort("BI aborted: user request")
+						return	
+					if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
+						self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
+						return
+					time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
+				except Exception as e:
+					pass
 			
 			
 		# set target temperature mantain
@@ -896,14 +901,19 @@ class BurnIn_Worker(QObject):
 			return	
 		
 		self.logger.info("BI: heating....")	
-		while (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-HighTemp) > TempTolerance):
-			if self.SharedDict["BI_StopRequest"]:
-				self.BI_Abort("BI aborted: user request")
-				return	
-			if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
-				self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
-				return
-			time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)	
+		while(True):
+			try:
+				if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-HighTemp) < TempTolerance):
+					break
+				if self.SharedDict["BI_StopRequest"]:
+					self.BI_Abort("BI aborted: user request")
+					return	
+				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
+					self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
+					return
+				time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
+			except Exception as e:
+				pass	
 			
 			
 		# set target temperature mantain
