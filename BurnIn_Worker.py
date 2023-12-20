@@ -756,15 +756,6 @@ class BurnIn_Worker(QObject):
 			if not self.BI_Action(self.BI_GoHighTemp,BI_Options):
 				return
 				
-			while (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-HighTemp) > TempTolerance):
-				if self.SharedDict["BI_StopRequest"]:
-					self.BI_Abort("BI aborted: user request")
-					return	
-				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
-					self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
-					return
-				time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
-				
 			
 			self.logger.info("BI: testing...")
 			self.MT_StartTest_Cmd(False,False)
@@ -874,7 +865,7 @@ class BurnIn_Worker(QObject):
 				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
 					self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
 					return
-				time.sleep(10)	
+				time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)	
 			
 			
 		# set target temperature mantain
@@ -908,7 +899,7 @@ class BurnIn_Worker(QObject):
 			if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
 				self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
 				return
-			time.sleep(10)	
+			time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)	
 			
 			
 		# set target temperature mantain

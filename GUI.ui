@@ -275,7 +275,7 @@
                  <item row="3" column="5">
                   <widget class="QPushButton" name="BI_Mod7ID_btn">
                    <property name="text">
-                    <string>PS_26_10-IPG_00103</string>
+                    <string>PS_26_05-IPG_00102</string>
                    </property>
                   </widget>
                  </item>
