@@ -3,7 +3,7 @@ import requests
 
 verbose=100
 ip="192.168.0.45"
-port=5005
+port=5000
 
 #upload session to DB
 def uploadSessionToDB(sessionDescription = {}):
