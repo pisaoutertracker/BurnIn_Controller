@@ -68,7 +68,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	
 		self.setWindowIcon(QtGui.QIcon('logo.png'))
 		self.actionExpert.setIcon(QtGui.QIcon('expert.png'))
-		self.actionExit.setIcon(QtGui.QIcon('exit.jpeg'))  
+		self.actionExit.setIcon(QtGui.QIcon('exit.jpeg')) 
+		
 		
 		self.GraphWidget.setBackground("w")
 		styles = { "font-size": "13px"}
@@ -87,6 +88,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		pen = pg.mkPen(color='b',width=3)
 		self.Targ_line=self.GraphWidget.plot(self.Time_arr, self.Targ_arr,name="Target", pen=pen)      
 		
+		self.BI_ProgressBar_pb.setValue(0)
 		#adjust GUI table elements
 		for row in range(10):
 			self.Ctrl_CAEN_table.setItem(row,0,QtWidgets.QTableWidgetItem(self.LVNames[row]))
@@ -148,8 +150,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Module_cbs.append(self.BI_Mod8_cb)
 		self.Module_cbs.append(self.BI_Mod9_cb)
 		
-		for cb in self.Module_cbs:
-			cb.setChecked(True)
+		#for cb in self.Module_cbs:
+		for i in range (7,10,1):
+			self.Module_cbs[i].setChecked(True)
 		
 		self.JulaboTestCmd_btn.setEnabled(False)    
 		self.FNALBoxTestCmd_btn.setEnabled(False)    
@@ -300,6 +303,14 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["Ctrl_StatusLock"]=self.Ctrl_StatusLock_tag
 		self.SharedDict["Ctrl_StatusDoor"]=self.Ctrl_StatusDoor_tag
 		self.SharedDict["Ctrl_LowerTemp"]=999.0
+		
+		
+		# PYQT tags in BI tab
+		
+		self.SharedDict["BI_Status"]=self.BI_Status_tag
+		self.SharedDict["BI_Action"]=self.BI_Action_tag
+		self.SharedDict["BI_ProgressBar"]=self.BI_ProgressBar_pb
+		self.SharedDict["BI_Cycle"]=self.BI_Cycle_tag
 		
 		# Status variable & parameter
 		
@@ -472,11 +483,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Targ_arr.clear()
 		self.DewPoint_arr.clear()
 		self.ManualOp_tab.setEnabled(False)
+		self.ModuleTest_tab.setEnabled(False)
 		BI_Options={}
 		BI_Options["LowTemp"]= self.BI_LowTemp_dsb.value()
 		BI_Options["HighTemp"]= self.BI_HighTemp_dsb.value()
 		BI_Options["UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
-		BI_Options["UnderKeep"]=self.BI_UnderRampTemp_dsb.value()
+		BI_Options["UnderKeep"]=self.BI_UnderKeepTemp_dsb.value()
 		BI_Options["NCycles"]=self.BI_NCycles_sb.value()
 		BI_Options["Operator"]=self.BI_Operator_line.text()
 		BI_Options["ActiveSlots"]=[]
@@ -496,6 +508,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	@pyqtSlot()
 	def BI_terminated(self):
 		self.ManualOp_tab.setEnabled(True) 
+		self.ModuleTest_tab.setEnabled(True)
 		
 	def BI_SetModuleID(self,idx):
 		

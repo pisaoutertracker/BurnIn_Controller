@@ -648,6 +648,9 @@ class BurnIn_Worker(QObject):
 	@pyqtSlot(dict)			
 	def BI_Start_Cmd(self,BI_Options):
 		self.logger.info("Starting BurnIN...")
+		self.SharedDict["BI_Status"].setText("Running")
+		self.SharedDict["BI_Action"].setText("Setup")
+		self.SharedDict["BI_Cycle"].setText("1")
 		
 			
 	
@@ -660,7 +663,7 @@ class BurnIn_Worker(QObject):
 		
 		self.SharedDict["BI_Active"]=True
 		
-		UploadDB_sig.emit()
+		self.UploadDB_sig.emit()
 			
 			
 		if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
@@ -707,6 +710,7 @@ class BurnIn_Worker(QObject):
 			return
 		
 		##start LV
+		self.SharedDict["BI_Action"].setText("Start LVs")
 		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,LV_Channel_list,PopUp):
 			return
 		time.sleep(BI_SLEEP_AFTER_VSET)
@@ -718,6 +722,7 @@ class BurnIn_Worker(QObject):
 				return
 		
 		#start HV
+		self.SharedDict["BI_Action"].setText("Start HVs")
 		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,HV_Channel_list,PopUp):
 			return
 		
@@ -728,22 +733,27 @@ class BurnIn_Worker(QObject):
 				self.BI_Abort("BI aborted: some HVs was not turned ON")
 				return
 			
-			
+		
+		self.SharedDict["BI_Status"].setText("Cycling")	
 		for cycle in range (NCycles):
 			self.logger.info("BI: starting cycle "+str(cycle+1) + " of "+str(NCycles))
+			self.SharedDict["BI_Cycle"].setText(str(cycle)+"/"+str(NCycles))
 		
 			# ramp down
 			self.logger.info("BI: runmping down...")
-			if not self.BI_Action(self.BI_GoLowTemp,BI_Options,PopUp):
+			self.SharedDict["BI_Action"].setText("Cooling")
+			if not self.BI_Action(self.BI_GoLowTemp,BI_Options):
 				return
 			
 			#do test here...
 			self.logger.info("BI: keep temperature ....")
 			self.logger.info("BI: testing...")
-			self.MT_StartTest_Cmd()
+			self.SharedDict["BI_Action"].setText("Module test")
+			self.MT_StartTest_Cmd(False,False)
 			
 			
 			self.logger.info("BI: going to high temp")
+			self.SharedDict["BI_Action"].setText("Heating")
 			if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,HighTemp):
 				return
 				
@@ -758,12 +768,15 @@ class BurnIn_Worker(QObject):
 				
 			
 			self.logger.info("BI: testing...")
-			self.MT_StartTest_Cmd()
+			self.MT_StartTest_Cmd(False,False)
 			
 			self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
+			self.SharedDict["BI_ProgressBar"].setValue(cycle/NCycles*100)
 			
-			
+		
+		self.SharedDict["BI_Status"].setText("Stopping")	
 		#stop HV
+		self.SharedDict["BI_Action"].setText("Stop HVs")
 		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,False,HV_Channel_list,PopUp):
 			return
 		time.sleep(BI_SLEEP_AFTER_VSET)
@@ -775,6 +788,7 @@ class BurnIn_Worker(QObject):
 			
 		
 		#stop LV
+		self.SharedDict["BI_Action"].setText("Stop LVs")
 		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,False,LV_Channel_list,PopUp):
 			return
 		time.sleep(BI_SLEEP_AFTER_VSET)
@@ -785,11 +799,14 @@ class BurnIn_Worker(QObject):
 				return
 				
 		#stop JULABO	
+		self.SharedDict["BI_Action"].setText("Closing")
 		if not self.BI_Action(self.Ctrl_PowerJulabo_Cmd,False,PopUp):
 			return
 		
 		self.logger.info("BurnIn test COMPLETED SUCCESFULLY!")
 		self.SharedDict["BI_Active"]=False
+		self.SharedDict["BI_Status"].setText("Idle")
+		self.SharedDict["BI_Action"].setText("None")
 		self.SharedDict["BI_StopRequest"]=False
 		self.BI_terminated.emit()
 	
@@ -797,6 +814,7 @@ class BurnIn_Worker(QObject):
 	def BI_Abort(self,Reason_str):
 	
 			Warning_str = "BURN IN test failed"
+			self.SharedDict["BI_Status"].setText("Aborted")
 			self.Request_msg.emit(Warning_str,Reason_str)
 			self.SharedDict["BI_Active"]=False
 			self.SharedDict["BI_StopRequest"]=False
@@ -821,9 +839,9 @@ class BurnIn_Worker(QObject):
 	def BI_GoLowTemp(self,BI_Options):
 	
 		TempTolerance		= BI_TEMP_TOLERANCE
-		LowTemp				= test_option["LowTemp"]
-		TempRampOffset		= test_option["UnderRamp"]
-		TempMantainOffset	= test_option["UnderKeep"]
+		LowTemp			= BI_Options["LowTemp"]
+		TempRampOffset		= BI_Options["UnderRamp"]
+		TempMantainOffset	= BI_Options["UnderKeep"]
 		
 		last_step=False
 		self.last_op_ok= True
@@ -838,7 +856,7 @@ class BurnIn_Worker(QObject):
 				self.last_op_ok= False
 				return
 			
-			if (lowtemp-TempRampOffset> dewPoint):
+			if (LowTemp-TempRampOffset> dewPoint):
 				nextTemp = LowTemp-TempRampOffset
 				self.logger.info("BI: target low temp OK...")
 				last_step = True
@@ -868,11 +886,12 @@ class BurnIn_Worker(QObject):
 
 
 	@pyqtSlot(bool)				
-	def MT_StartTest_Cmd(self, dry=False):
+	def MT_StartTest_Cmd(self, dry=False, PupUp=True):
 			self.logger.info("Starting module test...")
-			msg = QMessageBox()
-			msg.setWindowTitle("Module test ongoing. Please wait...")
-			msg.show()
+			if PupUp:
+				msg = QMessageBox()
+				msg.setWindowTitle("Module test ongoing. Please wait...")
+				msg.show()
 			session=self.SharedDict["TestSession"]
 			if dry:
 				result = subprocess.run(["python3", "moduleTest.py", session, "--useExistingModuleTest","T2023_12_04_16_26_11_224929"],
