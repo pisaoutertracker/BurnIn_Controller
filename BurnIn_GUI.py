@@ -79,6 +79,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.GraphWidgetLegend=self.GraphWidget.addLegend(offset=1,colCount=4)
 		self.Temp_arr=[]
 		self.Time_arr=[]
+		self.TempTest_arr=[]
+		self.TimeTest_arr=[]
 		self.Targ_arr=[]
 		self.DewPoint_arr=[]
 		pen = pg.mkPen(color='r',width=3)
@@ -86,7 +88,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		pen1 = pg.mkPen(color='g',width=3)
 		self.Temp_line=self.GraphWidget.plot(self.Time_arr, self.Temp_arr,name="Temp", pen=pen1)
 		pen = pg.mkPen(color='b',width=3)
-		self.Targ_line=self.GraphWidget.plot(self.Time_arr, self.Targ_arr,name="Target", pen=pen)      
+		self.Targ_line=self.GraphWidget.plot(self.Time_arr, self.Targ_arr,name="Target", pen=pen)  
+
+		self.Test_line=self.GraphWidget.plot(self.TimeTest_arr, self.TempTest_arr, pen=None, symbol='+')		
 		
 		self.BI_ProgressBar_pb.setValue(0)
 		#adjust GUI table elements
@@ -320,6 +324,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["CAEN_updated"]=False
 		self.SharedDict["WaitInput"]=False
 		self.SharedDict["BI_Active"]=False
+		self.SharedDict["BI_TestActive"]=False
 		self.SharedDict["BI_StopRequest"]=False
 		
 		self.SharedDict["Input"]=0.0
@@ -331,6 +336,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["Temp_arr"]=self.Temp_arr
 		self.SharedDict["Time_arr"]=self.Time_arr
 		self.SharedDict["Targ_arr"]=self.Targ_arr
+		self.SharedDict["TimeTest_arr"]=self.TimeTest_arr
+		self.SharedDict["TempTest_arr"]=self.TempTest_arr
 		
 		# start monitoring function in QThread
 		self.MonitorThread = QThread()
@@ -481,6 +488,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Temp_arr.clear()
 		self.Time_arr.clear()
 		self.Targ_arr.clear()
+		self.TimeTest_arr.clear()
+		self.TempTest_arr.clear()
 		self.DewPoint_arr.clear()
 		self.SeshDescription_db.setText(BI_Desc_line.text())
 		self.ManualOp_tab.setEnabled(False)
@@ -622,6 +631,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.DewPoint_line.setData(self.Time_arr,self.DewPoint_arr)
 		self.Temp_line.setData(self.Time_arr,self.Temp_arr)
 		self.Targ_line.setData(self.Time_arr,self.Targ_arr)
+		self.Test_line.setData(self.TimeTest_arr,self.TargTest_arr)
 	
 		#@pyqtSlot()
 		#def Update_manualOp_tab(self):

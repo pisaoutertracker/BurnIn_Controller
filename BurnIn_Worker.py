@@ -748,7 +748,9 @@ class BurnIn_Worker(QObject):
 			#do test here...
 			self.logger.info("BI: testing...")
 			self.SharedDict["BI_Action"].setText("Module test")
+			self.SharedDict["BI_TestActive"]=True
 			self.MT_StartTest_Cmd(False,False)
+			self.SharedDict["BI_TestActive"]=False
 			
 			
 			self.logger.info("BI: going to high temp")
@@ -758,7 +760,9 @@ class BurnIn_Worker(QObject):
 				
 			
 			self.logger.info("BI: testing...")
+			self.SharedDict["BI_TestActive"]=True
 			self.MT_StartTest_Cmd(False,False)
+			self.SharedDict["BI_TestActive"]=False
 			
 			self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
 			self.SharedDict["BI_ProgressBar"].setValue(cycle/NCycles*100)

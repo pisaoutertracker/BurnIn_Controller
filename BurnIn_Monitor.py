@@ -361,6 +361,11 @@ class BurnIn_Monitor(QObject):
 				self.SharedDict["DewPoint_arr"].append(float(self.SharedDict["Ctrl_IntDewPoint"].text()))
 				self.SharedDict["Temp_arr"].append(float(self.SharedDict["LastFNALBoxTemp0"].text()))
 				
+				if self.SharedDict["BI_TestActive"]:
+					self.SharedDict["TimeTest_arr"].append(time.time())
+					self.SharedDict["TempTest_arr"].append(float(self.SharedDict["LastFNALBoxTemp0"].text()))
+					
+				
 				try:
 					self.SharedDict["Targ_arr"].append(float(self.SharedDict["Ctrl_TargetTemp"].text()))
 				except Exception as e:
