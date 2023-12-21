@@ -42,6 +42,16 @@ def getSessionFromDB(sessionName):
         print("Failed to pull the session. Status code:", response.status_code)
     return eval(response.content.decode())
 
+def updateSessionFromDB(sessionName,sessionDescription = {}):
+    if verbose>0: print("Calling updateTestFromDB()", sessionName)
+    api_url = "http://%s:%d/sessions/%s"%(ip, port, sessionName)
+    response = requests.put(api_url,json=sessionDescription)
+    if response.status_code == 200:
+        if verbose>1: print("Session successfully updated.")
+    else:
+        print("Failed to update the session. Status code:", response.status_code)
+    return eval(response.content.decode())
+
 if __name__ == '__main__':
     sessionName="session5"
     from pprint import pprint
