@@ -737,7 +737,7 @@ class BurnIn_Worker(QObject):
 		self.SharedDict["BI_Status"].setText("Cycling")	
 		for cycle in range (NCycles):
 			self.logger.info("BI: starting cycle "+str(cycle+1) + " of "+str(NCycles))
-			self.SharedDict["BI_Cycle"].setText(str(cycle)+"/"+str(NCycles))
+			self.SharedDict["BI_Cycle"].setText(str(cycle+1)+"/"+str(NCycles))
 		
 			# ramp down
 			self.logger.info("BI: runmping down...")
@@ -765,7 +765,7 @@ class BurnIn_Worker(QObject):
 			self.SharedDict["BI_TestActive"]=False
 			
 			self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
-			self.SharedDict["BI_ProgressBar"].setValue(cycle/NCycles*100)
+			self.SharedDict["BI_ProgressBar"].setValue((cycle+1)/NCycles*100)
 			
 		
 		self.SharedDict["BI_Status"].setText("Stopping")	
@@ -870,7 +870,7 @@ class BurnIn_Worker(QObject):
 				
 			while(True):
 				try:
-					if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-LowTemp) < TempTolerance):
+					if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-(nextTemp+TempRampOffset)) < TempTolerance):
 						break
 					if self.SharedDict["BI_StopRequest"]:
 						self.last_op_ok= False
