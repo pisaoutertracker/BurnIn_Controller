@@ -509,7 +509,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 
 	def BI_FillFromDB_Cmd(self, useLast=False):
 		if useLast==True:
-			targetSession="session1"#placeholder, will read latest
+			with open('./lastSession.txt', 'w') as f:
+				targetSession=str(f.read())
 		else:
 			targetSession=self.BI_TargetSesh_line.text()
 		session_fromDB=databaseTools.getSessionFromDB(sessionName=targetSession)
@@ -556,7 +557,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         			"high": self.BI_HighTemp_dsb.value(),
                 	},                        
                         "nCycles": self.BI_NCycles_sb.value(),
-#                        "status": "Open"
+#                        "status": "Open" #to be implemented
 			"modulesList": [],
                 }
 
@@ -582,6 +583,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.SharedDict["TestSession"]=self.TestSession
 			self.logger.info("Session started!")
 			pprint(session_fromDB)
+		#
+                #write down last locally run session for future use
+		with open('./lastSession.txt', 'w') as f:
+			f.write(str(self.TestSession))
 		#
 		self.Ctrl_SeshID_db.setText("Session ID: "+str(self.TestSession))
 		self.Ctrl_Operator_db.setText("Operator: "+session_fromDB["operator"])
