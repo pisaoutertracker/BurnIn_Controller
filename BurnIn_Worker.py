@@ -820,19 +820,16 @@ class BurnIn_Worker(QObject):
 		retry=BI_ACTION_RETRIES
 		while retry:
 			Action(*args)
+			if self.SharedDict["BI_StopRequest"]:
+				self.BI_Abort("BI: aborted for user request")
+				return False
 			if not (self.last_op_ok):
 				self.logger.warning("BI: failed to do action...new try in 10 sec")
 				time.sleep(BI_ACTION_RETRY_SLEEP)
 				retry=retry-1
-				if self.SharedDict["BI_StopRequest"]:
-					self.BI_Abort("BI: aborted for user request")
-					return False
 			else:
-				if self.SharedDict["BI_StopRequest"]:
-					self.BI_Abort("BI: aborted for user request")
-					return False
 				return True
-		self.BI_Abort("BI: failed to do action (3 times)...aborting")
+		self.BI_Abort("BI: failed to do action ("+str(BI_ACTION_RETRIES)+" times)...aborting")
 		return False
 
 	## BI function to ramp down in temp

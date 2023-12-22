@@ -485,6 +485,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.MT_UploadDB_sig.emit()
 	
 	def BI_Start_Cmd(self):
+		if self.SharedDict["BI_Active"]:
+			logger.info("Burn In test already ongoing. Request cancelled")
+			return
 		self.Temp_arr.clear()
 		self.Time_arr.clear()
 		self.Targ_arr.clear()
