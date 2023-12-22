@@ -520,7 +520,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="BI_LoadSesh_btn_2">
+                 <widget class="QPushButton" name="BI_LoadLast_btn">
                   <property name="text">
                    <string>Fill from Last</string>
                   </property>

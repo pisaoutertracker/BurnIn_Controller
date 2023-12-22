@@ -33,7 +33,7 @@ def uploadSessionToDB(sessionDescription = {}):
 ### read the test result from DB
 
 def getSessionFromDB(sessionName):
-    if verbose>0: print("Calling getTestFromDB()", sessionName)
+    if verbose>0: print("Calling getSessionFromDB()", sessionName)
     api_url = "http://%s:%d/sessions/%s"%(ip, port, sessionName)
     response = requests.get(api_url)
     if response.status_code == 200:
@@ -43,7 +43,7 @@ def getSessionFromDB(sessionName):
     return eval(response.content.decode())
 
 def updateSessionFromDB(sessionName,sessionDescription = {}):
-    if verbose>0: print("Calling updateTestFromDB()", sessionName)
+    if verbose>0: print("Calling updateSessionFromDB()", sessionName)
     api_url = "http://%s:%d/sessions/%s"%(ip, port, sessionName)
     response = requests.put(api_url,json=sessionDescription)
     if response.status_code == 200:

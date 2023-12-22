@@ -393,8 +393,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		#BI tab
 		self.BI_Stop_btn.clicked.connect(self.BI_Stop_Cmd)
 		self.BI_Start_btn.clicked.connect(self.BI_Start_Cmd)
-		self.BI_LoadSesh_btn.clicked.connect(self.BI_FillFromDB_Cmd(useLast=False))
-		self.BI_LoadLast_btn.clicked.connect(self.BI_FillFromDB_Cmd(useLast=True))
+		self.BI_LoadSesh_btn.clicked.connect(self.BI_FillFromDB)
+		self.BI_LoadLast_btn.clicked.connect(self.BI_FillFromLast)
                 
 		#menu actions
 		self.actionExit.triggered.connect(self.close)
@@ -507,12 +507,13 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		else:
 			self.logger.info("NO Burn In test ongoing. Request cancelled")
 
-	def BI_FillFromDB_Cmd(self, useLast=False):
+	def BI_FillFromDB(self, useLast=False):
 		if useLast==True:
-			with open('./lastSession.txt', 'w') as f:
+			with open('./lastSession.txt', 'r') as f:
 				targetSession=str(f.read())
 		else:
 			targetSession=self.BI_TargetSesh_line.text()
+		print("Getting session %s"%targetSession)
 		session_fromDB=databaseTools.getSessionFromDB(sessionName=targetSession)
 		self.logger.info("Filling BI fields from session %s."%targetSession)
 		#only fill basic info, description and number of cycles must be added by operator
@@ -525,7 +526,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			else:
 				self.Module_cbs[i].setChecked(True)
 				self.ModuleId_btns[i].setText(session_fromDB["modulesList"][i])
-                        
+
+	def BI_FillFromLast(self):
+		 BI_FillFromDB(useLast=True)
+        
 	@pyqtSlot()
 	def BI_terminated(self):
 		self.ManualOp_tab.setEnabled(True) 
