@@ -486,7 +486,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	
 	def BI_Start_Cmd(self):
 		if self.SharedDict["BI_Active"]:
-			logger.info("Burn In test already ongoing. Request cancelled")
+			self.logger.info("Burn In test already ongoing. Request cancelled")
 			return
 		self.Temp_arr.clear()
 		self.Time_arr.clear()
