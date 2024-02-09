@@ -70,7 +70,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.actionExpert.setIcon(QtGui.QIcon('expert.png'))
 		self.actionExit.setIcon(QtGui.QIcon('exit.jpeg')) 
 		
-		
+		# creating graphs elements
 		self.GraphWidget.setBackground("w")
 		styles = { "font-size": "13px"}
 		self.GraphWidget.setLabel("left", "Temperature (°C)", **styles)
@@ -92,7 +92,14 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 
 		self.Test_line=self.GraphWidget.plot(self.TimeTest_arr, self.TempTest_arr, pen=None, symbol='+')		
 		
+		# manual adjust of PyQt widget
 		self.BI_ProgressBar_pb.setValue(0)
+		
+		self.BI_Desc_line.setFixedHeight(2 * self.BI_Operator_line.height()) 			
+
+
+		
+		
 		#adjust GUI table elements
 		for row in range(10):
 			self.Ctrl_CAEN_table.setItem(row,0,QtWidgets.QTableWidgetItem(self.LVNames[row]))
