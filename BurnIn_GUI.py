@@ -322,6 +322,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_Action"]=self.BI_Action_tag
 		self.SharedDict["BI_ProgressBar"]=self.BI_ProgressBar_pb
 		self.SharedDict["BI_Cycle"]=self.BI_Cycle_tag
+		self.SharedDict["BI_TestSession"]=self.TestSession
 		
 		# Status variable & parameter
 		
@@ -335,7 +336,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_StopRequest"]=False
 		
 		self.SharedDict["Input"]=0.0
-		self.SharedDict["TestSession"]="0"
 		
 		self.SharedDict["CAEN_table"]=self.Ctrl_CAEN_table
 		self.SharedDict["BI_Graph"]=self.GraphWidget
@@ -501,7 +501,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.TimeTest_arr.clear()
 		self.TempTest_arr.clear()
 		self.DewPoint_arr.clear()
-		self.SeshDescription_db.setText(self.BI_Desc_line.text())
+		self.SeshDescription_db.setText(self.BI_Desc_line.toPlainText())
 		self.ManualOp_tab.setEnabled(False)
 		self.ModuleTest_tab.setEnabled(False)
 		BI_Options={}
