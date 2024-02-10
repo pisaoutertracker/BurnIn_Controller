@@ -22,7 +22,7 @@ class BurnIn_Worker(QObject):
 	BI_terminated = pyqtSignal()
 	
 	BI_Update_GUI_sig = pyqtSignal(dict)
-	BI_Clear_Monitor_sig = pyqtSignal(dict)
+	BI_Clear_Monitor_sig = pyqtSignal()
 
 	## Init function.
 	def __init__(self,configDict,logger, SharedDict, Julabo, FNALBox, CAENController, DB_interface):
