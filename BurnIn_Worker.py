@@ -3,9 +3,10 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
 import time
-import datetime
+from datetime import datetime
 import subprocess
 from __Constant import *
+import json
 
 
 
@@ -16,13 +17,14 @@ from __Constant import *
 class BurnIn_Worker(QObject):
 
 	Request_msg = pyqtSignal(str,str)
+	Request_confirm_sig = pyqtSignal(str)
 	Request_input_dsb = pyqtSignal(str,float,float,float)
 	BI_terminated = pyqtSignal()
 	
-	UploadDB_sig = pyqtSignal()
+	BI_Update_GUI_sig = pyqtSignal(dict)
 
 	## Init function.
-	def __init__(self,configDict,logger, SharedDict, Julabo, FNALBox, CAENController):
+	def __init__(self,configDict,logger, SharedDict, Julabo, FNALBox, CAENController, DB_interface):
 
 	
 		super(BurnIn_Worker,self).__init__();
@@ -30,6 +32,7 @@ class BurnIn_Worker(QObject):
 		self.logger = logger
 		self.Julabo = Julabo
 		self.FNALBox = FNALBox
+		self.DB_interface = DB_interface
 		self.CAENController = CAENController
 		self.SharedDict = SharedDict
 		
@@ -645,26 +648,76 @@ class BurnIn_Worker(QObject):
 	
 	## BI main function
 	# implemented as a is a Pyqt slot
-	@pyqtSlot(dict)			
-	def BI_Start_Cmd(self,BI_Options):
+	@pyqtSlot()			
+	def BI_Start_Cmd(self):
 		self.logger.info("Starting BurnIN...")
+		
+		#creating parameter dictionary for the current session
+		session_dict={}
+		session_dict["Action"]				= "Setup"
+		session_dict["Cycle"]				= 1
+		session_dict["LowTemp"]				= self.SharedDict["BI_LowTemp"]
+		session_dict["UnderRamp"]			= self.SharedDict["BI_UnderRamp"]
+		session_dict["UnderKeep"]			= self.SharedDict["BI_UnderKeep"]
+		session_dict["HighTemp"]			= self.SharedDict["BI_HighTemp"]
+		session_dict["NCycles"]				= self.SharedDict["BI_NCycles"]
+		session_dict["Operator"]			= self.SharedDict["BI_Operator"]
+		session_dict["Description"]			= self.SharedDict["BI_Description"]
+		session_dict["Session"]				= -1
+		session_dict["ActiveSlots"]			= self.SharedDict["BI_ActiveSlots"]
+		session_dict["ModuleIDs"]			= self.SharedDict["BI_ModuleIDs"]
+		session_dict["Timestamp"]			= datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+		
+		
+		#check if file session already exists (aka a session was stopped or crashed)
+		if (os.path.exists("Session.json")):
+			self.logger.info("Found session file.")
+			self.SharedDict["WaitInput"]=True
+			self.Request_confirm_sig.emit("Resume last session?")
+			while self.SharedDict["WaitInput"]:
+						time.sleep(0.1)
+			if self.SharedDict["Confirmed"]:
+				try:
+					with open('Session.json') as json_file:
+						session_dict={}
+						session_dict = json.load(json_file)
+						self.logger.info(session_dict)
+						#updating values in main GUI tab
+						self.BI_Update_GUI_sig.emit(session_dict)
+						self.logger.info("BI :Previous session parameters loaded")
+						
+				except Exception as e:
+					self.logger.error(e)
+					self.logger.error("BI :Error reloading session parameters from Json file")
+					self.BI_Abort("Error while recovering session info. Please start new session")
+					return
+			else:
+				self.logger.info("Prevoius session overrided. Starting new session")
+				self.BI_Update_Status_file(session_dict)
+				self.DB_interface.StartSesh(session_dict)
+
+		else:
+			self.logger.info("No session file found. Starting new BurnIn session")
+			self.BI_Update_Status_file(session_dict)
+			self.DB_interface.StartSesh(session_dict)
+
+		
 		self.SharedDict["BI_Status"].setText("Running")
-		self.SharedDict["BI_Action"].setText("Setup")
-		self.SharedDict["BI_Cycle"].setText("1")
+		self.SharedDict["BI_Action"].setText(session_dict["Action"])
+		self.SharedDict["BI_Cycle"].setText(str(session_dict["Cycle"]))
 		
 			
 	
 		TempTolerance= BI_TEMP_TOLERANCE
-		LowTemp				= BI_Options["LowTemp"]
-		TempRampOffset		= BI_Options["UnderRamp"]
-		TempMantainOffset	= BI_Options["UnderKeep"]
-		HighTemp			= BI_Options["HighTemp"]
-		NCycles				= BI_Options["NCycles"]
+		LowTemp				= session_dict["LowTemp"]
+		TempRampOffset		= session_dict["UnderRamp"]
+		TempMantainOffset	= session_dict["UnderKeep"]
+		HighTemp			= session_dict["HighTemp"]
+		NCycles				= session_dict["NCycles"]
 		
 		self.SharedDict["BI_Active"]=True
 		
-		self.UploadDB_sig.emit()
-			
+		
 			
 		if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
 			self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
@@ -681,7 +734,7 @@ class BurnIn_Worker(QObject):
 		for row in range(NUM_BI_SLOTS):
 			LV_ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_NAME_COL).text()
 			HV_ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_NAME_COL).text() 
-			if (LV_ch_name != "?" and HV_ch_name != "?" and BI_Options["ActiveSlots"][row]):
+			if (LV_ch_name != "?" and HV_ch_name != "?" and session_dict["ActiveSlots"][row]):
 				LV_Channel_list.append(LV_ch_name)
 				HV_Channel_list.append(HV_ch_name)
 				Slot_list.append(row)
@@ -734,15 +787,20 @@ class BurnIn_Worker(QObject):
 				return
 			
 		
-		self.SharedDict["BI_Status"].setText("Cycling")	
-		for cycle in range (NCycles):
+		self.SharedDict["BI_Status"].setText("Cycling")
+
+		starting_Cycle=session_dict["Cycle"]-1
+		
+		for cycle in range (starting_Cycle,NCycles,1):
+			session_dict["Cycle"]=cycle
+			self.BI_Update_Status_file(session_dict)
 			self.logger.info("BI: starting cycle "+str(cycle+1) + " of "+str(NCycles))
 			self.SharedDict["BI_Cycle"].setText(str(cycle+1)+"/"+str(NCycles))
 		
 			# ramp down
 			self.logger.info("BI: runmping down...")
 			self.SharedDict["BI_Action"].setText("Cooling")
-			if not self.BI_Action(self.BI_GoLowTemp,BI_Options):
+			if not self.BI_Action(self.BI_GoLowTemp,session_dict):
 				return
 			
 			#do test here...
@@ -755,7 +813,7 @@ class BurnIn_Worker(QObject):
 			
 			self.logger.info("BI: going to high temp")
 			self.SharedDict["BI_Action"].setText("Heating")
-			if not self.BI_Action(self.BI_GoHighTemp,BI_Options):
+			if not self.BI_Action(self.BI_GoHighTemp,session_dict):
 				return
 				
 			
@@ -802,6 +860,8 @@ class BurnIn_Worker(QObject):
 		self.SharedDict["BI_Status"].setText("Idle")
 		self.SharedDict["BI_Action"].setText("None")
 		self.SharedDict["BI_StopRequest"]=False
+		if os.path.exists("Session.json"):
+			os.remove("Session.json")
 		self.BI_terminated.emit()
 	
 	## BI Abort function	
@@ -833,12 +893,12 @@ class BurnIn_Worker(QObject):
 		return False
 
 	## BI function to ramp down in temp
-	def BI_GoLowTemp(self,BI_Options):
+	def BI_GoLowTemp(self,session_dict):
 	
 		TempTolerance		= BI_TEMP_TOLERANCE
-		LowTemp			= BI_Options["LowTemp"]
-		TempRampOffset		= BI_Options["UnderRamp"]
-		TempMantainOffset	= BI_Options["UnderKeep"]
+		LowTemp			= session_dict["LowTemp"]
+		TempRampOffset		= session_dict["UnderRamp"]
+		TempMantainOffset	= session_dict["UnderKeep"]
 		
 		last_step=False
 		self.last_op_ok= True
@@ -887,12 +947,12 @@ class BurnIn_Worker(QObject):
 			return
 	
 	## BI function to ramp up in temp
-	def BI_GoHighTemp(self,BI_Options):
+	def BI_GoHighTemp(self,session_dict):
 	
 		TempTolerance		= BI_TEMP_TOLERANCE
-		HighTemp			= BI_Options["HighTemp"]
-		TempRampOffset		= BI_Options["UnderRamp"]
-		TempMantainOffset	= BI_Options["UnderKeep"]
+		HighTemp			= session_dict["HighTemp"]
+		TempRampOffset		= session_dict["UnderRamp"]
+		TempMantainOffset	= session_dict["UnderKeep"]
 		
 		self.last_op_ok= True
 		PopUp=False
@@ -925,6 +985,11 @@ class BurnIn_Worker(QObject):
 			self.last_op_ok= False
 			return
 
+	def BI_Update_Status_file(self,session_dict):
+	
+		with open("Session.json", "w") as outfile: 
+			json.dump(session_dict, outfile)	
+	
 	@pyqtSlot(bool)				
 	def MT_StartTest_Cmd(self, dry=False, PupUp=True):
 			self.logger.info("Starting module test...")
@@ -943,6 +1008,6 @@ class BurnIn_Worker(QObject):
 			self.logger.error(result.stderr)
 			self.logger.info("Module test completed!")
 			
-			
+	
 	def MT_UploadDB_Cmd(self):
 		pass

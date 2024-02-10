@@ -9,6 +9,7 @@ from BurnIn_TCP import *
 
 from BurnIn_Worker import *
 from BurnIn_Monitor import *
+from DB_interface import *
 
 import databaseTools
 from pprint import pprint
@@ -37,7 +38,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	MT_UploadDB_sig = pyqtSignal()
 	MT_StartTest_sig = pyqtSignal(bool)
 	
-	BI_Start_sig = pyqtSignal(dict)
+	BI_Start_sig = pyqtSignal()
 
 
 	def __init__(self,configDict,logger):
@@ -175,6 +176,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Julabo = BurnIn_TCP(self.configDict,self.logger,"Julabo")
 		self.FNALBox = BurnIn_TCP(self.configDict,self.logger,"FNALBox")
 		self.CAENController = BurnIn_TCP(self.configDict,self.logger,"CAENController")
+		self.DB_interface = DB_interface(self.configDict,self.logger)
 	
 		
 		########## packing shared infrmation ################
@@ -313,8 +315,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["Ctrl_StatusFlow"]=self.Ctrl_StatusFlow_tag
 		self.SharedDict["Ctrl_StatusLock"]=self.Ctrl_StatusLock_tag
 		self.SharedDict["Ctrl_StatusDoor"]=self.Ctrl_StatusDoor_tag
-		self.SharedDict["Ctrl_LowerTemp"]=999.0
 		
+		self.SharedDict["CAEN_table"]=self.Ctrl_CAEN_table
 		
 		# PYQT tags in BI tab
 		
@@ -323,6 +325,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_ProgressBar"]=self.BI_ProgressBar_pb
 		self.SharedDict["BI_Cycle"]=self.BI_Cycle_tag
 		self.SharedDict["BI_TestSession"]=self.TestSession
+		self.SharedDict["BI_Graph"]=self.GraphWidget
 		
 		# Status variable & parameter
 		
@@ -331,14 +334,23 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["FNALBox_updated"]=False
 		self.SharedDict["CAEN_updated"]=False
 		self.SharedDict["WaitInput"]=False
+		self.SharedDict["Confirmed"]=False
 		self.SharedDict["BI_Active"]=False
 		self.SharedDict["BI_TestActive"]=False
 		self.SharedDict["BI_StopRequest"]=False
+		self.SharedDict["BI_Operator"]=self.BI_Operator_line.text()
+		self.SharedDict["BI_Description"]=self.BI_Desc_line.toPlainText()		
+		self.SharedDict["BI_LowTemp"]= self.BI_LowTemp_dsb.value()
+		self.SharedDict["BI_HighTemp"]= self.BI_HighTemp_dsb.value()
+		self.SharedDict["BI_UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
+		self.SharedDict["BI_UnderKeep"]=self.BI_UnderKeepTemp_dsb.value()
+		self.SharedDict["BI_NCycles"]=self.BI_NCycles_sb.value()
+		self.SharedDict["BI_ActiveSlots"]=[]
+		self.SharedDict["BI_ModuleIDs"]=[]
 		
 		self.SharedDict["Input"]=0.0
+		self.SharedDict["Ctrl_LowerTemp"]=999.0
 		
-		self.SharedDict["CAEN_table"]=self.Ctrl_CAEN_table
-		self.SharedDict["BI_Graph"]=self.GraphWidget
 		self.SharedDict["DewPoint_arr"]=self.DewPoint_arr
 		self.SharedDict["Temp_arr"]=self.Temp_arr
 		self.SharedDict["Time_arr"]=self.Time_arr
@@ -356,7 +368,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		# start GUI worker in QThread
 		self.WorkerThread = QThread()
-		self.Worker = BurnIn_Worker(self.configDict,self.logger, self.SharedDict, self.Julabo, self.FNALBox, self.CAENController)
+		self.Worker = BurnIn_Worker(self.configDict,self.logger, self.SharedDict, self.Julabo, self.FNALBox, self.CAENController,self.DB_interface)
 		self.Worker.moveToThread(self.WorkerThread)
 		self.WorkerThread.start()    
 		###########################################
@@ -440,11 +452,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		##################################################
 		self.Worker.Request_msg.connect(self.Show_msg)
 		self.Worker.Request_input_dsb.connect(self.Show_input_dsb)
+		self.Worker.Request_confirm_sig.connect(self.Confirm_msg)
 		self.Worker.BI_terminated.connect(self.BI_terminated)
 		self.Monitor.Update_graph.connect(self.Update_graph)
 		#self.Monitor.Update_manualOp_tab.connect(self.Update_manualOp_tab)
 		
-		self.Worker.UploadDB_sig.connect(self.Ctrl_StartSesh_Cmd)
+		self.Worker.BI_Update_GUI_sig.connect(self.BI_Update_GUI_Cmd)
 		
 		
 		self.statusBar().showMessage("System ready")
@@ -495,26 +508,48 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		if self.SharedDict["BI_Active"]:
 			self.logger.info("Burn In test already ongoing. Request cancelled")
 			return
+		
+		#clearing monitoring plots
 		self.Temp_arr.clear()
 		self.Time_arr.clear()
 		self.Targ_arr.clear()
 		self.TimeTest_arr.clear()
 		self.TempTest_arr.clear()
 		self.DewPoint_arr.clear()
-		self.SeshDescription_db.setText(self.BI_Desc_line.toPlainText())
 		self.ManualOp_tab.setEnabled(False)
 		self.ModuleTest_tab.setEnabled(False)
-		BI_Options={}
-		BI_Options["LowTemp"]= self.BI_LowTemp_dsb.value()
-		BI_Options["HighTemp"]= self.BI_HighTemp_dsb.value()
-		BI_Options["UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
-		BI_Options["UnderKeep"]=self.BI_UnderKeepTemp_dsb.value()
-		BI_Options["NCycles"]=self.BI_NCycles_sb.value()
-		BI_Options["Operator"]=self.BI_Operator_line.text()
-		BI_Options["ActiveSlots"]=[]
+		
+		#sampling test parameters		
+		self.SharedDict["BI_Operator"]=self.BI_Operator_line.text()
+		self.SharedDict["BI_Description"]=self.BI_Desc_line.toPlainText()		
+		self.SharedDict["BI_LowTemp"]= self.BI_LowTemp_dsb.value()
+		self.SharedDict["BI_HighTemp"]= self.BI_HighTemp_dsb.value()
+		self.SharedDict["BI_UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
+		self.SharedDict["BI_UnderKeep"]=self.BI_UnderKeepTemp_dsb.value()
+		self.SharedDict["BI_NCycles"]=self.BI_NCycles_sb.value()
+		self.SharedDict["BI_ActiveSlots"]=[]
+		self.SharedDict["BI_ModuleIDs"]=[]
 		for cb in self.Module_cbs:
-			BI_Options["ActiveSlots"].append(cb.isChecked)
-		self.BI_Start_sig.emit(BI_Options)
+			self.SharedDict["BI_ActiveSlots"].append(cb.isChecked())
+		for Id in self.ModuleId_btns:
+			self.SharedDict["BI_ModuleIDs"].append(Id.text())
+		
+		
+		self.BI_Start_sig.emit()
+	
+	@pyqtSlot(dict)	
+	def BI_Update_GUI_Cmd(self,session_dict):
+		self.BI_Operator_line.setText(session_dict["Operator"])
+		self.BI_Desc_line.setPlainText(session_dict["Description"])		
+		self.BI_LowTemp_dsb.setValue(session_dict["LowTemp"])
+		self.BI_HighTemp_dsb.setValue(session_dict["HighTemp"])
+		self.BI_UnderRampTemp_dsb.setValue(session_dict["UnderRamp"])
+		self.BI_UnderKeepTemp_dsb.setValue(session_dict["UnderKeep"])
+		self.BI_NCycles_sb.setValue(session_dict["NCycles"])
+		for idx,cb in enumerate(self.Module_cbs):
+			cb.setChecked(session_dict["ActiveSlots"][idx])
+		for idx,ID in enumerate(self.ModuleId_btns):
+			ID.setText(session_dict["ModuleIDs"][idx])	
 	
 	
 	def BI_Stop_Cmd(self):
@@ -624,6 +659,19 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.SharedDict["Input"]=-1
 			self.SharedDict["WaitInput"]=False
 			
+	@pyqtSlot(str)
+	def Confirm_msg(self,text_msg):
+		msg = QMessageBox()
+		reply = msg.question(self, "Confirmation requested", text_msg,
+		msg.Yes | msg.No, msg.No)		
+		self.statusBar().showMessage("Waiting acknowledge")
+		if reply == msg.Yes:
+			self.SharedDict["Confirmed"]=True
+		else:
+			self.SharedDict["Confirmed"]=False
+		
+		self.statusBar().showMessage("System ready")
+		self.SharedDict["WaitInput"]=False
 		
 	def expert(self):
 		psw, ok = QtWidgets.QInputDialog.getText(None, "Expert mode", "Password?", QtWidgets.QLineEdit.Password)

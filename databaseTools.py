@@ -41,6 +41,7 @@ def getSessionFromDB(sessionName):
     else:
         print("Failed to pull the session. Status code:", response.status_code)
     return eval(response.content.decode())
+	
 
 if __name__ == '__main__':
     sessionName="session5"
