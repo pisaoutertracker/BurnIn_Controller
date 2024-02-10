@@ -22,6 +22,7 @@ class BurnIn_Worker(QObject):
 	BI_terminated = pyqtSignal()
 	
 	BI_Update_GUI_sig = pyqtSignal(dict)
+	BI_Clear_Monitor_sig = pyqtSignal(dict)
 
 	## Init function.
 	def __init__(self,configDict,logger, SharedDict, Julabo, FNALBox, CAENController, DB_interface):
@@ -663,10 +664,11 @@ class BurnIn_Worker(QObject):
 		session_dict["NCycles"]				= self.SharedDict["BI_NCycles"]
 		session_dict["Operator"]			= self.SharedDict["BI_Operator"]
 		session_dict["Description"]			= self.SharedDict["BI_Description"]
-		session_dict["Session"]				= -1
+		session_dict["Session"]				= "-1"
 		session_dict["ActiveSlots"]			= self.SharedDict["BI_ActiveSlots"]
 		session_dict["ModuleIDs"]			= self.SharedDict["BI_ModuleIDs"]
 		session_dict["Timestamp"]			= datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+		
 		
 		
 		#check if file session already exists (aka a session was stopped or crashed)
@@ -695,16 +697,18 @@ class BurnIn_Worker(QObject):
 				self.logger.info("Prevoius session overrided. Starting new session")
 				self.BI_Update_Status_file(session_dict)
 				self.DB_interface.StartSesh(session_dict)
+				self.BI_Clear_Monitor_sig.emit()
 
 		else:
 			self.logger.info("No session file found. Starting new BurnIn session")
 			self.BI_Update_Status_file(session_dict)
 			self.DB_interface.StartSesh(session_dict)
+			self.BI_Clear_Monitor_sig.emit()
 
-		
+		self.SharedDict["TestSession"]=session_dict["Session"]
 		self.SharedDict["BI_Status"].setText("Running")
-		self.SharedDict["BI_Action"].setText(session_dict["Action"])
-		self.SharedDict["BI_Cycle"].setText(str(session_dict["Cycle"]))
+		self.SharedDict["BI_Action"].setText("Setup")
+		self.SharedDict["BI_Cycle"].setText(str(session_dict["Cycle"])+" of "+str(session_dict["NCycles"]))
 		
 			
 	
@@ -792,7 +796,7 @@ class BurnIn_Worker(QObject):
 		starting_Cycle=session_dict["Cycle"]-1
 		
 		for cycle in range (starting_Cycle,NCycles,1):
-			session_dict["Cycle"]=cycle
+			session_dict["Cycle"]=cycle+1
 			self.BI_Update_Status_file(session_dict)
 			self.logger.info("BI: starting cycle "+str(cycle+1) + " of "+str(NCycles))
 			self.SharedDict["BI_Cycle"].setText(str(cycle+1)+"/"+str(NCycles))
@@ -811,6 +815,7 @@ class BurnIn_Worker(QObject):
 			self.SharedDict["BI_TestActive"]=False
 			
 			
+			# ramp up
 			self.logger.info("BI: going to high temp")
 			self.SharedDict["BI_Action"].setText("Heating")
 			if not self.BI_Action(self.BI_GoHighTemp,session_dict):

@@ -419,7 +419,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		#BI tab
 		self.BI_Stop_btn.clicked.connect(self.BI_Stop_Cmd)
 		self.BI_Start_btn.clicked.connect(self.BI_Start_Cmd)
-		
 		#menu actions
 		self.actionExit.triggered.connect(self.close)
 		self.actionExpert.triggered.connect(self.expert)
@@ -458,6 +457,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		#self.Monitor.Update_manualOp_tab.connect(self.Update_manualOp_tab)
 		
 		self.Worker.BI_Update_GUI_sig.connect(self.BI_Update_GUI_Cmd)
+		self.Worker.BI_Clear_Monitor_sig.connect(self.BI_Clear_Monitor_Cmd)
 		
 		
 		self.statusBar().showMessage("System ready")
@@ -504,11 +504,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	def MT_UploadDB_Cmd(self):
 		self.MT_UploadDB_sig.emit()
 	
-	def BI_Start_Cmd(self):
-		if self.SharedDict["BI_Active"]:
-			self.logger.info("Burn In test already ongoing. Request cancelled")
-			return
-		
+	def BI_Clear_Monitor_Cmd(self):
+	
 		#clearing monitoring plots
 		self.Temp_arr.clear()
 		self.Time_arr.clear()
@@ -516,6 +513,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.TimeTest_arr.clear()
 		self.TempTest_arr.clear()
 		self.DewPoint_arr.clear()
+		
+	def BI_Start_Cmd(self):
+		if self.SharedDict["BI_Active"]:
+			self.logger.info("Burn In test already ongoing. Request cancelled")
+			return
+		
 		self.ManualOp_tab.setEnabled(False)
 		self.ModuleTest_tab.setEnabled(False)
 		
