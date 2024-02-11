@@ -687,6 +687,9 @@ class BurnIn_Worker(QObject):
 						#updating values in main GUI tab
 						self.BI_Update_GUI_sig.emit(session_dict)
 						self.logger.info("BI :Previous session parameters loaded")
+						self.logger.info("Current Session: "+session_dict["Session"])
+						self.logger.info("Current Cycle: "+str(session_dict["Cycle"]))
+						self.logger.info("Recovery status: "+session_dict["Action"])
 						
 				except Exception as e:
 					self.logger.error(e)
@@ -706,22 +709,21 @@ class BurnIn_Worker(QObject):
 			self.BI_Clear_Monitor_sig.emit()
 
 		self.SharedDict["TestSession"]=session_dict["Session"]
-		self.SharedDict["BI_Status"].setText("Running")
+		
+		
+		# starting setup/recovery procedure
+		
+		if (session_dict["Action"]=="Setup"):
+			self.SharedDict["BI_Status"].setText("Setup")
+		else:
+			self.SharedDict["BI_Status"].setText("Recovery")
+			
 		self.SharedDict["BI_Action"].setText("Setup")
 		self.SharedDict["BI_Cycle"].setText(str(session_dict["Cycle"])+" of "+str(session_dict["NCycles"]))
-		
-			
-	
-		TempTolerance= BI_TEMP_TOLERANCE
-		LowTemp				= session_dict["LowTemp"]
-		TempRampOffset		= session_dict["UnderRamp"]
-		TempMantainOffset	= session_dict["UnderKeep"]
-		HighTemp			= session_dict["HighTemp"]
-		NCycles				= session_dict["NCycles"]
-		
+					
 		self.SharedDict["BI_Active"]=True
 		
-		
+		#checking sub-system information
 			
 		if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
 			self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
@@ -730,6 +732,8 @@ class BurnIn_Worker(QObject):
 			self.BI_Abort("DOOR is not closed!")
 			return
 		self.logger.info("BurnIn test started...")
+		
+		#selecting slots under test : LV/HV names defined && slot marked as active in BI tab
 		
 		LV_Channel_list=[]
 		HV_Channel_list=[]
@@ -793,45 +797,65 @@ class BurnIn_Worker(QObject):
 		
 		self.SharedDict["BI_Status"].setText("Cycling")
 
-		starting_Cycle=session_dict["Cycle"]-1
+		cycle=session_dict["Cycle"]-1
+		NCycles	= session_dict["NCycles"]
+		######mess start
+		if (session_dict["Action"]=="Setup"):
+			session_dict["Action"]="RampDown"
+		else:
+			self.logger.info("BI: recovered from cycle "+str(cycle+1) + " of "+str(NCycles))
 		
-		for cycle in range (starting_Cycle,NCycles,1):
-			session_dict["Cycle"]=cycle+1
-			self.BI_Update_Status_file(session_dict)
-			self.logger.info("BI: starting cycle "+str(cycle+1) + " of "+str(NCycles))
-			self.SharedDict["BI_Cycle"].setText(str(cycle+1)+"/"+str(NCycles))
-		
-			# ramp down
-			self.logger.info("BI: runmping down...")
-			self.SharedDict["BI_Action"].setText("Cooling")
-			if not self.BI_Action(self.BI_GoLowTemp,session_dict):
-				return
-			
-			#do test here...
-			self.logger.info("BI: testing...")
-			self.SharedDict["BI_Action"].setText("Module test")
-			self.SharedDict["BI_TestActive"]=True
-			self.MT_StartTest_Cmd(False,False)
-			self.SharedDict["BI_TestActive"]=False
-			
-			
-			# ramp up
-			self.logger.info("BI: going to high temp")
-			self.SharedDict["BI_Action"].setText("Heating")
-			if not self.BI_Action(self.BI_GoHighTemp,session_dict):
-				return
+		while(cycle < NCycles):
+			if (session_dict["Action"]=="RampDown"):
+				session_dict["Cycle"]=cycle+1
+				self.BI_Update_Status_file(session_dict)
+				self.logger.info("BI: starting cycle "+str(cycle+1) + " of "+str(NCycles))
 				
+				self.SharedDict["BI_Cycle"].setText(str(cycle+1)+"/"+str(NCycles))
+				self.logger.info("BI: runmping down...")
+				self.SharedDict["BI_Action"].setText("Cooling")
+				if not self.BI_Action(self.BI_GoLowTemp,session_dict):
+					return
+				session_dict["Action"]="ColdTest"
+				
+			if (session_dict["Action"]=="ColdTest"):
+				self.BI_Update_Status_file(session_dict)
+				self.logger.info("BI: testing...")
+				self.SharedDict["BI_Action"].setText("Cold Module test")
+				self.SharedDict["BI_TestActive"]=True
+				self.MT_StartTest_Cmd(False,False)
+				self.SharedDict["BI_TestActive"]=False
+				session_dict["Action"]="RampUp"
+				
+			if (session_dict["Action"]=="RampUp"):
+				self.BI_Update_Status_file(session_dict)
+				self.logger.info("BI: going to high temp")
+				self.SharedDict["BI_Action"].setText("Heating")
+				if not self.BI_Action(self.BI_GoHighTemp,session_dict):
+					return
+				session_dict["Action"]="HotTest"
+				
+			if (session_dict["Action"]=="HotTest"):
+				self.BI_Update_Status_file(session_dict)
+				self.logger.info("BI: testing...")
+				self.SharedDict["BI_Action"].setText("Hot Module test")
+				self.SharedDict["BI_TestActive"]=True
+				self.MT_StartTest_Cmd(False,False)
+				self.SharedDict["BI_TestActive"]=False
 			
-			self.logger.info("BI: testing...")
-			self.SharedDict["BI_TestActive"]=True
-			self.MT_StartTest_Cmd(False,False)
-			self.SharedDict["BI_TestActive"]=False
-			
-			self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
-			self.SharedDict["BI_ProgressBar"].setValue((cycle+1)/NCycles*100)
-			
+				self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
+				self.SharedDict["BI_ProgressBar"].setValue((cycle+1)/NCycles*100)
+				session_dict["Action"]="RampDown"
+				cycle=cycle+1
 		
-		self.SharedDict["BI_Status"].setText("Stopping")	
+		if (os.path.exists("Session.json")):		
+			os.remove("Session.json")
+			self.logger.info("BI: Seesion json file deleted")
+		else:
+			self.logger.info("BI: Could not locate session json file")
+		
+		self.SharedDict["BI_Status"].setText("Stopping")
+		
 		#stop HV
 		self.SharedDict["BI_Action"].setText("Stop HVs")
 		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,False,HV_Channel_list,PopUp):
@@ -986,7 +1010,7 @@ class BurnIn_Worker(QObject):
 			
 		# set target temperature mantain
 		self.logger.info("BI: keep temperature ....")
-		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,HighTemp,PopUp):
+		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,HighTemp-TempMantainOffset,PopUp):
 			self.last_op_ok= False
 			return
 
