@@ -814,8 +814,13 @@ class BurnIn_Worker(QObject):
 				self.SharedDict["BI_Cycle"].setText(str(cycle+1)+"/"+str(NCycles))
 				self.logger.info("BI: runmping down...")
 				self.SharedDict["BI_Action"].setText("Cooling")
-				if not self.BI_Action(self.BI_GoLowTemp,session_dict):
-					return
+				if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())) > session_dict["LowTemp"]):  #expected
+					if not self.BI_Action(self.BI_GoLowTemp,session_dict):
+						return
+				else:
+					if not self.BI_Action(self.BI_GoHighTemp,session_dict):
+						return
+				
 				session_dict["Action"]="ColdTest"
 				
 			if (session_dict["Action"]=="ColdTest"):
@@ -831,8 +836,12 @@ class BurnIn_Worker(QObject):
 				self.BI_Update_Status_file(session_dict)
 				self.logger.info("BI: going to high temp")
 				self.SharedDict["BI_Action"].setText("Heating")
-				if not self.BI_Action(self.BI_GoHighTemp,session_dict):
-					return
+				if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())) < session_dict["HighTemp"]):  #expected
+					if not self.BI_Action(self.BI_GoHighTemp,session_dict):
+						return
+				else:
+					if not self.BI_Action(self.BI_GoLowTemp,session_dict):
+						return
 				session_dict["Action"]="HotTest"
 				
 			if (session_dict["Action"]=="HotTest"):
