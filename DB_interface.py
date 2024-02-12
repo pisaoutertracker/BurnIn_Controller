@@ -46,7 +46,7 @@ class DB_interface():
 		
 		### read the test result from DB
 
-	def getSessionFromDB(sessionName):
+	def getSessionFromDB(self,sessionName):
 		self.logger.info("Calling getTestFromDB() %s", sessionName)
 		api_url = "http://%s:%d/sessions/%s"%(self.Addr, int(self.Port), sessionName)
 		response = requests.get(api_url)
@@ -89,8 +89,7 @@ class DB_interface():
 			session_dict["Session"]=self.TestSession
 			self.logger.error("DATABASE	: Session loading timed out!")
 		else:
-			session_fromDB=self.getSessionFromDB(sessionName=uploadResponse)#default for testing
+			session_fromDB=self.getSessionFromDB(uploadResponse)#default for testing
 			self.TestSession=session_fromDB["sessionName"]
 			session_dict["Session"]=self.TestSession
 			self.logger.info("DATABASE: Session loaded!")
-			pprint(session_fromDB)

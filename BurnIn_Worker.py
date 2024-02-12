@@ -853,7 +853,7 @@ class BurnIn_Worker(QObject):
 				self.SharedDict["BI_TestActive"]=False
 			
 				self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
-				self.SharedDict["BI_ProgressBar"].setValue((cycle+1)/NCycles*100)
+				#self.SharedDict["BI_ProgressBar"].setValue((cycle+1)/NCycles*100)
 				session_dict["Action"]="RampDown"
 				cycle=cycle+1
 		
