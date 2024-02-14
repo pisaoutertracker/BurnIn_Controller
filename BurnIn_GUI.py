@@ -324,7 +324,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_Action"]=self.BI_Action_tag
 		self.SharedDict["BI_ProgressBar"]=self.BI_ProgressBar_pb
 		self.SharedDict["BI_Cycle"]=self.BI_Cycle_tag
-		self.SharedDict["BI_TestSession"]=self.TestSession
 		self.SharedDict["BI_Graph"]=self.GraphWidget
 		
 		# Status variable & parameter
@@ -347,6 +346,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_NCycles"]=self.BI_NCycles_sb.value()
 		self.SharedDict["BI_ActiveSlots"]=[]
 		self.SharedDict["BI_ModuleIDs"]=[]
+		
+		
+		self.SharedDict["TestSession"]=self.TestSession
 		
 		self.SharedDict["Input"]=0.0
 		self.SharedDict["Ctrl_LowerTemp"]=999.0

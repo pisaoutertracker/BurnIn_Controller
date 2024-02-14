@@ -1029,8 +1029,8 @@ class BurnIn_Worker(QObject):
 			json.dump(session_dict, outfile)	
 	
 	@pyqtSlot(bool)				
-	def MT_StartTest_Cmd(self, dry=False, PupUp=True):
-			self.logger.info("Starting module test...")
+	def MT_StartTest_Cmd(self, dry=False, PupUp=False):
+			self.logger.info("Starting module test...Please wait till completion")
 			if PupUp:
 				msg = QMessageBox()
 				msg.setWindowTitle("Module test ongoing. Please wait...")
