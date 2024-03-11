@@ -18,4 +18,6 @@ CAENController:
 DB:
  Addr: "192.168.0.45"
  Port: "5000"
+Supervisor:
+ Enabled: "False" 
  

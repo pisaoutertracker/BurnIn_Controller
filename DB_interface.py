@@ -14,10 +14,8 @@ class DB_interface():
 			self.Addr = "192.168.0.45"
 			self.logger.warning("DB addr parameter not found. Using default")
 		self.Port = configDict.get(("DB","Port"),"NOKEY")
-		if self.Port == "NOKEY":
-			self.Port = "5000"
-			self.logger.warning("MQTT port parameter not found. Using default")
-		self.ClientId = configDict.get(("MQTT","ClientId"),"NOKEY")
+		
+		self.ClientId = "BurnIn_Controller"
 		
 
 		self.logger.info("DB interface class initialized")

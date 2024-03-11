@@ -211,42 +211,42 @@
                  <item row="2" column="1">
                   <widget class="QLabel" name="label_73">
                    <property name="text">
-                    <string>Slot 1</string>
+                    <string>Slot 02</string>
                    </property>
                   </widget>
                  </item>
                  <item row="2" column="3">
                   <widget class="QPushButton" name="BI_Mod1ID_btn">
                    <property name="text">
-                    <string>Module ID 1</string>
+                    <string>Module ID 02</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="5">
                   <widget class="QPushButton" name="BI_Mod5ID_btn">
                    <property name="text">
-                    <string>Module ID 5</string>
+                    <string>Module ID 06</string>
                    </property>
                   </widget>
                  </item>
                  <item row="7" column="3">
                   <widget class="QPushButton" name="BI_Mod4ID_btn">
                    <property name="text">
-                    <string>Module ID 4</string>
+                    <string>Module ID 05</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="3">
                   <widget class="QPushButton" name="BI_Mod0ID_btn">
                    <property name="text">
-                    <string>Module ID 0</string>
+                    <string>Module ID 01</string>
                    </property>
                   </widget>
                  </item>
                  <item row="2" column="5">
                   <widget class="QPushButton" name="BI_Mod6ID_btn">
                    <property name="text">
-                    <string>Module ID 6</string>
+                    <string>Module ID 07</string>
                    </property>
                   </widget>
                  </item>
@@ -267,14 +267,14 @@
                  <item row="5" column="3">
                   <widget class="QPushButton" name="BI_Mod3ID_btn">
                    <property name="text">
-                    <string>Module ID 3</string>
+                    <string>Module ID 04</string>
                    </property>
                   </widget>
                  </item>
                  <item row="3" column="3">
                   <widget class="QPushButton" name="BI_Mod2ID_btn">
                    <property name="text">
-                    <string>Module ID 2</string>
+                    <string>Module ID 03</string>
                    </property>
                   </widget>
                  </item>
@@ -288,63 +288,63 @@
                  <item row="1" column="7">
                   <widget class="QLabel" name="label_77">
                    <property name="text">
-                    <string>Slot 5</string>
+                    <string>Slot 06</string>
                    </property>
                   </widget>
                  </item>
                  <item row="5" column="1">
                   <widget class="QLabel" name="label_75">
                    <property name="text">
-                    <string>Slot 3</string>
+                    <string>Slot 04</string>
                    </property>
                   </widget>
                  </item>
                  <item row="1" column="1">
                   <widget class="QLabel" name="label_71">
                    <property name="text">
-                    <string>Slot 0</string>
+                    <string>Slot 01</string>
                    </property>
                   </widget>
                  </item>
                  <item row="3" column="1">
                   <widget class="QLabel" name="label_74">
                    <property name="text">
-                    <string>Slot 2</string>
+                    <string>Slot 03</string>
                    </property>
                   </widget>
                  </item>
                  <item row="7" column="1">
                   <widget class="QLabel" name="label_76">
                    <property name="text">
-                    <string>Slot 4</string>
+                    <string>Slot 05</string>
                    </property>
                   </widget>
                  </item>
                  <item row="3" column="7">
                   <widget class="QLabel" name="label_79">
                    <property name="text">
-                    <string>Slot 7</string>
+                    <string>Slot 08</string>
                    </property>
                   </widget>
                  </item>
                  <item row="2" column="7">
                   <widget class="QLabel" name="label_78">
                    <property name="text">
-                    <string>Slot 6</string>
+                    <string>Slot 07</string>
                    </property>
                   </widget>
                  </item>
                  <item row="7" column="7">
                   <widget class="QLabel" name="label_72">
                    <property name="text">
-                    <string>Slot 9</string>
+                    <string>Slot 10</string>
                    </property>
                   </widget>
                  </item>
                  <item row="5" column="7">
                   <widget class="QLabel" name="label_80">
                    <property name="text">
-                    <string>Slot 8</string>
+                    <string>Slot 09</string>
                    </property>
                   </widget>
                  </item>
@@ -853,15 +853,99 @@
                </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout_5">
-                 <item row="2" column="1">
-                  <widget class="QLabel" name="LastLV01Status_tag">
+                 <item row="8" column="0">
+                  <widget class="QLabel" name="LV07ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="3">
-                  <widget class="QLabel" name="LastLV08Voltage_tag">
+                 <item row="8" column="3">
+                  <widget class="QLabel" name="LastLV07Voltage_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
+                  <widget class="QLabel" name="label_24">
+                   <property name="text">
+                    <string>V read</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="0">
+                  <widget class="QLabel" name="LV09ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="3">
+                  <widget class="QLabel" name="LastLV02Voltage_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLabel" name="label_23">
+                   <property name="text">
+                    <string>Status</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="0">
+                  <widget class="QLabel" name="LV06ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="1">
+                  <widget class="QLabel" name="LastLV04Status_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="0">
+                  <widget class="QLabel" name="LV08ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="1">
+                  <widget class="QLabel" name="LastLV09Status_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="4">
+                  <widget class="QLabel" name="LastLV02Current_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_22">
+                   <property name="text">
+                    <string>Ch name</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="4">
+                  <widget class="QLabel" name="LastLV03Current_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="3">
+                  <widget class="QLabel" name="LastLV09Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -874,8 +958,15 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="6" column="0">
-                  <widget class="QLabel" name="LV05ID_tag">
+                 <item row="9" column="3">
+                  <widget class="QLabel" name="LastLV08Voltage_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QLabel" name="LastLV01Status_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -883,6 +974,13 @@
                  </item>
                  <item row="2" column="0">
                   <widget class="QLabel" name="LV01ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="0">
+                  <widget class="QLabel" name="LV05ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -897,13 +995,6 @@
                  </item>
                  <item row="10" column="4">
                   <widget class="QLabel" name="LastLV09Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="6" column="4">
-                  <widget class="QLabel" name="LastLV05Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -930,113 +1021,15 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="0">
-                  <widget class="QLabel" name="LV09ID_tag">
+                 <item row="6" column="4">
+                  <widget class="QLabel" name="LastLV05Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="3">
-                  <widget class="QLabel" name="label_24">
-                   <property name="text">
-                    <string>V read</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="8" column="0">
-                  <widget class="QLabel" name="LV07ID_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="8" column="3">
-                  <widget class="QLabel" name="LastLV07Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QLabel" name="label_23">
-                   <property name="text">
-                    <string>Status</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="0">
-                  <widget class="QLabel" name="LV08ID_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="3">
-                  <widget class="QLabel" name="LastLV02Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="1">
-                  <widget class="QLabel" name="LastLV04Status_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="7" column="0">
-                  <widget class="QLabel" name="LV06ID_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="4">
-                  <widget class="QLabel" name="LastLV02Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="10" column="3">
-                  <widget class="QLabel" name="LastLV09Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_22">
-                   <property name="text">
-                    <string>Ch name</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="4">
-                  <widget class="QLabel" name="LastLV03Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="10" column="1">
-                  <widget class="QLabel" name="LastLV09Status_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QLabel" name="LastLV00Status_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="3">
-                  <widget class="QLabel" name="LastLV03Voltage_tag">
+                 <item row="4" column="0">
+                  <widget class="QLabel" name="LV03ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1049,15 +1042,15 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="0">
-                  <widget class="QLabel" name="LV03ID_tag">
+                 <item row="9" column="4">
+                  <widget class="QLabel" name="LastLV08Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="4">
-                  <widget class="QLabel" name="LastLV08Current_tag">
+                 <item row="4" column="3">
+                  <widget class="QLabel" name="LastLV03Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1098,6 +1091,13 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="8" column="4">
+                  <widget class="QLabel" name="LastLV07Current_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="2" column="3">
                   <widget class="QLabel" name="LastLV01Voltage_tag">
                    <property name="text">
@@ -1112,29 +1112,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="4">
-                  <widget class="QLabel" name="LastLV07Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="5" column="4">
                   <widget class="QLabel" name="LastLV04Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="1">
-                  <widget class="QLabel" name="LastLV08Status_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="LV00ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1147,29 +1126,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="4">
-                  <widget class="QLabel" name="LastLV00Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="3">
-                  <widget class="QLabel" name="LastLV00Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QLabel" name="label_64">
-                   <property name="text">
-                    <string>V set</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QLabel" name="LastLV00VoltageSet_tag">
+                 <item row="9" column="1">
+                  <widget class="QLabel" name="LastLV08Status_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1189,22 +1147,22 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="2">
-                  <widget class="QLabel" name="LastLV03VoltageSet_tag">
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="label_64">
                    <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="2">
-                  <widget class="QLabel" name="LastLV04VoltageSet_tag">
-                   <property name="text">
-                    <string>?</string>
+                    <string>V set</string>
                    </property>
                   </widget>
                  </item>
                  <item row="6" column="2">
                   <widget class="QLabel" name="LastLV05VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="2">
+                  <widget class="QLabel" name="LastLV03VoltageSet_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1217,8 +1175,22 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="5" column="2">
+                  <widget class="QLabel" name="LastLV04VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="8" column="2">
                   <widget class="QLabel" name="LastLV07VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="2">
+                  <widget class="QLabel" name="LastLV09VoltageSet_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1231,8 +1203,36 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="2">
-                  <widget class="QLabel" name="LastLV09VoltageSet_tag">
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="LV00ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <widget class="QLabel" name="LastLV00Voltage_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QLabel" name="LastLV00VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLabel" name="LastLV00Status_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="4">
+                  <widget class="QLabel" name="LastLV00Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1263,29 +1263,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="3">
-                  <widget class="QLabel" name="LastHV02Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="7" column="4">
-                  <widget class="QLabel" name="LastHV06Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="3" column="1">
                   <widget class="QLabel" name="LastHV02Status_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="3">
-                  <widget class="QLabel" name="LastHV08Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1298,22 +1277,22 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="0">
-                  <widget class="QLabel" name="HV03ID_tag">
+                 <item row="3" column="3">
+                  <widget class="QLabel" name="LastHV02Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="6" column="0">
-                  <widget class="QLabel" name="HV05ID_tag">
+                 <item row="9" column="3">
+                  <widget class="QLabel" name="LastHV08Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="HV01ID_tag">
+                 <item row="7" column="4">
+                  <widget class="QLabel" name="LastHV06Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1326,8 +1305,22 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="3">
-                  <widget class="QLabel" name="LastHV01Voltage_tag">
+                 <item row="4" column="0">
+                  <widget class="QLabel" name="HV03ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="HV01ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="0">
+                  <widget class="QLabel" name="HV05ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1335,6 +1328,20 @@
                  </item>
                  <item row="8" column="4">
                   <widget class="QLabel" name="LastHV07Current_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="4">
+                  <widget class="QLabel" name="label_63">
+                   <property name="text">
+                    <string>Current</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="3">
+                  <widget class="QLabel" name="LastHV01Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1354,15 +1361,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="4">
-                  <widget class="QLabel" name="label_63">
-                   <property name="text">
-                    <string>Current</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="6" column="4">
-                  <widget class="QLabel" name="LastHV05Current_tag">
+                 <item row="7" column="0">
+                  <widget class="QLabel" name="HV06ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1375,15 +1375,15 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="0">
-                  <widget class="QLabel" name="HV09ID_tag">
+                 <item row="6" column="4">
+                  <widget class="QLabel" name="LastHV05Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="0">
-                  <widget class="QLabel" name="HV06ID_tag">
+                 <item row="10" column="0">
+                  <widget class="QLabel" name="HV09ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1410,15 +1410,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="3">
-                  <widget class="QLabel" name="LastHV00Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="HV00ID_tag">
+                 <item row="3" column="4">
+                  <widget class="QLabel" name="LastHV02Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1438,13 +1431,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="4">
-                  <widget class="QLabel" name="LastHV02Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="1">
                   <widget class="QLabel" name="label_61">
                    <property name="text">
@@ -1452,8 +1438,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="3">
-                  <widget class="QLabel" name="LastHV06Voltage_tag">
+                 <item row="2" column="1">
+                  <widget class="QLabel" name="LastHV01Status_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1466,29 +1452,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="4">
-                  <widget class="QLabel" name="LastHV00Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QLabel" name="LastHV01Status_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="4">
-                  <widget class="QLabel" name="LastHV04Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="1">
-                  <widget class="QLabel" name="LastHV04Status_tag">
+                 <item row="7" column="3">
+                  <widget class="QLabel" name="LastHV06Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1501,8 +1466,15 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QLabel" name="LastHV00Status_tag">
+                 <item row="5" column="1">
+                  <widget class="QLabel" name="LastHV04Status_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="4">
+                  <widget class="QLabel" name="LastHV04Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1515,22 +1487,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="4">
-                  <widget class="QLabel" name="LastHV08Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="8" column="0">
                   <widget class="QLabel" name="HV07ID_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="10" column="4">
-                  <widget class="QLabel" name="LastHV09Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1543,8 +1501,29 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="9" column="4">
+                  <widget class="QLabel" name="LastHV08Current_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="4">
+                  <widget class="QLabel" name="LastHV09Current_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="5" column="3">
                   <widget class="QLabel" name="LastHV04Voltage_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="3">
+                  <widget class="QLabel" name="LastHV05Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1557,13 +1536,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="6" column="3">
-                  <widget class="QLabel" name="LastHV05Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="2">
                   <widget class="QLabel" name="label_65">
                    <property name="text">
@@ -1571,22 +1543,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="2">
-                  <widget class="QLabel" name="LastHV00VoltageSet_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="2" column="2">
                   <widget class="QLabel" name="LastHV01VoltageSet_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="2">
-                  <widget class="QLabel" name="LastHV02VoltageSet_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1599,8 +1557,36 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="3" column="2">
+                  <widget class="QLabel" name="LastHV02VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="5" column="2">
                   <widget class="QLabel" name="LastHV04VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="2">
+                  <widget class="QLabel" name="LastHV08VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="8" column="2">
+                  <widget class="QLabel" name="LastHV07VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="2">
+                  <widget class="QLabel" name="LastHV09VoltageSet_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1620,22 +1606,36 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="2">
-                  <widget class="QLabel" name="LastHV07VoltageSet_tag">
+                 <item row="1" column="3">
+                  <widget class="QLabel" name="LastHV00Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="2">
-                  <widget class="QLabel" name="LastHV08VoltageSet_tag">
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="HV00ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="2">
-                  <widget class="QLabel" name="LastHV09VoltageSet_tag">
+                 <item row="1" column="1">
+                  <widget class="QLabel" name="LastHV00Status_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QLabel" name="LastHV00VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="4">
+                  <widget class="QLabel" name="LastHV00Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1669,22 +1669,8 @@
                <string>FNAL Box</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_4">
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_36">
-                 <property name="text">
-                  <string>OneWire 0</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="10" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW6_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW3_tag">
+               <item row="1" column="1">
+                <widget class="QLabel" name="LastFNALBoxTemp0_tag">
                  <property name="text">
                   <string>?</string>
                  </property>
@@ -1697,27 +1683,6 @@
                  </property>
                 </widget>
                </item>
-               <item row="12" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW8_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QLabel" name="LastFNALBoxTemp0_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="13" column="0">
-                <widget class="QLabel" name="label_56">
-                 <property name="text">
-                  <string>OneWire 9</string>
-                 </property>
-                </widget>
-               </item>
                <item row="2" column="0">
                 <widget class="QLabel" name="label_18">
                  <property name="text">
@@ -1725,78 +1690,8 @@
                  </property>
                 </widget>
                </item>
-               <item row="10" column="0">
-                <widget class="QLabel" name="label_52">
-                 <property name="text">
-                  <string>OneWire 6</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="12" column="0">
-                <widget class="QLabel" name="label_55">
-                 <property name="text">
-                  <string>OneWire 8</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="0">
-                <widget class="QLabel" name="label_37">
-                 <property name="text">
-                  <string>OneWire 1</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="8" column="0">
-                <widget class="QLabel" name="label_46">
-                 <property name="text">
-                  <string>OneWire 4</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW0_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="label_42">
-                 <property name="text">
-                  <string>OneWire 2</string>
-                 </property>
-                </widget>
-               </item>
                <item row="3" column="1">
                 <widget class="QLabel" name="LastFNALBoxDP_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="11" column="0">
-                <widget class="QLabel" name="label_54">
-                 <property name="text">
-                  <string>OneWire 7</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="11" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW7_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="0">
-                <widget class="QLabel" name="label_44">
-                 <property name="text">
-                  <string>OneWire 3</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW2_tag">
                  <property name="text">
                   <string>?</string>
                  </property>
@@ -1816,13 +1711,6 @@
                  </property>
                 </widget>
                </item>
-               <item row="9" column="0">
-                <widget class="QLabel" name="label_48">
-                 <property name="text">
-                  <string>OneWire 5</string>
-                 </property>
-                </widget>
-               </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="label_6">
                  <property name="text">
@@ -1837,8 +1725,141 @@
                  </property>
                 </widget>
                </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_17">
+                 <property name="text">
+                  <string>Last valid readout: </string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLabel" name="LastFNALBoxMsgTS_tag">
+                 <property name="text">
+                  <string>NEVER</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW2_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="12" column="0">
+                <widget class="QLabel" name="label_55">
+                 <property name="text">
+                  <string>OneWire 09</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW1_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW3_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="13" column="0">
+                <widget class="QLabel" name="label_56">
+                 <property name="text">
+                  <string>OneWire 10</string>
+                 </property>
+                </widget>
+               </item>
                <item row="9" column="1">
                 <widget class="QLabel" name="LastFNALBoxOW5_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="11" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW7_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="9" column="0">
+                <widget class="QLabel" name="label_48">
+                 <property name="text">
+                  <string>OneWire 06</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="11" column="0">
+                <widget class="QLabel" name="label_54">
+                 <property name="text">
+                  <string>OneWire 08</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="0">
+                <widget class="QLabel" name="label_44">
+                 <property name="text">
+                  <string>OneWire 04</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="8" column="0">
+                <widget class="QLabel" name="label_46">
+                 <property name="text">
+                  <string>OneWire 05</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="label_37">
+                 <property name="text">
+                  <string>OneWire 02</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW0_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLabel" name="label_42">
+                 <property name="text">
+                  <string>OneWire 03</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="12" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW8_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="10" column="0">
+                <widget class="QLabel" name="label_52">
+                 <property name="text">
+                  <string>OneWire 07</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="13" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW9_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="10" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW6_tag">
                  <property name="text">
                   <string>?</string>
                  </property>
@@ -1851,31 +1872,10 @@
                  </property>
                 </widget>
                </item>
-               <item row="5" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW1_tag">
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_36">
                  <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_17">
-                 <property name="text">
-                  <string>Last valid readout: </string>
-                 </property>
-                </widget>
-               </item>
-               <item row="13" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW9_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QLabel" name="LastFNALBoxMsgTS_tag">
-                 <property name="text">
-                  <string>NEVER</string>
+                  <string>OneWire 01</string>
                  </property>
                 </widget>
                </item>

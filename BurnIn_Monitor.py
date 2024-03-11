@@ -320,15 +320,16 @@ class BurnIn_Monitor(QObject):
                                 
 							for i in range(NUM_BI_SLOTS):
 								self.SharedDict["LastFNALBoxOW"+str(i)].setText(reply_list[i+FNAL_OW_OFFSET][1:])
-								self.MQTT_FNALBox_dict["OW"+str(i)]=float(reply_list[i+FNAL_OW_OFFSET][1:])
-							self.SharedDict["LastFNALBoxDP"].setText(reply_list[FNAL_DP_OFFSET][1:])
+								self.MQTT_FNALBox_dict["OW"+str((int)(i+1)).zfill(2)]=float(reply_list[i+FNAL_OW_OFFSET][1:])
 							self.MQTT_FNALBox_dict["DewPoint"]=float(reply_list[FNAL_DP_OFFSET][1:])
+							self.SharedDict["LastFNALBoxDP"].setText(reply_list[FNAL_DP_OFFSET][1:])
 							self.SharedDict["Ctrl_IntDewPoint"].setText(reply_list[FNAL_DP_OFFSET][1:])
 							
 							IntTemp_arr = [float(self.SharedDict["LastFNALBoxTemp1"].text()),float(self.SharedDict["LastFNALBoxTemp0"].text())]
 							for i in range (NUM_BI_SLOTS):
 								IntTemp_arr.append(float(self.SharedDict["LastFNALBoxOW"+str(i)].text())) 
 							self.SharedDict["Ctrl_LowerTemp"] = min(IntTemp_arr)
+							self.SharedDict["Ctrl_HigherTemp"] = max(IntTemp_arr.remove(999.0))
 						except Exception as e:
 							self.logger.warning("MONITOR: error splitting FNAL reply "+reply)
 							self.FNALBoxCycleOK = False

@@ -353,6 +353,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		self.SharedDict["Input"]=0.0
 		self.SharedDict["Ctrl_LowerTemp"]=999.0
+		self.SharedDict["Ctrl_HigherTemp"]=-999.0
 		
 		self.SharedDict["DewPoint_arr"]=self.DewPoint_arr
 		self.SharedDict["Temp_arr"]=self.Temp_arr
@@ -363,7 +364,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		# start supervisor in QThread
 		self.SupervisorThread = QThread()
-		self.Supervisor = BurnIn_Supervisor(self.configDict,self.logger, self.SharedDict)
+		self.Supervisor = BurnIn_Supervisor(self.configDict,self.logger, self.SharedDict,self.Julabo, self.CAENController)
 		self.Supervisor.moveToThread(self.SupervisorThread)
 		self.SupervisorThread.started.connect(self.Supervisor.run)
 		self.SupervisorThread.start()    
@@ -464,6 +465,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Worker.Request_confirm_sig.connect(self.Confirm_msg)
 		self.Worker.BI_terminated.connect(self.BI_terminated)
 		self.Monitor.Update_graph.connect(self.Update_graph)
+		self.Supervisor.BI_Abort_sig.connect(self.Supervisor_BI_Stop)
 		#self.Monitor.Update_manualOp_tab.connect(self.Update_manualOp_tab)
 		
 		self.Worker.BI_Update_GUI_sig.connect(self.BI_Update_GUI_Cmd)
@@ -572,6 +574,14 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.logger.info("BURN IN stop request issued")
 		else:
 			self.logger.info("NO Burn In test ongoing. Request cancelled")
+			
+	def Supervisor_BI_Stop(self):
+		self.logger.info("Supervisor request BurnIn tst ot be stopped...")
+		if self.SharedDict["BI_Active"]:
+			self.SharedDict["BI_StopRequest"]=True
+			self.logger.info("BURN IN stop request issued")
+		else:
+			self.logger.info("NO Burn In test ongoing. Request cancelled")
 	
 	@pyqtSlot()
 	def BI_terminated(self):
@@ -583,9 +593,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		Id, ok = QtWidgets.QInputDialog.getText(self,"Enter or scan module IDs","Module ID") 
 		if ok:
 			self.ModuleId_btns[idx].setText(Id)
-			self.logger.info("New Id for module "+str(idx)+": "+Id)
+			self.logger.info("New Id for module "+str(idx+1)+": "+Id)
 		else:
-			self.logger.info("New Id for module "+str(idx)+" aborted by user")
+			self.logger.info("New Id for module "+str(idx+1)+" aborted by user")
 		
 	@pyqtSlot()					
 	def Ctrl_StartSesh_Cmd(self):
@@ -637,16 +647,16 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_SeshDescription_db.setText("Session Description: "+session_fromDB["description"])
 		self.Ctrl_lowTemp_db.setText("Low Temp (C°): "+str(session_fromDB["temperatures"]["low"]))
 		self.Ctrl_hiTemp_db.setText("High Temp (C°): "+str(session_fromDB["temperatures"]["high"]))
-		self.Ctrl_Module00_tag.setText("Module 00: "+str(session_fromDB["modulesList"][0]))
-		self.Ctrl_Module01_tag.setText("Module 01: "+str(session_fromDB["modulesList"][1]))
-		self.Ctrl_Module02_tag.setText("Module 02: "+str(session_fromDB["modulesList"][2]))
-		self.Ctrl_Module03_tag.setText("Module 03: "+str(session_fromDB["modulesList"][3]))
-		self.Ctrl_Module04_tag.setText("Module 04: "+str(session_fromDB["modulesList"][4]))
-		self.Ctrl_Module05_tag.setText("Module 05: "+str(session_fromDB["modulesList"][5]))
-		self.Ctrl_Module06_tag.setText("Module 06: "+str(session_fromDB["modulesList"][6]))
-		self.Ctrl_Module07_tag.setText("Module 07: "+str(session_fromDB["modulesList"][7]))
-		self.Ctrl_Module08_tag.setText("Module 08: "+str(session_fromDB["modulesList"][8]))
-		self.Ctrl_Module09_tag.setText("Module 09: "+str(session_fromDB["modulesList"][9]))
+		self.Ctrl_Module00_tag.setText("Module 01: "+str(session_fromDB["modulesList"][0]))
+		self.Ctrl_Module01_tag.setText("Module 02: "+str(session_fromDB["modulesList"][1]))
+		self.Ctrl_Module02_tag.setText("Module 03: "+str(session_fromDB["modulesList"][2]))
+		self.Ctrl_Module03_tag.setText("Module 04: "+str(session_fromDB["modulesList"][3]))
+		self.Ctrl_Module04_tag.setText("Module 05: "+str(session_fromDB["modulesList"][4]))
+		self.Ctrl_Module05_tag.setText("Module 06: "+str(session_fromDB["modulesList"][5]))
+		self.Ctrl_Module06_tag.setText("Module 07: "+str(session_fromDB["modulesList"][6]))
+		self.Ctrl_Module07_tag.setText("Module 08: "+str(session_fromDB["modulesList"][7]))
+		self.Ctrl_Module08_tag.setText("Module 09: "+str(session_fromDB["modulesList"][8]))
+		self.Ctrl_Module09_tag.setText("Module 10: "+str(session_fromDB["modulesList"][9]))
 		
 	@pyqtSlot(str,str)
 	def Show_msg(self,warn_msg,rsn_msg):

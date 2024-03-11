@@ -489,7 +489,7 @@ class BurnIn_Worker(QObject):
 					ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_NAME_COL).text()
 					if (ch_name == "?"):
 						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
+						Reason_str = "Can't turn OFF LV for slot "+str(row+1)+ " beacause LV ch. name is UNKNOWN"
 						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
@@ -497,7 +497,7 @@ class BurnIn_Worker(QObject):
 					HV_defined = True if self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_NAME_COL).text() != "?" else False	
 					if (not switch) and  HV_defined and (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text() != "OFF"):  # attempt to power down LV with HV not off
 						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause HV is ON or UNKNOWN"
+						Reason_str = "Can't turn OFF LV for slot "+str(row+1)+ " beacause HV is ON or UNKNOWN"
 						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
@@ -543,14 +543,14 @@ class BurnIn_Worker(QObject):
 					ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_NAME_COL).text() 
 					if (ch_name == "?"):
 						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause HV ch. name is UNKNOWN"
+						Reason_str = "Can't turn OFF HV for slot "+str(row+1)+ " beacause HV ch. name is UNKNOWN"
 						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
 					if (switch) and (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text() != "ON"):  # attempt to power up HV with LV not on
 						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause LV is OFF or UNKNOWN"
+						Reason_str = "Can't turn OFF HV for slot "+str(row+1)+ " beacause LV is OFF or UNKNOWN"
 						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
@@ -601,20 +601,20 @@ class BurnIn_Worker(QObject):
 					ch_name = self.SharedDict["CAEN_table"].item(row,ColOffset).text() 
 					if (ch_name == "?"):
 						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't set LV for  slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
+						Reason_str = "Can't set LV for  slot "+str(row+1)+ " beacause LV ch. name is UNKNOWN"
 						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
 					if (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_VSET_COL+ColOffset).text() == "?"): 
 						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't set LV/HV for  slot "+str(row)+ " beacause current setpoint is UNKNOWN"
+						Reason_str = "Can't set LV/HV for  slot "+str(row+1)+ " beacause current setpoint is UNKNOWN"
 						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
 					self.SharedDict["WaitInput"]=True
-					Request_str="New " +VType+ " Slot "+str(row)
+					Request_str="New " +VType+ " Slot "+str(row+1)
 					ValueNow = 0.0
 					try :
 						ValueNow = float(self.SharedDict["CAEN_table"].item(row,2+ColOffset).text())
@@ -651,6 +651,8 @@ class BurnIn_Worker(QObject):
 	# implemented as a is a Pyqt slot
 	@pyqtSlot()			
 	def BI_Start_Cmd(self):
+	
+		self.SharedDict["BI_Active"]=True
 		self.logger.info("Starting BurnIN...")
 		
 		#creating parameter dictionary for the current session
@@ -721,7 +723,6 @@ class BurnIn_Worker(QObject):
 		self.SharedDict["BI_Action"].setText("Setup")
 		self.SharedDict["BI_Cycle"].setText(str(session_dict["Cycle"])+" of "+str(session_dict["NCycles"]))
 					
-		self.SharedDict["BI_Active"]=True
 		
 		#checking sub-system information
 			
@@ -919,7 +920,7 @@ class BurnIn_Worker(QObject):
 		while retry:
 			Action(*args)
 			if self.SharedDict["BI_StopRequest"]:
-				self.BI_Abort("BI: aborted for user request")
+				self.BI_Abort("BI: aborted for user or Supervisor request")
 				return False
 			if not (self.last_op_ok):
 				self.logger.warning("BI: failed to do action...new try in 10 sec")
