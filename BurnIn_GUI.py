@@ -9,6 +9,7 @@ from BurnIn_TCP import *
 
 from BurnIn_Worker import *
 from BurnIn_Monitor import *
+from BurnIn_Supervisor import *
 from DB_interface import *
 
 import databaseTools
@@ -359,6 +360,13 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["Targ_arr"]=self.Targ_arr
 		self.SharedDict["TimeTest_arr"]=self.TimeTest_arr
 		self.SharedDict["TempTest_arr"]=self.TempTest_arr
+		
+		# start supervisor in QThread
+		self.SupervisorThread = QThread()
+		self.Supervisor = BurnIn_Supervisor(self.configDict,self.logger, self.SharedDict)
+		self.Supervisor.moveToThread(self.SupervisorThread)
+		self.SupervisorThread.started.connect(self.Supervisor.run)
+		self.SupervisorThread.start()    
 		
 		# start monitoring function in QThread
 		self.MonitorThread = QThread()

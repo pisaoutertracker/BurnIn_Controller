@@ -6,7 +6,7 @@ from datetime import datetime
 
 class MQTT_interface():
 
-	def __init__(self,configDict,logger):
+	def __init__(self,configDict,logger, clientId):
 	
 		super(MQTT_interface,self).__init__();
 		self.is_connected = False
@@ -20,6 +20,8 @@ class MQTT_interface():
 		self.LastM5MessageTS = "NEVER"
 		self.LastM5Message = ""
 		
+		self.ClientId=clientId
+		
 		
 		self.configDict=configDict
 		self.logger = logger
@@ -31,10 +33,6 @@ class MQTT_interface():
 		if self.Port == "NOKEY":
 			self.Port = "1883"
 			self.logger.warning("MQTT port parameter not found. Using default")
-		self.ClientId = configDict.get(("MQTT","ClientId"),"NOKEY")
-		if self.ClientId == "NOKEY":
-			self.ClientId = "BurnIn_Controller"
-			self.logger.warning("MQTT ClientId parameter not found. Using default")
 		self.CAENTopic = configDict.get(("MQTT","CAENTopic"),"NOKEY")
 		if self.CAENTopic == "NOKEY":
 			self.CAENTopic = "/caenstatus/full"

@@ -21,7 +21,7 @@ class BurnIn_Monitor(QObject):
 		self.logger = logger
 		self.logger.info("MONITOR: Monitoring class initialized")
 		
-		self.MQTT =  MQTT_interface(configDict,logger)
+		self.MQTT =  MQTT_interface(configDict,logger,"BurnIn_monitor")
 		self.SharedDict = SharedDict
 		self.SharedDict = SharedDict
 		self.Julabo = Julabo
