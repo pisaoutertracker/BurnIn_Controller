@@ -38,7 +38,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -519,6 +519,13 @@
                </property>
                <property name="text">
                 <string>Stop BurnIn</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="BI_Dry_cb">
+               <property name="text">
+                <string>Cycle only (no module test)</string>
                </property>
               </widget>
              </item>

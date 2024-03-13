@@ -349,6 +349,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_NCycles"]=self.BI_NCycles_sb.value()
 		self.SharedDict["BI_ActiveSlots"]=[]
 		self.SharedDict["BI_ModuleIDs"]=[]
+		self.SharedDict["BI_Dry"]=False
 		
 		
 		self.SharedDict["TestSession"]=self.TestSession
@@ -550,7 +551,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.SharedDict["BI_ActiveSlots"].append(cb.isChecked())
 		for Id in self.ModuleId_btns:
 			self.SharedDict["BI_ModuleIDs"].append(Id.text())
-		
+		self.SharedDict["BI_Dry"]= self.BI_Dry_cb.isChecked()
 		
 		self.BI_Start_sig.emit()
 	
@@ -567,6 +568,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			cb.setChecked(session_dict["ActiveSlots"][idx])
 		for idx,ID in enumerate(self.ModuleId_btns):
 			ID.setText(session_dict["ModuleIDs"][idx])	
+		self.BI_Dry_cb.setChecked(session_dict["Dry"])
 	
 	
 	def BI_Stop_Cmd(self):

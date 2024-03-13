@@ -669,6 +669,7 @@ class BurnIn_Worker(QObject):
 		session_dict["Session"]				= "-1"
 		session_dict["ActiveSlots"]			= self.SharedDict["BI_ActiveSlots"]
 		session_dict["ModuleIDs"]			= self.SharedDict["BI_ModuleIDs"]
+		session_dict["Dry"]					= self.SharedDict["BI_Dry"]
 		session_dict["Timestamp"]			= datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 		
 		
