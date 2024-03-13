@@ -38,7 +38,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -739,6 +739,40 @@
          </layout>
         </item>
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_16">
+          <item>
+           <widget class="QLabel" name="label_87">
+            <property name="text">
+             <string>Last supervision cycle:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="LastSupervision_tag">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 0, 0);</string>
+            </property>
+            <property name="text">
+             <string>Never</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_18">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -753,15 +787,22 @@
                <string>Connection status</string>
               </property>
               <layout class="QGridLayout" name="gridLayout">
-               <item row="1" column="0">
+               <item row="2" column="0">
                 <widget class="QLabel" name="label_9">
                  <property name="text">
                   <string>JULABO:</string>
                  </property>
                 </widget>
                </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_8">
+                 <property name="text">
+                  <string>MQTT server (Worker):</string>
+                 </property>
+                </widget>
+               </item>
                <item row="0" column="1">
-                <widget class="QLabel" name="MQTTConn_tag">
+                <widget class="QLabel" name="MQTTMConn_tag">
                  <property name="styleSheet">
                   <string notr="true">color: rgb(255, 0, 0);</string>
                  </property>
@@ -770,21 +811,14 @@
                  </property>
                 </widget>
                </item>
-               <item row="2" column="0">
+               <item row="3" column="0">
                 <widget class="QLabel" name="label_10">
                  <property name="text">
                   <string>FNAL box:</string>
                  </property>
                 </widget>
                </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_8">
-                 <property name="text">
-                  <string>MQTT server:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
+               <item row="3" column="1">
                 <widget class="QLabel" name="FNALConn_tag">
                  <property name="styleSheet">
                   <string notr="true">color: rgb(255, 0, 0);</string>
@@ -794,11 +828,28 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
+               <item row="2" column="1">
                 <widget class="QLabel" name="JULABOConn_tag">
                  <property name="accessibleDescription">
                   <string>color: rgb(255, 0, 0);</string>
                  </property>
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(255, 0, 0);</string>
+                 </property>
+                 <property name="text">
+                  <string>Disconnected</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_85">
+                 <property name="text">
+                  <string>MQTT server (Supervisor)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLabel" name="MQTTSConn_tag">
                  <property name="styleSheet">
                   <string notr="true">color: rgb(255, 0, 0);</string>
                  </property>
@@ -2083,7 +2134,7 @@
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_6">
+             <spacer name="verticalSpacer_3">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -2100,7 +2151,7 @@
          </layout>
         </item>
         <item>
-         <spacer name="verticalSpacer_3">
+         <spacer name="verticalSpacer_6">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>

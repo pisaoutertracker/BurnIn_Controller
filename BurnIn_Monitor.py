@@ -39,8 +39,8 @@ class BurnIn_Monitor(QObject):
 		self.logger.info("MONITOR: Attempting first connection to MQTT server...")
 		self.MQTT.connect()
 		if self.MQTT.is_connected :
-			self.SharedDict["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-			self.SharedDict["MQTTConn"].setText("Connected")
+			self.SharedDict["MQTTMConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+			self.SharedDict["MQTTMConn"].setText("Connected")
 			
 		while(1):		
 		
@@ -53,15 +53,15 @@ class BurnIn_Monitor(QObject):
 					self.logger.info("MONITOR: Attempting first connection to MQTT server...")
 					self.MQTT.connect()
 					if self.MQTT.is_connected :
-						self.SharedDict["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-						self.SharedDict["MQTTConn"].setText("Connected")
+						self.SharedDict["MQTTMConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+						self.SharedDict["MQTTMConn"].setText("Connected")
 				else:
 					if self.MQTT.is_connected :
-						self.SharedDict["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-						self.SharedDict["MQTTConn"].setText("Connected")
+						self.SharedDict["MQTTMConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+						self.SharedDict["MQTTMConn"].setText("Connected")
 					else:
-						self.SharedDict["MQTTConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
-						self.SharedDict["MQTTConn"].setText("Disconnected")
+						self.SharedDict["MQTTMConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+						self.SharedDict["MQTTMConn"].setText("Disconnected")
 				
 				if (self.MQTT.LastCAENMessageTS != "NEVER"):
 					try:
@@ -329,14 +329,14 @@ class BurnIn_Monitor(QObject):
 							for i in range (NUM_BI_SLOTS):
 								IntTemp_arr.append(float(self.SharedDict["LastFNALBoxOW"+str(i)].text())) 
 							self.SharedDict["Ctrl_LowerTemp"] = min(IntTemp_arr)
-							self.SharedDict["Ctrl_HigherTemp"] = max(IntTemp_arr.remove(999.0))
+							self.SharedDict["Ctrl_HigherTemp"] = max(list(filter(MAX_VALID_TEMP.__gt__,IntTemp_arr)))
 						except Exception as e:
 							self.logger.warning("MONITOR: error splitting FNAL reply "+reply)
 							self.FNALBoxCycleOK = False
 					self.SharedDict["LastFNALBoxMsgTS"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 				else:
 					self.FNALBoxCycleOK = False
-					self.SharedDict["FNALConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+					self.SharedDict["FNALConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ")
 					self.SharedDict["FNALConn"].setText("Disconnected")
 				self.FNALBox.lock.release()
 				self.logger.debug("MONITOR: FNAL lock released")	

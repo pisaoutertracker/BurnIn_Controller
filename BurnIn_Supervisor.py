@@ -35,16 +35,32 @@ class BurnIn_Supervisor(QObject):
 			
 			
 	def run(self):
-		self.logger.info("SUPERVISOR: SUPERVISOR thread started...waiting "+ str(SUPERVISOR_START_DELAY) +"s")
-		time.sleep(SUPERVISOR_START_DELAY)
-		self.logger.info("SUPERVISOR: SUPERVISOR is now armed")
 		self.logger.info("SUPERVISOR: Attempting first connection to MQTT server...")
 		self.MQTT.connect()
-		if self.MQTT.is_connected :
-			self.SharedDict["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-			self.SharedDict["MQTTConn"].setText("Connected")
+		self.logger.info("SUPERVISOR: SUPERVISOR thread started...waiting "+ str(SUPERVISOR_START_DELAY) +"s")
+		time.sleep(SUPERVISOR_START_DELAY)
+		
+		self.logger.info("SUPERVISOR: SUPERVISOR is now armed")
 			
-		while(self.Enabled):	
+		while(self.Enabled):
+		
+			self.SharedDict["LastSupervision"].setStyleSheet("");
+			self.SharedDict["LastSupervision"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+			
+			#MQTT connection cycle
+			if not self.MQTT.is_subscribed:
+				self.logger.info("MONITOR: Attempting first connection to MQTT server...")
+				self.MQTT.connect()
+				if self.MQTT.is_connected :
+					self.SharedDict["MQTTSConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+					self.SharedDict["MQTTSConn"].setText("Connected")
+			else:
+				if self.MQTT.is_connected :
+					self.SharedDict["MQTTSConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+					self.SharedDict["MQTTSConn"].setText("Connected")
+				else:
+					self.SharedDict["MQTTSConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+					self.SharedDict["MQTTSConn"].setText("Disconnected")
 
 			#retrieve power status
 			power_on = False
@@ -65,25 +81,19 @@ class BurnIn_Supervisor(QObject):
 
 			#overtemperature checks
 			if  not self.SharedDict["CAEN_updated"]:
-				self.send_alert("WARNING: no info from CAEN module")
-				self.logger.warning("SUPERVISOR: no info from CAEN module")
 				if  self.SharedDict["Ctrl_HigherTemp"] > TEMP_ERROR:
-					self.send_alert("CRITICAL: Temperature above Critical threshold ("+str(TEMP_WARNING)+")AND no info from CAEN")
-					self.logger.error("SUPERVISOR: Temperature above Critical threshold ("+str(TEMP_WARNING)+") AND no info from CAEN")
+					self.send_alert("CRITICAL: Temperature above Critical threshold ("+str(TEMP_ERROR)+")AND no info from CAEN")
 				elif self.SharedDict["Ctrl_HigherTemp"]> TEMP_WARNING:
 					self.send_alert("WARNING: Temperature above Warning threshold ("+str(TEMP_WARNING)+")AND no info from CAEN")
-					self.logger.warning("SUPERVISOR: Temperature above Warning threshold ("+str(TEMP_WARNING)+")AND no info from CAEN")
 			else:
 				if power_on:
 					if not self.SharedDict["FNALBox_updated"]:
 						self.send_alert("CRITICAL: Power is on but no info about temperature")
-						self.logger.error("SUPERVISOR: Power is on but no info about temperature")
 						self.HV_shutdown()
 						self.LV_shutdown()
 					else:
 						if  self.SharedDict["Ctrl_HigherTemp"] > TEMP_ERROR:
-							self.send_alert("CRITICAL: Temperature above Critical threshold ("+str(TEMP_WARNING)+")")
-							self.logger.error("SUPERVISOR: Temperature above Critical threshold ("+str(TEMP_WARNING)+")")
+							self.send_alert("CRITICAL: Temperature above Critical threshold ("+str(TEMP_ERROR)+"). Shutting down HV and LVs.")
 							self.HV_shutdown()
 							self.LV_shutdown()
 						elif self.SharedDict["Ctrl_HigherTemp"]> TEMP_WARNING:
@@ -91,11 +101,9 @@ class BurnIn_Supervisor(QObject):
 							self.logger.warning("SUPERVISOR: Temperature above Warning threshold ("+str(TEMP_WARNING)+")")
 				else:
 					if  self.SharedDict["Ctrl_HigherTemp"] > TEMP_ERROR:
-						self.send_alert("CRITICAL: Temperature above Critical threshold ("+str(TEMP_WARNING)+") but LV are OFF!")
-						self.logger.error("SUPERVISOR: Temperature above Critical threshold ("+str(TEMP_WARNING)+") but LV are OFF!")
+						self.send_alert("CRITICAL: Temperature above Critical threshold ("+str(TEMP_ERROR)+") but LV are OFF!")
 					elif self.SharedDict["Ctrl_HigherTemp"]> TEMP_WARNING:
 						self.send_alert("WARNING: Temperature above Warning threshold ("+str(TEMP_WARNING)+") but LV are OFF")
-						self.logger.warning("SUPERVISOR: Temperature above Warning threshold ("+str(TEMP_WARNING)+") but LV are OFF")
 			
 
 			
@@ -112,32 +120,26 @@ class BurnIn_Supervisor(QObject):
 			if not self.SharedDict["FNALBox_updated"]:
 				if self.SharedDict["Julabo_updated"] and self.SharedDict["Ctrl_StatusJulabo"].text().find("START")!=-1:
 					self.send_alert("WARNING: Julabo on but no temperature/dew point info")
-					self.logger.warning("SUPERVISOR: Julabo on but no temperature/dew point info")
 					self.JULABO_safeTemp()
 			else:
 				if self.SharedDict["Ctrl_StatusDoor"].text()=="CLOSED":
 					if self.SharedDict["Ctrl_LowerTemp"] < float(self.SharedDict["LastFNALBoxDP"].text()):
 						if self.SharedDict["Julabo_updated"] and self.SharedDict["Ctrl_StatusJulabo"].text().find("START")!=-1:
 							self.send_alert("WARNING: Door closed, internal emperature below internal Dew Point")
-							self.logger.warning("SUPERVISOR: Door closed, internal emperature below internal Dew Point")
 							self.JULABO_safeTemp()
 						elif not self.SharedDict["Julabo_updated"]:
 							self.send_alert("WARNING: Door closed, internal emperature below internal Dew Point but no control on JULABO. PLEASE ACT!")
-							self.logger.warning("SUPERVISOR: Door closed, internal emperature below internal Dew Point but no control on JULABO. PLEASE ACT!")
 							
 				elif self.SharedDict["Ctrl_StatusDoor"].text()=="OPEN":
 					if self.SharedDict["M5_updated"] :
 						if self.SharedDict["Ctrl_LowerTemp"] < float(self.SharedDict["LastM5DP"].text()):
 							if self.SharedDict["Julabo_updated"] and self.SharedDict["Ctrl_StatusJulabo"].text().find("START")!=-1:
 								self.send_alert("WARNING: Door open with Julabo on, internal temperature below external Dew Point")
-								self.logger.warning("SUPERVISOR: Door open with Julabo on, internal temperature below external Dew Point")
 								self.JULABO_safeTemp()
 							else:
 								self.send_alert("WARNING: Door open, internal temperature below external Dew Point, no or inconsistent info from JULABO. PLEASE ACT!")
-								self.logger.warning("SUPERVISOR: Door open, internal temperature below external Dew Point, no or inconsistent info from JULABO. PLEASE ACT!")
 					elif self.SharedDict["Julabo_updated"] and self.SharedDict["Ctrl_StatusJulabo"].text().find("START")!=-1:
 						self.send_alert("WARNING: Door open and Julabo on, but no external temperature/dew point info")
-						self.logger.warning("WARNING: Door open and Julabo on, but no external temperature/dew point info")
 						self.JULABO_safeTemp()
 		
 	
@@ -147,8 +149,10 @@ class BurnIn_Supervisor(QObject):
 		self.logger.info("SUPERVISOR: DISABLED as per yaml configuration")
 		
 	def send_alert(self, text):
+	
+		self.logger.error("SUPERVISOR: " + text)
 		if self.MQTT.is_connected:
-			self.MQTT.publish("/alarm","BurnIN SUPERVISOR: "+text)
+			self.MQTT.publish("/alarm","BurnIn: "+text)
 		else:
 			self.logger.error("SUPERVISOR: MQTT disconnected, can't publish alert!")
 			
@@ -185,6 +189,7 @@ class BurnIn_Supervisor(QObject):
 		# cycling to switch off LVs		
 		repeat= True
 		while(repeat):	
+			repeat= False
 			Channel_list=[]
 			for row in range(NUM_BI_SLOTS):
 				ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_NAME_COL).text() 
@@ -209,11 +214,11 @@ class BurnIn_Supervisor(QObject):
 		if self.SharedDict["BI_Active"]: 
 			self.BI_Abort()
 		Sp_id = 0
-		value = 20.0
+		value = 20
 		self.logger.info("Supervisor: Setting JULABO Sp"+str(Sp_id+1)+ " to " +str(value))
 		
 		self.Julabo.lock.acquire()
-		while (self.SharedDict["Ctrl_Sp1"].text()!=str(value)):
+		while (self.SharedDict["Ctrl_Sp1"].text()!="20.00"):
 			if not self.Julabo.is_connected :
 				self.Julabo.connect()
 			if self.Julabo.is_connected :
@@ -233,14 +238,14 @@ class BurnIn_Supervisor(QObject):
 				except Exception as e:
 					self.logger.error(e)
 				
-		while (self.SharedDict["Ctrl_TSp"].text()!="1"):		
+		while (self.SharedDict["Ctrl_TSp"].text()!="1"):	
 			self.logger.info("Supervisor: Selecting JULABO Sp"+str(Sp_id+1))
 			if not self.Julabo.is_connected :
 				self.Julabo.connect()
 			if self.Julabo.is_connected :
 				try:
 					self.Julabo.sendTCP("out_mode_01 "+str(Sp_id))
-					self.logger.info("WORKER: JULABO cmd sent")
+					self.logger.info("Supervisor: JULABO cmd sent")
 					self.Julabo.sendTCP("in_mode_01")
 					reply = self.Julabo.receive()
 					if (reply != "None" and reply != "TCP error"):
@@ -264,7 +269,7 @@ class BurnIn_Supervisor(QObject):
 			
 	def BI_Abort(self):
 		self.logger.info("SUPERVISOR: Requesting BI to be aborted")
-		BI_Abort_sig.emit()
+		self.BI_Abort_sig.emit()
 		count=10
 		time.sleep(1)
 		while (self.SharedDict["BI_Active"]):

@@ -908,7 +908,7 @@ class BurnIn_Worker(QObject):
 	
 			Warning_str = "BURN IN test failed"
 			self.SharedDict["BI_Status"].setText("Aborted")
-			self.Request_msg.emit(Warning_str,Reason_str)
+			#self.Request_msg.emit(Warning_str,Reason_str)
 			self.SharedDict["BI_Active"]=False
 			self.SharedDict["BI_StopRequest"]=False
 			self.BI_terminated.emit()

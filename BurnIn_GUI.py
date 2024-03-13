@@ -185,7 +185,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	
 		# PYQT tags in Monitor tab
 		self.SharedDict["LastMonitor"]=self.LastMonitor_tag
-		self.SharedDict["MQTTConn"]=self.MQTTConn_tag
+		self.SharedDict["LastSupervision"]=self.LastSupervision_tag
+		self.SharedDict["MQTTMConn"]=self.MQTTMConn_tag
+		self.SharedDict["MQTTSConn"]=self.MQTTSConn_tag
 		self.SharedDict["JULABOConn"]=self.JULABOConn_tag
 		self.SharedDict["FNALConn"]=self.FNALConn_tag
 		self.SharedDict["LastMQTTCAENMsgTS"]=self.LastMQTTCAENMsgTS_tag
