@@ -830,7 +830,7 @@ class BurnIn_Worker(QObject):
 				self.logger.info("BI: testing...")
 				self.SharedDict["BI_Action"].setText("Cold Module test")
 				self.SharedDict["BI_TestActive"]=True
-				self.MT_StartTest_Cmd(False,False)
+				self.BI_StartTest_Cmd(session_dict["Dry"])
 				self.SharedDict["BI_TestActive"]=False
 				session_dict["Action"]="RampUp"
 				
@@ -851,7 +851,7 @@ class BurnIn_Worker(QObject):
 				self.logger.info("BI: testing...")
 				self.SharedDict["BI_Action"].setText("Hot Module test")
 				self.SharedDict["BI_TestActive"]=True
-				self.MT_StartTest_Cmd(False,False)
+				self.BI_StartTest_Cmd(session_dict["Dry"])
 				self.SharedDict["BI_TestActive"]=False
 			
 				self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
@@ -1028,7 +1028,21 @@ class BurnIn_Worker(QObject):
 	def BI_Update_Status_file(self,session_dict):
 	
 		with open("Session.json", "w") as outfile: 
-			json.dump(session_dict, outfile)	
+			json.dump(session_dict, outfile)
+
+
+	def BI_StartTest_Cmd(self, dry=False):
+			self.logger.info("Starting module test...")
+			session=self.SharedDict["TestSession"]
+			if dry:
+				self.logger.info("Dry run. Just waiting 20 s.")
+				time.sleep(20)
+			else:
+				result = subprocess.run(["python3", "moduleTest.py", session],
+													cwd="/home/thermal/Ph2_ACF_docker/BurnIn_moduleTest")
+				self.logger.info(result.stdout)
+				self.logger.error(result.stderr)
+			self.logger.info("Module test completed!")			
 	
 	@pyqtSlot(bool)				
 	def MT_StartTest_Cmd(self, dry=False, PupUp=False):
