@@ -91,5 +91,7 @@ if __name__ == '__main__':
 	
 	BurnIn_app = BurnIn_GUI(configDict,logger)
 	
-	sys.exit(app.exec_())
+	exit_code=app.exec()
+	logger.debug("GUI closed: exit code "+exit_code)
+	sys.exit(exit_code)
 	
