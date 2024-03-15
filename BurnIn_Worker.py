@@ -894,10 +894,10 @@ class BurnIn_Worker(QObject):
 				self.BI_Abort("BI aborted: some HVs was not turned OFF")
 				return
 				
-		#stop JULABO	
+		#put JULABO to 20 degree	
 		self.SharedDict["BI_Action"].setText("Closing")
-		if not self.BI_Action(self.Ctrl_PowerJulabo_Cmd,False,PopUp):
-			return
+		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,20.0,PopUp):
+			return	
 		
 		self.logger.info("BurnIn test COMPLETED SUCCESFULLY!")
 		self.SharedDict["BI_Active"]=False
