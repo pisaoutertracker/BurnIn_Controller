@@ -91,6 +91,7 @@ class BurnIn_Worker(QObject):
 	# Control on cmd execution: none
 	@pyqtSlot(str)
 	def SendFNALBoxCmd(self,cmd):
+		self.logger.info("WORKER: Requesting lock on FNALBox")
 		self.FNALBox.lock.acquire()
 		self.logger.info("Sending FNALBox cmd "+cmd)
 		if not self.FNALBox.is_connected :
@@ -102,6 +103,7 @@ class BurnIn_Worker(QObject):
 		else:	
 			self.last_op_ok= False	
 		self.FNALBox.lock.release()
+		self.logger.info("WORKER: lock on FNALBox released")
 		
 	## Function to start a test
 	# implemented as a is a Pyqt slot
@@ -816,11 +818,12 @@ class BurnIn_Worker(QObject):
 				self.SharedDict["BI_Cycle"].setText(str(cycle+1)+"/"+str(NCycles))
 				self.logger.info("BI: runmping down...")
 				self.SharedDict["BI_Action"].setText("Cooling")
-				if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())) > session_dict["LowTemp"]):  #expected
-					if not self.BI_Action(self.BI_GoLowTemp,session_dict):
+				if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
+					if not self.BI_Action(self.BI_GoLowTemp,session_dict,session_dict["LowTemp"]):
+						self.logger.info("BI: cooling")
 						return
 				else:
-					if not self.BI_Action(self.BI_GoHighTemp,session_dict):
+					if not self.BI_Action(self.BI_GoHighTemp,session_dict,session_dict["LowTemp"]):
 						return
 				
 				session_dict["Action"]="ColdTest"
@@ -838,11 +841,12 @@ class BurnIn_Worker(QObject):
 				self.BI_Update_Status_file(session_dict)
 				self.logger.info("BI: going to high temp")
 				self.SharedDict["BI_Action"].setText("Heating")
-				if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())) < session_dict["HighTemp"]):  #expected
-					if not self.BI_Action(self.BI_GoHighTemp,session_dict):
+				if float(self.SharedDict["LastFNALBoxTemp0"].text()) < session_dict["HighTemp"]:  #expected
+					self.logger.info("BI: heating")
+					if not self.BI_Action(self.BI_GoHighTemp,session_dict,session_dict["HighTemp"]):
 						return
 				else:
-					if not self.BI_Action(self.BI_GoLowTemp,session_dict):
+					if not self.BI_Action(self.BI_GoLowTemp,session_dict,session_dict["HighTemp"]):
 						return
 				session_dict["Action"]="HotTest"
 				
@@ -861,7 +865,7 @@ class BurnIn_Worker(QObject):
 		
 		if (os.path.exists("Session.json")):		
 			os.remove("Session.json")
-			self.logger.info("BI: Seesion json file deleted")
+			self.logger.info("BI: Session json file deleted")
 		else:
 			self.logger.info("BI: Could not locate session json file")
 		
@@ -933,10 +937,9 @@ class BurnIn_Worker(QObject):
 		return False
 
 	## BI function to ramp down in temp
-	def BI_GoLowTemp(self,session_dict):
+	def BI_GoLowTemp(self,session_dict,LowTemp):
 	
 		TempTolerance		= BI_TEMP_TOLERANCE
-		LowTemp			= session_dict["LowTemp"]
 		TempRampOffset		= session_dict["UnderRamp"]
 		TempMantainOffset	= session_dict["UnderKeep"]
 		
@@ -987,10 +990,9 @@ class BurnIn_Worker(QObject):
 			return
 	
 	## BI function to ramp up in temp
-	def BI_GoHighTemp(self,session_dict):
+	def BI_GoHighTemp(self,session_dict,HighTemp):
 	
 		TempTolerance		= BI_TEMP_TOLERANCE
-		HighTemp			= session_dict["HighTemp"]
 		TempRampOffset		= session_dict["UnderRamp"]
 		TempMantainOffset	= session_dict["UnderKeep"]
 		
