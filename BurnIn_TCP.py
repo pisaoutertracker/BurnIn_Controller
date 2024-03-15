@@ -53,25 +53,39 @@ class BurnIn_TCP():
 		self.is_connected = False
 					
 	def receive(self):
-		inputReady,outputReady,exceptReady = select(self.interfaces,[],[],1)  #wait for data in interfaces list
-		time.sleep(0.020)
-		for s in inputReady:              
-			if s == self.TCPSock:
-				try:
-					self.buffer = self.readTCP(2048).decode()
-					self.logger.debug(self.moduleName + " stream received: "+self.buffer)
-					if self.moduleName == "Julabo":
-						return self.buffer[:-2]
-					elif self.moduleName == "CAENController":
-						return self.buffer[8:]
-					else:
-						return self.buffer
-				except Exception as e:
-					self.logger.error(e)
-					self.is_connected = False
-			else:
-				self.logger.error(self.moduleName + ": UNKNOWN SOCKET TYPE")
-				return "TCP error"
+		max_iter = 2
+		reply = ""
+		while (max_iter > 0):
+			inputReady,outputReady,exceptReady = select(self.interfaces,[],[],1)  #wait for data in interfaces list
+			time.sleep(0.020)
+			for s in inputReady:              
+				if s == self.TCPSock:
+					try:
+						self.buffer = self.readTCP(2048).decode()
+						self.logger.debug(self.moduleName + " stream received: "+self.buffer)
+						if self.moduleName == "Julabo":
+							return self.buffer[:-2]
+						elif self.moduleName == "CAENController":
+							return self.buffer[8:]
+						elif self.moduleName == "FNALBox":
+							reply= reply + self.buffer
+							if reply[-1:]=="]":
+								return reply
+							else:
+								self.logger.debug(self.moduleName + ": partial reply ending with :"+reply[-2:] +". trying to catch the rest.") 
+								max_iter-=1
+						else:
+							return self.buffer
+					except Exception as e:
+						self.logger.error(e)
+						self.is_connected = False
+				else:
+					self.logger.error(self.moduleName + ": UNKNOWN SOCKET TYPE")
+					return "TCP error" 
+			if self.moduleName == "CAENController" or self.moduleName == "Julabo": 
+				self.logger.warning(self.moduleName + ": no reply")
+				return "None"   
+		self.logger.warning(self.moduleName + ": no or incomplete reply")
 		return "None"   
 		
 	def sendTCP(self,message):
