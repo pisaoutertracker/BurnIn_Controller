@@ -759,24 +759,29 @@ class BurnIn_Worker(QObject):
 		PopUp=False
 		
 		#lock magnet
-		if not self.BI_Action(Action=self.Ctrl_SetLock_Cmd,abort_if_fail=True,True,PopUp):
+		if not self.BI_Action(self.Ctrl_SetLock_Cmd,True,True,PopUp):
 			return
 			
-		#start high flow	
-		if not self.BI_Action(Action=self.Ctrl_SetHighFlow_Cmd,abort_if_fail=True,,True, True,PopUp):
-			return
+		#start high flow if needed
+		try:
+			dp = float(self.SharedDict["Ctrl_IntDewPoint"].text())
+		except Exception as e:
+			dp=0.0
+		if dp < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="LOW":
+			if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True, True,PopUp):
+				return
 			
 		#sel SP	
-		if not self.BI_Action(Action=self.Ctrl_SelSp_Cmd,abort_if_fail=True,0,PopUp):
+		if not self.BI_Action(self.Ctrl_SelSp_Cmd,True,0,PopUp):
 			return
 				
 		#start JULABO	
-		if not self.BI_Action(Action=self.Ctrl_PowerJulabo_Cmd,abort_if_fail=True,True,PopUp):
+		if not self.BI_Action(self.Ctrl_PowerJulabo_Cmd,True,True,PopUp):
 			return
 		
 		##start LV
 		self.SharedDict["BI_Action"].setText("Start LVs")
-		if not self.BI_Action(Action=self.Ctrl_PowerLV_Cmd,abort_if_fail=True,True,LV_Channel_list,PopUp):
+		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,True,LV_Channel_list,PopUp):
 			return
 		time.sleep(BI_SLEEP_AFTER_VSET)
 		
@@ -788,7 +793,7 @@ class BurnIn_Worker(QObject):
 		
 		#start HV
 		self.SharedDict["BI_Action"].setText("Start HVs")
-		if not self.BI_Action(Action=self.Ctrl_PowerHV_Cmd,abort_if_fail=True,True,HV_Channel_list,PopUp):
+		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,True,HV_Channel_list,PopUp):
 			return
 		
 		time.sleep(BI_SLEEP_AFTER_VSET)
@@ -819,11 +824,11 @@ class BurnIn_Worker(QObject):
 				self.logger.info("BI: runmping down...")
 				self.SharedDict["BI_Action"].setText("Cooling")
 				if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
-					if not self.BI_Action(Action=self.BI_GoLowTemp,abort_if_fail=True,session_dict,session_dict["LowTemp"]):
+					if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["LowTemp"]):
 						self.logger.info("BI: cooling")
 						return
 				else:
-					if not self.BI_Action(Action=self.BI_GoHighTemp,abort_if_fail=True,session_dict,session_dict["LowTemp"]):
+					if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["LowTemp"]):
 						return
 				session_dict["Action"]="ColdTest"
 				
@@ -832,7 +837,7 @@ class BurnIn_Worker(QObject):
 				self.logger.info("BI: testing...")
 				self.SharedDict["BI_Action"].setText("Cold Module test")
 				self.SharedDict["BI_TestActive"]=True
-				if not self.BI_Action(Action=self.BI_StartTest_Cmd,abort_if_fail=False,session_dict):
+				if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
 						return
 				self.SharedDict["BI_TestActive"]=False
 				session_dict["Action"]="RampUp"
@@ -843,10 +848,10 @@ class BurnIn_Worker(QObject):
 				self.SharedDict["BI_Action"].setText("Heating")
 				if float(self.SharedDict["LastFNALBoxTemp0"].text()) < session_dict["HighTemp"]:  #expected
 					self.logger.info("BI: heating")
-					if not self.BI_Action(Action=self.BI_GoHighTemp,abort_if_fail=True,session_dict,session_dict["HighTemp"]):
+					if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["HighTemp"]):
 						return
 				else:
-					if not self.BI_Action(Action=self.BI_GoLowTemp,abort_if_fail=True,session_dict,session_dict["HighTemp"]):
+					if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["HighTemp"]):
 						return
 				session_dict["Action"]="HotTest"
 				
@@ -855,7 +860,7 @@ class BurnIn_Worker(QObject):
 				self.logger.info("BI: testing...")
 				self.SharedDict["BI_Action"].setText("Hot Module test")
 				self.SharedDict["BI_TestActive"]=True
-				if not self.BI_Action(Action=self.BI_StartTest_Cmd,abort_if_fail=False,session_dict):
+				if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
 						return
 				self.SharedDict["BI_TestActive"]=False
 			
@@ -874,7 +879,7 @@ class BurnIn_Worker(QObject):
 		
 		#stop HV
 		self.SharedDict["BI_Action"].setText("Stop HVs")
-		if not self.BI_Action(Action=self.Ctrl_PowerHV_Cmd,abort_if_fail=True,False,HV_Channel_list,PopUp):
+		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,False,HV_Channel_list,PopUp):
 			return
 		time.sleep(BI_SLEEP_AFTER_VSET)
 		#check HV stop
@@ -886,7 +891,7 @@ class BurnIn_Worker(QObject):
 		
 		#stop LV
 		self.SharedDict["BI_Action"].setText("Stop LVs")
-		if not self.BI_Action(Action=self.Ctrl_PowerLV_Cmd,abort_if_fail=True,False,LV_Channel_list,PopUp):
+		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,False,LV_Channel_list,PopUp):
 			return
 		time.sleep(BI_SLEEP_AFTER_VSET)
 		#check LV stop	
@@ -897,9 +902,14 @@ class BurnIn_Worker(QObject):
 				
 		#put JULABO to 20 degree	
 		self.SharedDict["BI_Action"].setText("Closing")
-		if not self.BI_Action(Action=self.Ctrl_SetSp_Cmd,abort_if_fail=True,0,20.0,PopUp):
+		if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,20.0,PopUp):
 			return	
 		
+		#lower dry air flow
+		if self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
+			if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True, False,PopUp):
+				return
+				
 		self.logger.info("BurnIn test COMPLETED SUCCESFULLY!")
 		self.SharedDict["BI_Active"]=False
 		self.SharedDict["BI_Status"].setText("Idle")
@@ -968,14 +978,24 @@ class BurnIn_Worker(QObject):
 				last_step = True
 			else:
 				nextTemp = dewPoint
-				self.logger.info("BI: target low temp below dew point, going to dewPoint...")
+				self.logger.info("BI: target low temp below dew point, going to dewPoint and rising flow...")
+				if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True, True,PopUp):
+					return
+				
 			
-			if not self.BI_Action(Action=self.Ctrl_SetSp_Cmd,abort_if_fail=True,0,nextTemp,PopUp):
+			if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,nextTemp,PopUp):
 				self.last_op_ok= False
 				return	
 				
 			while(True):
 				try:
+					dewPoint = float(self.SharedDict["Ctrl_IntDewPoint"].text())
+					if dewpoint < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
+						if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,False,PopUp):
+							return
+					elif self.SharedDict["Ctrl_StatusFlow"].text()=="LOW":
+						if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
+							return
 					if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-(nextTemp+TempRampOffset)) < TempTolerance):
 						break
 					if self.SharedDict["BI_StopRequest"]:
@@ -991,7 +1011,7 @@ class BurnIn_Worker(QObject):
 			
 		# set target temperature mantain
 		self.logger.info("BI: keep temperature ....")
-		if not self.BI_Action(Action=self.Ctrl_SetSp_Cmd,abort_if_fail=True,0,LowTemp-TempMantainOffset,PopUp):
+		if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,LowTemp-TempMantainOffset,PopUp):
 			self.last_op_ok= False
 			return
 	
@@ -1007,13 +1027,20 @@ class BurnIn_Worker(QObject):
 		
 		nextTemp=HighTemp+TempMantainOffset
 		
-		if not self.BI_Action(Action=self.Ctrl_SetSp_Cmd,abort_if_fail=True,0,nextTemp,PopUp):
+		if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,nextTemp,PopUp):
 			self.last_op_ok= False
 			return	
 		
 		self.logger.info("BI: heating....")	
 		while(True):
 			try:
+				dewPoint = float(self.SharedDict["Ctrl_IntDewPoint"].text())
+				if dewpoint < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
+					if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,False,PopUp):
+						return
+				elif self.SharedDict["Ctrl_StatusFlow"].text()=="LOW":
+					if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
+						return
 				if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-HighTemp) < TempTolerance):
 					break
 				if self.SharedDict["BI_StopRequest"]:
