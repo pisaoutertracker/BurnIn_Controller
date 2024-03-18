@@ -782,6 +782,7 @@ class BurnIn_Worker(QObject):
 		##start LV
 		self.SharedDict["BI_Action"].setText("Start LVs")
 		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,True,LV_Channel_list,PopUp):
+
 			return
 		time.sleep(BI_SLEEP_AFTER_VSET)
 		
@@ -1064,6 +1065,7 @@ class BurnIn_Worker(QObject):
 	
 		with open("Session.json", "w") as outfile: 
 			json.dump(session_dict, outfile)
+
 
 	def BI_StartTest_Cmd(self, session_dict):
 			self.logger.info("Starting module test...")
