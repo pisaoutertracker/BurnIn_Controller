@@ -3,9 +3,10 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
 import time
-import datetime
+from datetime import datetime
 import subprocess
 from __Constant import *
+import json
 
 
 
@@ -16,13 +17,15 @@ from __Constant import *
 class BurnIn_Worker(QObject):
 
 	Request_msg = pyqtSignal(str,str)
+	Request_confirm_sig = pyqtSignal(str)
 	Request_input_dsb = pyqtSignal(str,float,float,float)
 	BI_terminated = pyqtSignal()
 	
-	UploadDB_sig = pyqtSignal()
+	BI_Update_GUI_sig = pyqtSignal(dict)
+	BI_Clear_Monitor_sig = pyqtSignal()
 
 	## Init function.
-	def __init__(self,configDict,logger, SharedDict, Julabo, FNALBox, CAENController):
+	def __init__(self,configDict,logger, SharedDict, Julabo, FNALBox, CAENController, DB_interface):
 
 	
 		super(BurnIn_Worker,self).__init__();
@@ -30,6 +33,7 @@ class BurnIn_Worker(QObject):
 		self.logger = logger
 		self.Julabo = Julabo
 		self.FNALBox = FNALBox
+		self.DB_interface = DB_interface
 		self.CAENController = CAENController
 		self.SharedDict = SharedDict
 		
@@ -87,6 +91,7 @@ class BurnIn_Worker(QObject):
 	# Control on cmd execution: none
 	@pyqtSlot(str)
 	def SendFNALBoxCmd(self,cmd):
+		self.logger.info("WORKER: Requesting lock on FNALBox")
 		self.FNALBox.lock.acquire()
 		self.logger.info("Sending FNALBox cmd "+cmd)
 		if not self.FNALBox.is_connected :
@@ -98,6 +103,7 @@ class BurnIn_Worker(QObject):
 		else:	
 			self.last_op_ok= False	
 		self.FNALBox.lock.release()
+		self.logger.info("WORKER: lock on FNALBox released")
 		
 	## Function to start a test
 	# implemented as a is a Pyqt slot
@@ -485,7 +491,7 @@ class BurnIn_Worker(QObject):
 					ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_NAME_COL).text()
 					if (ch_name == "?"):
 						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
+						Reason_str = "Can't turn OFF LV for slot "+str(row+1)+ " beacause LV ch. name is UNKNOWN"
 						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
@@ -493,7 +499,7 @@ class BurnIn_Worker(QObject):
 					HV_defined = True if self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_NAME_COL).text() != "?" else False	
 					if (not switch) and  HV_defined and (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text() != "OFF"):  # attempt to power down LV with HV not off
 						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't turn OFF LV for slot "+str(row)+ " beacause HV is ON or UNKNOWN"
+						Reason_str = "Can't turn OFF LV for slot "+str(row+1)+ " beacause HV is ON or UNKNOWN"
 						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
@@ -539,14 +545,14 @@ class BurnIn_Worker(QObject):
 					ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_NAME_COL).text() 
 					if (ch_name == "?"):
 						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause HV ch. name is UNKNOWN"
+						Reason_str = "Can't turn OFF HV for slot "+str(row+1)+ " beacause HV ch. name is UNKNOWN"
 						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
 					if (switch) and (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text() != "ON"):  # attempt to power up HV with LV not on
 						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't turn OFF HV for slot "+str(row)+ " beacause LV is OFF or UNKNOWN"
+						Reason_str = "Can't turn OFF HV for slot "+str(row+1)+ " beacause LV is OFF or UNKNOWN"
 						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
@@ -597,20 +603,20 @@ class BurnIn_Worker(QObject):
 					ch_name = self.SharedDict["CAEN_table"].item(row,ColOffset).text() 
 					if (ch_name == "?"):
 						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't set LV for  slot "+str(row)+ " beacause LV ch. name is UNKNOWN"
+						Reason_str = "Can't set LV for  slot "+str(row+1)+ " beacause LV ch. name is UNKNOWN"
 						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
 					if (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_VSET_COL+ColOffset).text() == "?"): 
 						Warning_str = "Operation can't be performed"
-						Reason_str = "Can't set LV/HV for  slot "+str(row)+ " beacause current setpoint is UNKNOWN"
+						Reason_str = "Can't set LV/HV for  slot "+str(row+1)+ " beacause current setpoint is UNKNOWN"
 						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
 						return
 					self.SharedDict["WaitInput"]=True
-					Request_str="New " +VType+ " Slot "+str(row)
+					Request_str="New " +VType+ " Slot "+str(row+1)
 					ValueNow = 0.0
 					try :
 						ValueNow = float(self.SharedDict["CAEN_table"].item(row,2+ColOffset).text())
@@ -645,26 +651,83 @@ class BurnIn_Worker(QObject):
 	
 	## BI main function
 	# implemented as a is a Pyqt slot
-	@pyqtSlot(dict)			
-	def BI_Start_Cmd(self,BI_Options):
-		self.logger.info("Starting BurnIN...")
-		self.SharedDict["BI_Status"].setText("Running")
-		self.SharedDict["BI_Action"].setText("Setup")
-		self.SharedDict["BI_Cycle"].setText("1")
-		
-			
+	@pyqtSlot()			
+	def BI_Start_Cmd(self):
 	
-		TempTolerance= BI_TEMP_TOLERANCE
-		LowTemp				= BI_Options["LowTemp"]
-		TempRampOffset		= BI_Options["UnderRamp"]
-		TempMantainOffset	= BI_Options["UnderKeep"]
-		HighTemp			= BI_Options["HighTemp"]
-		NCycles				= BI_Options["NCycles"]
-		
 		self.SharedDict["BI_Active"]=True
+		self.logger.info("Starting BurnIN...")
 		
-		self.UploadDB_sig.emit()
+		#creating parameter dictionary for the current session
+		session_dict={}
+		session_dict["Action"]				= "Setup"
+		session_dict["Cycle"]				= 1
+		session_dict["LowTemp"]				= self.SharedDict["BI_LowTemp"]
+		session_dict["UnderRamp"]			= self.SharedDict["BI_UnderRamp"]
+		session_dict["UnderKeep"]			= self.SharedDict["BI_UnderKeep"]
+		session_dict["HighTemp"]			= self.SharedDict["BI_HighTemp"]
+		session_dict["NCycles"]				= self.SharedDict["BI_NCycles"]
+		session_dict["Operator"]			= self.SharedDict["BI_Operator"]
+		session_dict["Description"]			= self.SharedDict["BI_Description"]
+		session_dict["Session"]				= "-1"
+		session_dict["ActiveSlots"]			= self.SharedDict["BI_ActiveSlots"]
+		session_dict["ModuleIDs"]			= self.SharedDict["BI_ModuleIDs"]
+		session_dict["Dry"]					= self.SharedDict["BI_Dry"]
+		session_dict["Timestamp"]			= datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+		
+		
+		
+		#check if file session already exists (aka a session was stopped or crashed)
+		if (os.path.exists("Session.json")):
+			self.logger.info("Found session file.")
+			self.SharedDict["WaitInput"]=True
+			self.Request_confirm_sig.emit("Resume last session?")
+			while self.SharedDict["WaitInput"]:
+						time.sleep(0.1)
+			if self.SharedDict["Confirmed"]:
+				try:
+					with open('Session.json') as json_file:
+						session_dict={}
+						session_dict = json.load(json_file)
+						self.logger.info(session_dict)
+						#updating values in main GUI tab
+						self.BI_Update_GUI_sig.emit(session_dict)
+						self.logger.info("BI :Previous session parameters loaded")
+						self.logger.info("Current Session: "+session_dict["Session"])
+						self.logger.info("Current Cycle: "+str(session_dict["Cycle"]))
+						self.logger.info("Recovery status: "+session_dict["Action"])
+						
+				except Exception as e:
+					self.logger.error(e)
+					self.logger.error("BI :Error reloading session parameters from Json file")
+					self.BI_Abort("Error while recovering session info. Please start new session")
+					return
+			else:
+				self.logger.info("Prevoius session overrided. Starting new session")
+				self.BI_Update_Status_file(session_dict)
+				self.DB_interface.StartSesh(session_dict)
+				self.BI_Clear_Monitor_sig.emit()
+
+		else:
+			self.logger.info("No session file found. Starting new BurnIn session")
+			self.BI_Update_Status_file(session_dict)
+			self.DB_interface.StartSesh(session_dict)
+			self.BI_Clear_Monitor_sig.emit()
+
+		self.SharedDict["TestSession"]=session_dict["Session"]
+		
+		
+		# starting setup/recovery procedure
+		
+		if (session_dict["Action"]=="Setup"):
+			self.SharedDict["BI_Status"].setText("Setup")
+		else:
+			self.SharedDict["BI_Status"].setText("Recovery")
 			
+		self.SharedDict["BI_Action"].setText("Setup")
+		self.SharedDict["BI_Cycle"].setText(str(session_dict["Cycle"])+" of "+str(session_dict["NCycles"]))
+					
+		
+		#checking sub-system information
 			
 		if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
 			self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
@@ -674,6 +737,8 @@ class BurnIn_Worker(QObject):
 			return
 		self.logger.info("BurnIn test started...")
 		
+		#selecting slots under test : LV/HV names defined && slot marked as active in BI tab
+		
 		LV_Channel_list=[]
 		HV_Channel_list=[]
 		Slot_list=[]
@@ -681,7 +746,7 @@ class BurnIn_Worker(QObject):
 		for row in range(NUM_BI_SLOTS):
 			LV_ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_NAME_COL).text()
 			HV_ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_NAME_COL).text() 
-			if (LV_ch_name != "?" and HV_ch_name != "?" and BI_Options["ActiveSlots"][row]):
+			if (LV_ch_name != "?" and HV_ch_name != "?" and session_dict["ActiveSlots"][row]):
 				LV_Channel_list.append(LV_ch_name)
 				HV_Channel_list.append(HV_ch_name)
 				Slot_list.append(row)
@@ -734,47 +799,78 @@ class BurnIn_Worker(QObject):
 				return
 			
 		
-		self.SharedDict["BI_Status"].setText("Cycling")	
-		for cycle in range (NCycles):
-			self.logger.info("BI: starting cycle "+str(cycle+1) + " of "+str(NCycles))
-			self.SharedDict["BI_Cycle"].setText(str(cycle)+"/"+str(NCycles))
+		self.SharedDict["BI_Status"].setText("Cycling")
+
+		cycle=session_dict["Cycle"]-1
+		NCycles	= session_dict["NCycles"]
+		######mess start
+		if (session_dict["Action"]=="Setup"):
+			session_dict["Action"]="RampDown"
+		else:
+			self.logger.info("BI: recovered from cycle "+str(cycle+1) + " of "+str(NCycles))
 		
-			# ramp down
-			self.logger.info("BI: runmping down...")
-			self.SharedDict["BI_Action"].setText("Cooling")
-			if not self.BI_Action(self.BI_GoLowTemp,BI_Options):
-				return
-			
-			#do test here...
-			self.logger.info("BI: keep temperature ....")
-			self.logger.info("BI: testing...")
-			self.SharedDict["BI_Action"].setText("Module test")
-			self.MT_StartTest_Cmd(False,False)
-			
-			
-			self.logger.info("BI: going to high temp")
-			self.SharedDict["BI_Action"].setText("Heating")
-			if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,HighTemp):
-				return
+		while(cycle < NCycles):
+			if (session_dict["Action"]=="RampDown"):
+				session_dict["Cycle"]=cycle+1
+				self.BI_Update_Status_file(session_dict)
+				self.logger.info("BI: starting cycle "+str(cycle+1) + " of "+str(NCycles))
 				
-			while (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-HighTemp) > TempTolerance):
-				if self.SharedDict["BI_StopRequest"]:
-					self.BI_Abort("BI aborted: user request")
-					return	
-				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
-					self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
-					return
-				time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
+				self.SharedDict["BI_Cycle"].setText(str(cycle+1)+"/"+str(NCycles))
+				self.logger.info("BI: runmping down...")
+				self.SharedDict["BI_Action"].setText("Cooling")
+				if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
+					if not self.BI_Action(self.BI_GoLowTemp,session_dict,session_dict["LowTemp"]):
+						self.logger.info("BI: cooling")
+						return
+				else:
+					if not self.BI_Action(self.BI_GoHighTemp,session_dict,session_dict["LowTemp"]):
+						return
 				
+				session_dict["Action"]="ColdTest"
+				
+			if (session_dict["Action"]=="ColdTest"):
+				self.BI_Update_Status_file(session_dict)
+				self.logger.info("BI: testing...")
+				self.SharedDict["BI_Action"].setText("Cold Module test")
+				self.SharedDict["BI_TestActive"]=True
+				self.BI_StartTest_Cmd(session_dict["Dry"])
+				self.SharedDict["BI_TestActive"]=False
+				session_dict["Action"]="RampUp"
+				
+			if (session_dict["Action"]=="RampUp"):
+				self.BI_Update_Status_file(session_dict)
+				self.logger.info("BI: going to high temp")
+				self.SharedDict["BI_Action"].setText("Heating")
+				if float(self.SharedDict["LastFNALBoxTemp0"].text()) < session_dict["HighTemp"]:  #expected
+					self.logger.info("BI: heating")
+					if not self.BI_Action(self.BI_GoHighTemp,session_dict,session_dict["HighTemp"]):
+						return
+				else:
+					if not self.BI_Action(self.BI_GoLowTemp,session_dict,session_dict["HighTemp"]):
+						return
+				session_dict["Action"]="HotTest"
+				
+			if (session_dict["Action"]=="HotTest"):
+				self.BI_Update_Status_file(session_dict)
+				self.logger.info("BI: testing...")
+				self.SharedDict["BI_Action"].setText("Hot Module test")
+				self.SharedDict["BI_TestActive"]=True
+				self.BI_StartTest_Cmd(session_dict["Dry"])
+				self.SharedDict["BI_TestActive"]=False
 			
-			self.logger.info("BI: testing...")
-			self.MT_StartTest_Cmd(False,False)
-			
-			self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
-			self.SharedDict["BI_ProgressBar"].setValue(cycle/NCycles*100)
-			
+				self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
+				#self.SharedDict["BI_ProgressBar"].setValue((cycle+1)/NCycles*100)
+				session_dict["Action"]="RampDown"
+				cycle=cycle+1
 		
-		self.SharedDict["BI_Status"].setText("Stopping")	
+		if (os.path.exists("Session.json")):		
+			os.remove("Session.json")
+			self.logger.info("BI: Session json file deleted")
+		else:
+			self.logger.info("BI: Could not locate session json file")
+		
+		self.SharedDict["BI_Status"].setText("Stopping")
+		
 		#stop HV
 		self.SharedDict["BI_Action"].setText("Stop HVs")
 		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,False,HV_Channel_list,PopUp):
@@ -798,16 +894,18 @@ class BurnIn_Worker(QObject):
 				self.BI_Abort("BI aborted: some HVs was not turned OFF")
 				return
 				
-		#stop JULABO	
+		#put JULABO to 20 degree	
 		self.SharedDict["BI_Action"].setText("Closing")
-		if not self.BI_Action(self.Ctrl_PowerJulabo_Cmd,False,PopUp):
-			return
+		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,20.0,PopUp):
+			return	
 		
 		self.logger.info("BurnIn test COMPLETED SUCCESFULLY!")
 		self.SharedDict["BI_Active"]=False
 		self.SharedDict["BI_Status"].setText("Idle")
 		self.SharedDict["BI_Action"].setText("None")
 		self.SharedDict["BI_StopRequest"]=False
+		if os.path.exists("Session.json"):
+			os.remove("Session.json")
 		self.BI_terminated.emit()
 	
 	## BI Abort function	
@@ -815,7 +913,7 @@ class BurnIn_Worker(QObject):
 	
 			Warning_str = "BURN IN test failed"
 			self.SharedDict["BI_Status"].setText("Aborted")
-			self.Request_msg.emit(Warning_str,Reason_str)
+			#self.Request_msg.emit(Warning_str,Reason_str)
 			self.SharedDict["BI_Active"]=False
 			self.SharedDict["BI_StopRequest"]=False
 			self.BI_terminated.emit()
@@ -826,22 +924,24 @@ class BurnIn_Worker(QObject):
 		retry=BI_ACTION_RETRIES
 		while retry:
 			Action(*args)
+			if self.SharedDict["BI_StopRequest"]:
+				self.BI_Abort("BI: aborted for user or Supervisor request")
+				return False
 			if not (self.last_op_ok):
 				self.logger.warning("BI: failed to do action...new try in 10 sec")
 				time.sleep(BI_ACTION_RETRY_SLEEP)
 				retry=retry-1
 			else:
 				return True
-		self.BI_Abort("BI: failed to do action (3 times)...aborting")
+		self.BI_Abort("BI: failed to do action ("+str(BI_ACTION_RETRIES)+" times)...aborting")
 		return False
 
 	## BI function to ramp down in temp
-	def BI_GoLowTemp(self,BI_Options):
+	def BI_GoLowTemp(self,session_dict,LowTemp):
 	
 		TempTolerance		= BI_TEMP_TOLERANCE
-		LowTemp			= BI_Options["LowTemp"]
-		TempRampOffset		= BI_Options["UnderRamp"]
-		TempMantainOffset	= BI_Options["UnderKeep"]
+		TempRampOffset		= session_dict["UnderRamp"]
+		TempMantainOffset	= session_dict["UnderKeep"]
 		
 		last_step=False
 		self.last_op_ok= True
@@ -868,14 +968,19 @@ class BurnIn_Worker(QObject):
 				self.last_op_ok= False
 				return	
 				
-			while (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-LowTemp) > TempTolerance):
-				if self.SharedDict["BI_StopRequest"]:
-					self.BI_Abort("BI aborted: user request")
-					return	
-				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
-					self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
-					return
-				time.sleep(10)	
+			while(True):
+				try:
+					if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-(nextTemp+TempRampOffset)) < TempTolerance):
+						break
+					if self.SharedDict["BI_StopRequest"]:
+						self.last_op_ok= False
+						return	
+					if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
+						self.last_op_ok= False
+						return
+					time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
+				except Exception as e:
+					pass
 			
 			
 		# set target temperature mantain
@@ -883,12 +988,67 @@ class BurnIn_Worker(QObject):
 		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,LowTemp-TempMantainOffset,PopUp):
 			self.last_op_ok= False
 			return
+	
+	## BI function to ramp up in temp
+	def BI_GoHighTemp(self,session_dict,HighTemp):
+	
+		TempTolerance		= BI_TEMP_TOLERANCE
+		TempRampOffset		= session_dict["UnderRamp"]
+		TempMantainOffset	= session_dict["UnderKeep"]
+		
+		self.last_op_ok= True
+		PopUp=False
+		
+		nextTemp=HighTemp+TempMantainOffset
+		
+		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,nextTemp,PopUp):
+			self.last_op_ok= False
+			return	
+		
+		self.logger.info("BI: heating....")	
+		while(True):
+			try:
+				if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-HighTemp) < TempTolerance):
+					break
+				if self.SharedDict["BI_StopRequest"]:
+					self.last_op_ok= False
+					return	
+				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
+					self.last_op_ok= False
+					return
+				time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
+			except Exception as e:
+				pass	
+			
+			
+		# set target temperature mantain
+		self.logger.info("BI: keep temperature ....")
+		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,HighTemp-TempMantainOffset,PopUp):
+			self.last_op_ok= False
+			return
 
+	def BI_Update_Status_file(self,session_dict):
+	
+		with open("Session.json", "w") as outfile: 
+			json.dump(session_dict, outfile)
 
-	@pyqtSlot(bool)				
-	def MT_StartTest_Cmd(self, dry=False, PopUp=True):
+	def BI_StartTest_Cmd(self, dry=False):
 			self.logger.info("Starting module test...")
-			if PopUp:
+			session=self.SharedDict["TestSession"]
+			if dry:
+				self.logger.info("Dry run. Just waiting 20 s.")
+				time.sleep(20)
+			else:
+				result = subprocess.run(["python3", "moduleTest.py", session],
+													cwd="/home/thermal/Ph2_ACF_docker/BurnIn_moduleTest")
+				self.logger.info(result.stdout)
+				self.logger.error(result.stderr)
+			self.logger.info("Module test completed!")			
+	
+	@pyqtSlot(bool)				
+	def MT_StartTest_Cmd(self, dry=False, PupUp=False):
+			self.logger.info("Starting module test...Please wait till completion")
+			if PupUp:
 				msg = QMessageBox()
 				msg.setWindowTitle("Module test ongoing. Please wait...")
 				msg.show()
@@ -903,6 +1063,6 @@ class BurnIn_Worker(QObject):
 			self.logger.error(result.stderr)
 			self.logger.info("Module test completed!")
 			
-			
+	
 	def MT_UploadDB_Cmd(self):
 		pass

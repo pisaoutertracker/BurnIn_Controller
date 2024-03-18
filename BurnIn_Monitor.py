@@ -21,7 +21,7 @@ class BurnIn_Monitor(QObject):
 		self.logger = logger
 		self.logger.info("MONITOR: Monitoring class initialized")
 		
-		self.MQTT =  MQTT_interface(configDict,logger)
+		self.MQTT =  MQTT_interface(configDict,logger,"BurnIn_monitor")
 		self.SharedDict = SharedDict
 		self.SharedDict = SharedDict
 		self.Julabo = Julabo
@@ -39,8 +39,8 @@ class BurnIn_Monitor(QObject):
 		self.logger.info("MONITOR: Attempting first connection to MQTT server...")
 		self.MQTT.connect()
 		if self.MQTT.is_connected :
-			self.SharedDict["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-			self.SharedDict["MQTTConn"].setText("Connected")
+			self.SharedDict["MQTTMConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+			self.SharedDict["MQTTMConn"].setText("Connected")
 			
 		while(1):		
 		
@@ -53,15 +53,15 @@ class BurnIn_Monitor(QObject):
 					self.logger.info("MONITOR: Attempting first connection to MQTT server...")
 					self.MQTT.connect()
 					if self.MQTT.is_connected :
-						self.SharedDict["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-						self.SharedDict["MQTTConn"].setText("Connected")
+						self.SharedDict["MQTTMConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+						self.SharedDict["MQTTMConn"].setText("Connected")
 				else:
 					if self.MQTT.is_connected :
-						self.SharedDict["MQTTConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
-						self.SharedDict["MQTTConn"].setText("Connected")
+						self.SharedDict["MQTTMConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
+						self.SharedDict["MQTTMConn"].setText("Connected")
 					else:
-						self.SharedDict["MQTTConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
-						self.SharedDict["MQTTConn"].setText("Disconnected")
+						self.SharedDict["MQTTMConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+						self.SharedDict["MQTTMConn"].setText("Disconnected")
 				
 				if (self.MQTT.LastCAENMessageTS != "NEVER"):
 					try:
@@ -320,22 +320,23 @@ class BurnIn_Monitor(QObject):
                                 
 							for i in range(NUM_BI_SLOTS):
 								self.SharedDict["LastFNALBoxOW"+str(i)].setText(reply_list[i+FNAL_OW_OFFSET][1:])
-								self.MQTT_FNALBox_dict["OW"+str(i)]=float(reply_list[i+FNAL_OW_OFFSET][1:])
-							self.SharedDict["LastFNALBoxDP"].setText(reply_list[FNAL_DP_OFFSET][1:])
+								self.MQTT_FNALBox_dict["OW"+str((int)(i+1)).zfill(2)]=float(reply_list[i+FNAL_OW_OFFSET][1:])
 							self.MQTT_FNALBox_dict["DewPoint"]=float(reply_list[FNAL_DP_OFFSET][1:])
+							self.SharedDict["LastFNALBoxDP"].setText(reply_list[FNAL_DP_OFFSET][1:])
 							self.SharedDict["Ctrl_IntDewPoint"].setText(reply_list[FNAL_DP_OFFSET][1:])
 							
 							IntTemp_arr = [float(self.SharedDict["LastFNALBoxTemp1"].text()),float(self.SharedDict["LastFNALBoxTemp0"].text())]
 							for i in range (NUM_BI_SLOTS):
 								IntTemp_arr.append(float(self.SharedDict["LastFNALBoxOW"+str(i)].text())) 
 							self.SharedDict["Ctrl_LowerTemp"] = min(IntTemp_arr)
+							self.SharedDict["Ctrl_HigherTemp"] = max(list(filter(MAX_VALID_TEMP.__gt__,IntTemp_arr)))
 						except Exception as e:
 							self.logger.warning("MONITOR: error splitting FNAL reply "+reply)
 							self.FNALBoxCycleOK = False
 					self.SharedDict["LastFNALBoxMsgTS"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 				else:
 					self.FNALBoxCycleOK = False
-					self.SharedDict["FNALConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
+					self.SharedDict["FNALConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ")
 					self.SharedDict["FNALConn"].setText("Disconnected")
 				self.FNALBox.lock.release()
 				self.logger.debug("MONITOR: FNAL lock released")	
@@ -360,6 +361,11 @@ class BurnIn_Monitor(QObject):
 				self.SharedDict["Time_arr"].append(time.time())
 				self.SharedDict["DewPoint_arr"].append(float(self.SharedDict["Ctrl_IntDewPoint"].text()))
 				self.SharedDict["Temp_arr"].append(float(self.SharedDict["LastFNALBoxTemp0"].text()))
+				
+				if self.SharedDict["BI_TestActive"]:
+					self.SharedDict["TimeTest_arr"].append(time.time())
+					self.SharedDict["TempTest_arr"].append(float(self.SharedDict["LastFNALBoxTemp0"].text()))
+					
 				
 				try:
 					self.SharedDict["Targ_arr"].append(float(self.SharedDict["Ctrl_TargetTemp"].text()))
