@@ -1032,7 +1032,6 @@ class BurnIn_Worker(QObject):
 		with open("Session.json", "w") as outfile: 
 			json.dump(session_dict, outfile)
 
-
 	def BI_StartTest_Cmd(self, dry=False):
 			self.logger.info("Starting module test...")
 			session=self.SharedDict["TestSession"]

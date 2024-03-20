@@ -433,6 +433,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		#BI tab
 		self.BI_Stop_btn.clicked.connect(self.BI_Stop_Cmd)
 		self.BI_Start_btn.clicked.connect(self.BI_Start_Cmd)
+		self.BI_LoadSesh_btn.clicked.connect(self.BI_FillFromDB)
+		self.BI_LoadLast_btn.clicked.connect(self.BI_FillFromLast)
+
 		#menu actions
 		self.actionExit.triggered.connect(self.close)
 		self.actionExpert.triggered.connect(self.expert)
@@ -578,7 +581,31 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.logger.info("BURN IN stop request issued")
 		else:
 			self.logger.info("NO Burn In test ongoing. Request cancelled")
-			
+
+
+	def BI_FillFromDB(self, useLast=False):
+		if useLast==True:
+			with open('./lastSession.txt', 'r') as f:
+				targetSession=str(f.read()).strip()
+		else:
+			targetSession=self.BI_TargetSesh_line.text()
+		print("Getting session %s"%targetSession)
+		session_fromDB=databaseTools.getSessionFromDB(sessionName=targetSession)
+		self.logger.info("Filling BI fields from session %s."%targetSession)
+		#only fill basic info, description and number of cycles must be added by operator
+		self.BI_Operator_line.setText(session_fromDB["operator"])
+		self.BI_LowTemp_dsb.setValue(session_fromDB["temperatures"]["low"])
+		self.BI_HighTemp_dsb.setValue(session_fromDB["temperatures"]["high"])
+		for i in range(10):
+			if session_fromDB["modulesList"][i]=="":
+				self.Module_cbs[i].setChecked(False)
+			else:
+				self.Module_cbs[i].setChecked(True)
+				self.ModuleId_btns[i].setText(session_fromDB["modulesList"][i])
+
+	def BI_FillFromLast(self):
+		 self.BI_FillFromDB(useLast=True)
+        		
 	def Supervisor_BI_Stop(self):
 		self.logger.info("Supervisor request BurnIn tst ot be stopped...")
 		if self.SharedDict["BI_Active"]:
@@ -617,14 +644,14 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 				"low": self.BI_LowTemp_dsb.value(),
         			"high": self.BI_HighTemp_dsb.value(),
                 	},                        
-#			"configuration": [""]*10,
+                        "nCycles": self.BI_NCycles_sb.value(),
+#                        "status": "Open" #to be implemented
 			"modulesList": [],
                 }
 
                 #omit disabled modules
 		for i in range(10):
 			if self.Module_cbs[i].isChecked()==False:
-#				session["configuration"][i]=""
                                 session["modulesList"].append("")
 			else:
 				session["modulesList"].append(self.ModuleId_btns[i].text()),
@@ -639,11 +666,15 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.SharedDict["TestSession"]=self.TestSession
 			self.logger.info("Session timed out!")
 		else:
-			session_fromDB=databaseTools.getSessionFromDB(sessionName=uploadResponse)#default for testing
+			session_fromDB=databaseTools.getSessionFromDB(sessionName=uploadResponse)
 			self.TestSession=session_fromDB["sessionName"]
 			self.SharedDict["TestSession"]=self.TestSession
 			self.logger.info("Session started!")
 			pprint(session_fromDB)
+		#
+                #write down last locally run session for future use
+		with open('./lastSession.txt', 'w') as f:
+			f.write(str(self.TestSession))
 		#
 		self.Ctrl_SeshID_db.setText("Session ID: "+str(self.TestSession))
 		self.Ctrl_Operator_db.setText("Operator: "+session_fromDB["operator"])
@@ -651,17 +682,18 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_SeshDescription_db.setText("Session Description: "+session_fromDB["description"])
 		self.Ctrl_lowTemp_db.setText("Low Temp (C°): "+str(session_fromDB["temperatures"]["low"]))
 		self.Ctrl_hiTemp_db.setText("High Temp (C°): "+str(session_fromDB["temperatures"]["high"]))
-		self.Ctrl_Module00_tag.setText("Module 01: "+str(session_fromDB["modulesList"][0]))
-		self.Ctrl_Module01_tag.setText("Module 02: "+str(session_fromDB["modulesList"][1]))
-		self.Ctrl_Module02_tag.setText("Module 03: "+str(session_fromDB["modulesList"][2]))
-		self.Ctrl_Module03_tag.setText("Module 04: "+str(session_fromDB["modulesList"][3]))
-		self.Ctrl_Module04_tag.setText("Module 05: "+str(session_fromDB["modulesList"][4]))
-		self.Ctrl_Module05_tag.setText("Module 06: "+str(session_fromDB["modulesList"][5]))
-		self.Ctrl_Module06_tag.setText("Module 07: "+str(session_fromDB["modulesList"][6]))
-		self.Ctrl_Module07_tag.setText("Module 08: "+str(session_fromDB["modulesList"][7]))
-		self.Ctrl_Module08_tag.setText("Module 09: "+str(session_fromDB["modulesList"][8]))
-		self.Ctrl_Module09_tag.setText("Module 10: "+str(session_fromDB["modulesList"][9]))
-		
+
+		self.Ctrl_Module00_tag.setText("Module 00: "+str(session_fromDB["modulesList"][0]))
+		self.Ctrl_Module01_tag.setText("Module 01: "+str(session_fromDB["modulesList"][1]))
+		self.Ctrl_Module02_tag.setText("Module 02: "+str(session_fromDB["modulesList"][2]))
+		self.Ctrl_Module03_tag.setText("Module 03: "+str(session_fromDB["modulesList"][3]))
+		self.Ctrl_Module04_tag.setText("Module 04: "+str(session_fromDB["modulesList"][4]))
+		self.Ctrl_Module05_tag.setText("Module 05: "+str(session_fromDB["modulesList"][5]))
+		self.Ctrl_Module06_tag.setText("Module 06: "+str(session_fromDB["modulesList"][6]))
+		self.Ctrl_Module07_tag.setText("Module 07: "+str(session_fromDB["modulesList"][7]))
+		self.Ctrl_Module08_tag.setText("Module 08: "+str(session_fromDB["modulesList"][8]))
+		self.Ctrl_Module09_tag.setText("Module 09: "+str(session_fromDB["modulesList"][9]))
+
 	@pyqtSlot(str,str)
 	def Show_msg(self,warn_msg,rsn_msg):
 		self.logger.warning(warn_msg)
