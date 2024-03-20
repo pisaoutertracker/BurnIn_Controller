@@ -65,8 +65,9 @@ class DB_interface():
 			"temperatures": {
 				"low": session_dict["LowTemp"],
         			"high": session_dict["HighTemp"],
-                	},                        
-#			"configuration": [""]*10,
+                	},                         
+                        "nCycles": session_dict["NCycles"],
+#                        "status": "Open" #to be implemented
 			"modulesList": [],
                 }
 
