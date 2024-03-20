@@ -586,7 +586,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	def BI_FillFromDB(self, useLast=False):
 		if useLast==True:
 			with open('./lastSession.txt', 'r') as f:
-				targetSession=str(f.read())
+				targetSession=str(f.read()).strip()
 		else:
 			targetSession=self.BI_TargetSesh_line.text()
 		print("Getting session %s"%targetSession)
