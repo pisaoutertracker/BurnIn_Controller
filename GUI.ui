@@ -956,6 +956,7 @@
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
+                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -1358,6 +1359,7 @@
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
+                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -3001,52 +3003,52 @@
              </attribute>
              <row>
               <property name="text">
-               <string>Slot 0</string>
+               <string>Slot 01</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string>Slot 1</string>
+               <string>Slot 02</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string>Slot 2</string>
+               <string>Slot 03</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string>Slot 3</string>
+               <string>Slot 04</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string>Slot 4</string>
+               <string>Slot 05</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string>Slot 5</string>
+               <string>Slot 06</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string>Slot 6</string>
+               <string>Slot 07</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string>Slot 7</string>
+               <string>Slot 08</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string>Slot 8</string>
+               <string>Slot 09</string>
               </property>
              </row>
              <row>
               <property name="text">
-               <string>Slot 9</string>
+               <string>Slot 10</string>
               </property>
              </row>
              <column>
@@ -3373,7 +3375,7 @@
      <x>0</x>
      <y>0</y>
      <width>1125</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
