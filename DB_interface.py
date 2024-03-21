@@ -92,3 +92,5 @@ class DB_interface():
 			self.TestSession=session_fromDB["sessionName"]
 			session_dict["Session"]=self.TestSession
 			self.logger.info("DATABASE: Session loaded!")
+			with open('./lastSession.txt', 'w') as f:
+				f.write(str(self.TestSession))

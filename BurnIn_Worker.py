@@ -703,14 +703,14 @@ class BurnIn_Worker(QObject):
 					return
 			else:
 				self.logger.info("Prevoius session overrided. Starting new session")
-				self.BI_Update_Status_file(session_dict)
 				self.DB_interface.StartSesh(session_dict)
+				self.BI_Update_Status_file(session_dict)
 				self.BI_Clear_Monitor_sig.emit()
 
 		else:
 			self.logger.info("No session file found. Starting new BurnIn session")
-			self.BI_Update_Status_file(session_dict)
 			self.DB_interface.StartSesh(session_dict)
+			self.BI_Update_Status_file(session_dict)
 			self.BI_Clear_Monitor_sig.emit()
 
 		self.SharedDict["TestSession"]=session_dict["Session"]

@@ -671,10 +671,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.SharedDict["TestSession"]=self.TestSession
 			self.logger.info("Session started!")
 			pprint(session_fromDB)
-		#
-                #write down last locally run session for future use
-		with open('./lastSession.txt', 'w') as f:
-			f.write(str(self.TestSession))
+			with open('./lastSession.txt', 'w') as f:
+				f.write(str(self.TestSession))
 		#
 		self.Ctrl_SeshID_db.setText("Session ID: "+str(self.TestSession))
 		self.Ctrl_Operator_db.setText("Operator: "+session_fromDB["operator"])
