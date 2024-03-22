@@ -1039,8 +1039,8 @@ class BurnIn_Worker(QObject):
 				self.logger.info("Dry run. Just waiting 20 s.")
 				time.sleep(20)
 			else:
-				result = subprocess.run(["python3", "moduleTest.py", session],
-													cwd="/home/thermal/Ph2_ACF_docker/BurnIn_moduleTest")
+				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0,1" ,"--module", "PS_26_05-IPG_00102,PS_26_05-IBA_00102",  "--session", session],
+													cwd="/home/thermal/BurnIn_moduleTest_v4-22")
 				self.logger.info(result.stdout)
 				self.logger.error(result.stderr)
 			self.logger.info("Module test completed!")			
@@ -1054,11 +1054,11 @@ class BurnIn_Worker(QObject):
 				msg.show()
 			session=self.SharedDict["TestSession"]
 			if dry:
-				result = subprocess.run(["python3", "moduleTest.py", session, "--useExistingModuleTest","T2023_12_04_16_26_11_224929"],
-													cwd="/home/thermal/Ph2_ACF_docker/BurnIn_moduleTest")
+				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0,1" ,"--module", "PS_26_05-IPG_00102,PS_26_05-IBA_00102",  "--session", session, "--useExistingModuleTest","T2023_12_04_16_26_11_224929"],
+													cwd="/home/thermal/BurnIn_moduleTest_v4-22")
 			else:
-				result = subprocess.run(["python3", "moduleTest.py", session],
-													cwd="/home/thermal/Ph2_ACF_docker/BurnIn_moduleTest")
+				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0,1" ,"--module", "PS_26_05-IPG_00102,PS_26_05-IBA_00102",  "--session", session],
+													cwd="/home/thermal/BurnIn_moduleTest_v4-22")
 			self.logger.info(result.stdout)
 			self.logger.error(result.stderr)
 			self.logger.info("Module test completed!")
