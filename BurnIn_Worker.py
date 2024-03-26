@@ -37,6 +37,11 @@ class BurnIn_Worker(QObject):
 		self.CAENController = CAENController
 		self.SharedDict = SharedDict
 		
+		self.BIcwd = configDict.get(("BItest","cwd"),"NOKEY")
+		if self.BIcwd == "NOKEY":
+			self.BIcwd = "/home/thermal/BurnIn_moduleTest_v4-22"
+			self.logger.warning("cwd directory parameter not found. Using default")
+		
 		self.logger.info("Worker class initialized")
 		self.last_op_ok= True
 		
@@ -673,6 +678,8 @@ class BurnIn_Worker(QObject):
 		session_dict["ModuleIDs"]			= self.SharedDict["BI_ModuleIDs"]
 		session_dict["Dry"]					= self.SharedDict["BI_Dry"]
 		session_dict["Timestamp"]			= datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+		session_dict["fc7Id"]				= "fc7ot2"
+		session_dict["fc7Slot"]				= "0"
 		
 		
 		
@@ -837,8 +844,11 @@ class BurnIn_Worker(QObject):
 				self.logger.info("BI: testing...")
 				self.SharedDict["BI_Action"].setText("Cold Module test")
 				self.SharedDict["BI_TestActive"]=True
-				if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
-						return
+				for slot in Slot_list:
+					self.logger.info("BI: testing BI slot "+str(Slot_list))
+					
+					if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
+							return
 				self.SharedDict["BI_TestActive"]=False
 				session_dict["Action"]="RampUp"
 				
@@ -1079,7 +1089,7 @@ class BurnIn_Worker(QObject):
 				#create non-blocking process
 				try:
 					proc = subprocess.Popen(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0,1" ,"--module", "PS_26_05-IPG_00102,PS_26_05-IBA_00102",  "--session", session],
-														cwd="/home/thermal/BurnIn_moduleTest_v4-22",stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+														cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 					while(proc.returnCode==None):
 						
 						if self.SharedDict["BI_StopRequest"]:
@@ -1115,10 +1125,10 @@ class BurnIn_Worker(QObject):
 			session=self.SharedDict["TestSession"]
 			if dry:
 				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0,1" ,"--module", "PS_26_05-IPG_00102,PS_26_05-IBA_00102",  "--session", session, "--useExistingModuleTest","T2023_12_04_16_26_11_224929"],
-													cwd="/home/thermal/BurnIn_moduleTest_v4-22")
+													cwd=self.BIcwd)
 			else:
 				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0,1" ,"--module", "PS_26_05-IPG_00102,PS_26_05-IBA_00102",  "--session", session],
-													cwd="/home/thermal/BurnIn_moduleTest_v4-22")
+													cwd=self.BIcwd)
 			self.logger.info(result.stdout)
 			self.logger.error(result.stderr)
 			self.logger.info("Module test completed!")

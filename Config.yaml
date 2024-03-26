@@ -19,5 +19,7 @@ DB:
  Addr: "192.168.0.45"
  Port: "5000"
 Supervisor:
- Enabled: "True" 
+ Enabled: "True"
+BITest:
+ cwd: "/home/thermal/BurnIn_moduleTest_v4-22"
  

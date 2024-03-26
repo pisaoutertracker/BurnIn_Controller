@@ -73,6 +73,22 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.HVNames[7]="HV008"
 		self.HVNames[8]="HV009"
 		self.HVNames[9]="HV010"
+	
+		self.FC7IDs=["?"] * 10
+		self.FC7IDs[0]="fc7ot2"
+		self.FC7IDs[1]="fc7ot2"
+		self.FC7IDs[2]="fc7ot2"
+		self.FC7IDs[3]="fc7ot2"
+		self.FC7IDs[4]="fc7ot2"
+		self.FC7IDs[5]="fc7ot2"
+		self.FC7IDs[6]="fc7ot2"
+		self.FC7IDs[7]="fc7ot2"
+		self.FC7IDs[8]="fc7ot2"
+		self.FC7IDs[9]="fc7ot2"
+	
+		self.FC7Slots=["?"] * 10
+		self.FC7Slots[0]="0"
+		self.FC7Slots[1]="1"
 		
 		self.initUI()
 		
