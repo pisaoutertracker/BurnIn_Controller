@@ -1104,7 +1104,7 @@ class BurnIn_Worker(QObject):
 				try:
 					proc = subprocess.Popen(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session],
 														cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-					while(proc.returnCode==None):
+					while(proc.returncode==None):
 						
 						if self.SharedDict["BI_StopRequest"]:
 							self.logger.error("WORKER: Aborting module test on external request")
@@ -1118,10 +1118,10 @@ class BurnIn_Worker(QObject):
 							self.logger.info("BI TEST SUBPROCESS: "+outs)
 							self.logger.error("BI TEST SUBPROCESS: "+errs)
 					
-					if proc.returnCode ==0:
-						self.logger.info("Module test succesfully completed with exit code "+proc.returnCode)
+					if proc.returncode ==0:
+						self.logger.info("Module test succesfully completed with exit code "+proc.returncode)
 					else:
-						self.logger.error("Module test failed with exit code "+proc.returnCode)
+						self.logger.error("Module test failed with exit code "+proc.returncode)
 						self.last_op_ok= False
 						
 				except Exception as e:
