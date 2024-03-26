@@ -1094,6 +1094,9 @@ class BurnIn_Worker(QObject):
 			self.logger.info("Starting module test...")
 			session=self.SharedDict["TestSession"]
 			dry = session_dict["Dry"]
+			fc7Slot = session_dict["fc7Slot"]
+			fc7ID = session_dict["fc7ID"]
+			module = session_dict["Current_ModuleID"]
 			self.last_op_ok= True
 			if dry:
 				self.logger.info("Dry run. Just waiting 20 s.")
@@ -1102,8 +1105,11 @@ class BurnIn_Worker(QObject):
 			else:
 				#create non-blocking process
 				try:
-					proc = subprocess.Popen(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session],
-														cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+					proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session],
+														cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+														
+					for line in iter(proc.stdout.readline, b''):
+						print(">>> " + line.rstrip())
 					while(proc.returncode==None):
 						
 						if self.SharedDict["BI_StopRequest"]:
