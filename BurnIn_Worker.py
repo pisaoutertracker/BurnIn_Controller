@@ -1012,7 +1012,7 @@ class BurnIn_Worker(QObject):
 					if dewPoint < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
 						if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,False,PopUp):
 							return
-					elif self.SharedDict["Ctrl_StatusFlow"].text()=="LOW":
+					elif dewPoint > BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()!="HIGH":
 						if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
 							return
 					if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-(nextTemp+TempRampOffset)) < TempTolerance):
@@ -1059,7 +1059,7 @@ class BurnIn_Worker(QObject):
 				if dewPoint < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
 					if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,False,PopUp):
 						return
-				elif self.SharedDict["Ctrl_StatusFlow"].text()=="LOW":
+				elif dewPoint > BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()!="HIGH":
 					if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
 						return
 				if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-HighTemp) < TempTolerance):
@@ -1115,8 +1115,8 @@ class BurnIn_Worker(QObject):
 							outs, errs = proc.communicate(timeout=TEST_PROCESS_SLEEP)
 						except subprocess.TimeoutExpired:
 							self.logger.info("WORKER: Waiting test completion....")
-							self.logger.info("BI TEST SUBPROCESS: "+outs)
-							self.logger.error("BI TEST SUBPROCESS: "+errs)
+							#self.logger.info("BI TEST SUBPROCESS: "+outs)
+							#self.logger.error("BI TEST SUBPROCESS: "+errs)
 					
 					if proc.returncode ==0:
 						self.logger.info("Module test succesfully completed with exit code "+proc.returncode)
@@ -1125,7 +1125,7 @@ class BurnIn_Worker(QObject):
 						self.last_op_ok= False
 						
 				except Exception as e:
-					self.logger.error("WORKER: "+str(e))
+					self.logger.error(e)
 					self.last_op_ok= False
 							
 	
