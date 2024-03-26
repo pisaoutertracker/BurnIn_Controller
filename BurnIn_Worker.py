@@ -775,7 +775,7 @@ class BurnIn_Worker(QObject):
 			dp = float(self.SharedDict["Ctrl_IntDewPoint"].text())
 		except Exception as e:
 			dp=0.0
-		if dp > BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="LOW":
+		if dp > BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()!="HIGH":
 			if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True, True,PopUp):
 				return
 			
@@ -1113,7 +1113,7 @@ class BurnIn_Worker(QObject):
 							return
 						try:
 							outs, errs = proc.communicate(timeout=TEST_PROCESS_SLEEP)
-						except TimeoutExpired:
+						except subprocess.TimeoutExpired:
 							self.logger.info("WORKER: Waiting test completion....")
 							self.logger.info("BI TEST SUBPROCESS: "+outs)
 							self.logger.error("BI TEST SUBPROCESS: "+errs)
