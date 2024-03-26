@@ -775,7 +775,7 @@ class BurnIn_Worker(QObject):
 			dp = float(self.SharedDict["Ctrl_IntDewPoint"].text())
 		except Exception as e:
 			dp=0.0
-		if dp < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="LOW":
+		if dp > BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="LOW":
 			if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True, True,PopUp):
 				return
 			
@@ -945,7 +945,7 @@ class BurnIn_Worker(QObject):
 			#self.Request_msg.emit(Warning_str,Reason_str)
 			self.SharedDict["BI_Active"]=False
 			self.SharedDict["BI_StopRequest"]=False
-			self.sharedDict["BI_TestActive"]=False
+			self.SharedDict["BI_TestActive"]=False
 			self.BI_terminated.emit()
 		
 	
