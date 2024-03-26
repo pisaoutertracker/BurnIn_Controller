@@ -1119,9 +1119,9 @@ class BurnIn_Worker(QObject):
 							#self.logger.error("BI TEST SUBPROCESS: "+errs)
 					
 					if proc.returncode ==0:
-						self.logger.info("Module test succesfully completed with exit code "+proc.returncode)
+						self.logger.info("Module test succesfully completed with exit code "+str(proc.returncode))
 					else:
-						self.logger.error("Module test failed with exit code "+proc.returncode)
+						self.logger.error("Module test failed with exit code "+str(proc.returncode))
 						self.last_op_ok= False
 						
 				except Exception as e:
