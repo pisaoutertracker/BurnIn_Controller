@@ -849,7 +849,7 @@ class BurnIn_Worker(QObject):
 					session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
 					session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
 					session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
-					self.logger.info("BI: testing BI slot "+str(Slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
+					self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
 					if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
 							return
 				self.SharedDict["BI_TestActive"]=False
@@ -877,7 +877,7 @@ class BurnIn_Worker(QObject):
 					session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
 					session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
 					session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
-					self.logger.info("BI: testing BI slot "+str(Slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
+					self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
 					if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
 							return
 				self.SharedDict["BI_TestActive"]=False
@@ -1007,8 +1007,9 @@ class BurnIn_Worker(QObject):
 				
 			while(True):
 				try:
+					self.logger.info("BI: cooling to target temp....")	
 					dewPoint = float(self.SharedDict["Ctrl_IntDewPoint"].text())
-					if dewpoint < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
+					if dewPoint < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
 						if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,False,PopUp):
 							return
 					elif self.SharedDict["Ctrl_StatusFlow"].text()=="LOW":
@@ -1024,7 +1025,9 @@ class BurnIn_Worker(QObject):
 						return
 					time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
 				except Exception as e:
-					pass
+					self.logger.error(e)
+					self.last_op_ok= False
+					return
 			
 			
 		# set target temperature mantain
@@ -1048,12 +1051,12 @@ class BurnIn_Worker(QObject):
 		if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,nextTemp,PopUp):
 			self.last_op_ok= False
 			return	
-		
-		self.logger.info("BI: heating....")	
+			
 		while(True):
 			try:
+				self.logger.info("BI: heating to target temp....")	
 				dewPoint = float(self.SharedDict["Ctrl_IntDewPoint"].text())
-				if dewpoint < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
+				if dewPoint < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
 					if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,False,PopUp):
 						return
 				elif self.SharedDict["Ctrl_StatusFlow"].text()=="LOW":
@@ -1069,12 +1072,15 @@ class BurnIn_Worker(QObject):
 					return
 				time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
 			except Exception as e:
-				pass	
+				self.logger.error(e)
+				self.last_op_ok= False
+				return
+				
 			
 			
 		# set target temperature mantain
 		self.logger.info("BI: keep temperature ....")
-		if not self.BI_Action(self.Ctrl_SetSp_Cmd,0,HighTemp-TempMantainOffset,PopUp):
+		if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,HighTemp-TempMantainOffset,PopUp):
 			self.last_op_ok= False
 			return
 
@@ -1119,7 +1125,7 @@ class BurnIn_Worker(QObject):
 						self.last_op_ok= False
 						
 				except Exception as e:
-					self.logger.error("WORKER: "+e)
+					self.logger.error("WORKER: "+str(e))
 					self.last_op_ok= False
 							
 	
