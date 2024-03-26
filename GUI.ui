@@ -218,7 +218,7 @@
                  <item row="2" column="3">
                   <widget class="QPushButton" name="BI_Mod1ID_btn">
                    <property name="text">
-                    <string>Module ID 02</string>
+                    <string>PS_26_05-IBA_00102</string>
                    </property>
                   </widget>
                  </item>
@@ -239,7 +239,7 @@
                  <item row="1" column="3">
                   <widget class="QPushButton" name="BI_Mod0ID_btn">
                    <property name="text">
-                    <string>Module ID 01</string>
+                    <string>PS_26_05-IPG_00102</string>
                    </property>
                   </widget>
                  </item>
@@ -253,14 +253,14 @@
                  <item row="7" column="5">
                   <widget class="QPushButton" name="BI_Mod9ID_btn">
                    <property name="text">
-                    <string>Unknown</string>
+                    <string>Module ID 10</string>
                    </property>
                   </widget>
                  </item>
                  <item row="5" column="5">
                   <widget class="QPushButton" name="BI_Mod8ID_btn">
                    <property name="text">
-                    <string>PS_26_05-IBA_00102</string>
+                    <string>Module ID 09</string>
                    </property>
                   </widget>
                  </item>
@@ -281,7 +281,7 @@
                  <item row="3" column="5">
                   <widget class="QPushButton" name="BI_Mod7ID_btn">
                    <property name="text">
-                    <string>PS_26_05-IPG_00102</string>
+                    <string>Module ID 08</string>
                    </property>
                   </widget>
                  </item>

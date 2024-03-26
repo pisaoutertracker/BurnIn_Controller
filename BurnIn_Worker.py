@@ -678,7 +678,8 @@ class BurnIn_Worker(QObject):
 		session_dict["ModuleIDs"]			= self.SharedDict["BI_ModuleIDs"]
 		session_dict["Dry"]					= self.SharedDict["BI_Dry"]
 		session_dict["Timestamp"]			= datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-		session_dict["fc7Id"]				= "fc7ot2"
+		session_dict["fc7ID"]				= "fc7ot2"
+		session_dict["Current_ModuleID"]			= "unknown"
 		session_dict["fc7Slot"]				= "0"
 		
 		
@@ -845,8 +846,10 @@ class BurnIn_Worker(QObject):
 				self.SharedDict["BI_Action"].setText("Cold Module test")
 				self.SharedDict["BI_TestActive"]=True
 				for slot in Slot_list:
-					self.logger.info("BI: testing BI slot "+str(Slot_list))
-					
+					session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
+					session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
+					session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
+					self.logger.info("BI: testing BI slot "+str(Slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
 					if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
 							return
 				self.SharedDict["BI_TestActive"]=False
@@ -870,8 +873,13 @@ class BurnIn_Worker(QObject):
 				self.logger.info("BI: testing...")
 				self.SharedDict["BI_Action"].setText("Hot Module test")
 				self.SharedDict["BI_TestActive"]=True
-				if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
-						return
+				for slot in Slot_list:
+					session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
+					session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
+					session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
+					self.logger.info("BI: testing BI slot "+str(Slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
+					if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
+							return
 				self.SharedDict["BI_TestActive"]=False
 			
 				self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
@@ -1088,7 +1096,7 @@ class BurnIn_Worker(QObject):
 			else:
 				#create non-blocking process
 				try:
-					proc = subprocess.Popen(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0,1" ,"--module", "PS_26_05-IPG_00102,PS_26_05-IBA_00102",  "--session", session],
+					proc = subprocess.Popen(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session],
 														cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 					while(proc.returnCode==None):
 						
@@ -1124,10 +1132,10 @@ class BurnIn_Worker(QObject):
 				msg.show()
 			session=self.SharedDict["TestSession"]
 			if dry:
-				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0,1" ,"--module", "PS_26_05-IPG_00102,PS_26_05-IBA_00102",  "--session", session, "--useExistingModuleTest","T2023_12_04_16_26_11_224929"],
+				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session, "--useExistingModuleTest","T2023_12_04_16_26_11_224929"],
 													cwd=self.BIcwd)
 			else:
-				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0,1" ,"--module", "PS_26_05-IPG_00102,PS_26_05-IBA_00102",  "--session", session],
+				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102"  "--session", session],
 													cwd=self.BIcwd)
 			self.logger.info(result.stdout)
 			self.logger.error(result.stderr)

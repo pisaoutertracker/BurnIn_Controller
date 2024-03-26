@@ -74,21 +74,21 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.HVNames[8]="HV009"
 		self.HVNames[9]="HV010"
 	
-		self.FC7IDs=["?"] * 10
-		self.FC7IDs[0]="fc7ot2"
-		self.FC7IDs[1]="fc7ot2"
-		self.FC7IDs[2]="fc7ot2"
-		self.FC7IDs[3]="fc7ot2"
-		self.FC7IDs[4]="fc7ot2"
-		self.FC7IDs[5]="fc7ot2"
-		self.FC7IDs[6]="fc7ot2"
-		self.FC7IDs[7]="fc7ot2"
-		self.FC7IDs[8]="fc7ot2"
-		self.FC7IDs[9]="fc7ot2"
+		self.fc7IDs=["?"] * 10
+		self.fc7IDs[0]="fc7ot2"
+		self.fc7IDs[1]="fc7ot2"
+		self.fc7IDs[2]="fc7ot2"
+		self.fc7IDs[3]="fc7ot2"
+		self.fc7IDs[4]="fc7ot2"
+		self.fc7IDs[5]="fc7ot2"
+		self.fc7IDs[6]="fc7ot2"
+		self.fc7IDs[7]="fc7ot2"
+		self.fc7IDs[8]="fc7ot2"
+		self.fc7IDs[9]="fc7ot2"
 	
-		self.FC7Slots=["?"] * 10
-		self.FC7Slots[0]="0"
-		self.FC7Slots[1]="1"
+		self.fc7Slots=["?"] * 10
+		self.fc7Slots[0]="0"
+		self.fc7Slots[1]="1"
 		
 		self.initUI()
 		
@@ -580,10 +580,16 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_NCycles"]=self.BI_NCycles_sb.value()
 		self.SharedDict["BI_ActiveSlots"]=[]
 		self.SharedDict["BI_ModuleIDs"]=[]
+		self.SharedDict["BI_fc7IDs"]=[]
+		self.SharedDict["BI_fc7Slots"]=[]
 		for cb in self.Module_cbs:
 			self.SharedDict["BI_ActiveSlots"].append(cb.isChecked())
 		for Id in self.ModuleId_btns:
 			self.SharedDict["BI_ModuleIDs"].append(Id.text())
+		for Id in self.fc7IDs:
+			self.SharedDict["BI_fc7IDs"].append(Id)
+		for Slot in self.fc7Slots:
+			self.SharedDict["BI_fc7Slots"].append(Slot)
 		self.SharedDict["BI_Dry"]= self.BI_Dry_cb.isChecked()
 		
 		self.BI_Start_sig.emit()
