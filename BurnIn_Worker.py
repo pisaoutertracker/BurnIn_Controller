@@ -943,6 +943,7 @@ class BurnIn_Worker(QObject):
 			Warning_str = "BURN IN test failed"
 			self.SharedDict["BI_Status"].setText("Aborted")
 			#self.Request_msg.emit(Warning_str,Reason_str)
+			self.logger.info("WORKER: BI aborted"+ Reason_str )
 			self.SharedDict["BI_Active"]=False
 			self.SharedDict["BI_StopRequest"]=False
 			self.SharedDict["BI_TestActive"]=False
@@ -1107,9 +1108,7 @@ class BurnIn_Worker(QObject):
 				try:
 					proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session],
 														cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-														
-					for line in iter(proc.stdout.readline, b''):
-						print(">>> " + line.rstrip())
+					
 					while(proc.returncode==None):
 						
 						if self.SharedDict["BI_StopRequest"]:
@@ -1119,10 +1118,10 @@ class BurnIn_Worker(QObject):
 							return
 						try:
 							outs, errs = proc.communicate(timeout=TEST_PROCESS_SLEEP)
+							self.logger.info("BI TEST SUBPROCESS: "+outs.decode())
+							self.logger.error("BI TEST SUBPROCESS: "+errs.decode())
 						except subprocess.TimeoutExpired:
 							self.logger.info("WORKER: Waiting test completion....")
-							#self.logger.info("BI TEST SUBPROCESS: "+outs)
-							#self.logger.error("BI TEST SUBPROCESS: "+errs)
 					
 					if proc.returncode ==0:
 						self.logger.info("Module test succesfully completed with exit code "+str(proc.returncode))
@@ -1147,7 +1146,7 @@ class BurnIn_Worker(QObject):
 				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session, "--useExistingModuleTest","T2023_12_04_16_26_11_224929"],
 													cwd=self.BIcwd)
 			else:
-				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102"  "--session", session],
+				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session],
 													cwd=self.BIcwd)
 			self.logger.info(result.stdout)
 			self.logger.error(result.stderr)
