@@ -695,7 +695,7 @@ class BurnIn_Worker(QObject):
 				HV_Channel_list.append(HV_ch_name)
 				Slot_list.append(row)
 		
-		if Slot_list.len()==0:
+		if len(Slot_list)==0:
 			self.logger.error("WORKER: Check IDs procedure failed. Please enable at least one slot...")
 			self.BI_terminated.emit()
 			return
