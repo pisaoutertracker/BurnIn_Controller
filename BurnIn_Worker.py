@@ -659,7 +659,7 @@ class BurnIn_Worker(QObject):
 	def BI_CheckIDs_Cmd(self):
 	
 	
-		self.SharedDict["BI_Status"].setText("Setup")
+		self.SharedDict["BI_Status"].setText("CheckIDs Setup")
 		self.SharedDict["BI_Action"].setText("Setup")
 		
 		session_dict={}
@@ -703,6 +703,8 @@ class BurnIn_Worker(QObject):
 		
 		if len(Slot_list)==0:
 			self.logger.error("WORKER: Check IDs procedure failed. Please enable at least one slot...")
+			self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+			self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
 
@@ -811,6 +813,8 @@ class BurnIn_Worker(QObject):
 		self.SharedDict["BI_SUT"].setText("None")
 							
 		#stop HV
+		
+		self.SharedDict["BI_Status"].setText("CheckIDs stopping")
 		self.SharedDict["BI_Action"].setText("Stop HVs")
 		self.Ctrl_PowerHV_Cmd(False,HV_Channel_list,PopUp)
 		if not self.last_op_ok:
@@ -1323,7 +1327,7 @@ class BurnIn_Worker(QObject):
 					if not ID_check:
 						proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 					else:
-						proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+						proc = subprocess.Popen(["python3", "moduleTest.py","--readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 					
 														
 					
@@ -1343,11 +1347,11 @@ class BurnIn_Worker(QObject):
 								self.logger.info("BI TEST SUBPROCESS: "+inline.decode())
 						except subprocess.TimeoutExpired:
 							self.logger.info("WORKER: Waiting test completion....")
-							while True:
-								inline = proc.stdout.readline()
-								if not inline:
-									break
-								self.logger.info("BI TEST SUBPROCESS: "+inline.decode())
+							#while True:
+							#	inline = proc.stdout.readline()
+							#	if not inline:
+							#		break
+							#	self.logger.info("BI TEST SUBPROCESS: "+inline.decode())
 					
 					if proc.returncode ==0:
 						self.logger.info("Module test succesfully completed with exit code "+str(proc.returncode))
@@ -1372,7 +1376,7 @@ class BurnIn_Worker(QObject):
 				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session, "--useExistingModuleTest","T2023_12_04_16_26_11_224929"],
 													cwd=self.BIcwd)
 			else:
-				result = subprocess.run(["python3", "moduleTest.py", "--readOnlyID", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session],
+				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session],
 													cwd=self.BIcwd)
 			self.logger.info(result.stdout)
 			self.logger.error(result.stderr)
