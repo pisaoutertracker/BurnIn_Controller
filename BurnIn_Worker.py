@@ -657,6 +657,11 @@ class BurnIn_Worker(QObject):
 	# implemented as a is a Pyqt slot
 	@pyqtSlot()			
 	def BI_CheckIDs_Cmd(self):
+	
+	
+		self.SharedDict["BI_Status"].setText("Setup")
+		self.SharedDict["BI_Action"].setText("Setup")
+		
 		session_dict={}
 		
 		session_dict["ActiveSlots"]			= self.SharedDict["BI_ActiveSlots"]
@@ -689,6 +694,11 @@ class BurnIn_Worker(QObject):
 				LV_Channel_list.append(LV_ch_name)
 				HV_Channel_list.append(HV_ch_name)
 				Slot_list.append(row)
+		
+		if Slot_list.len()==0:
+			self.logger.error("WORKER: Check IDs procedure failed. Please enable at least one slot...")
+			self.BI_terminated.emit()
+			return
 
 		
 		self.logger.info("BurnIn CheckIDs active slots: "+str(Slot_list))
@@ -726,6 +736,7 @@ class BurnIn_Worker(QObject):
 			return
 		
 		##start LV
+		self.SharedDict["BI_Action"].setText("Start LVs")
 		self.Ctrl_PowerLV_Cmd(True,LV_Channel_list,PopUp)
 		if not self.last_op_ok:
 			self.logger.error("WORKER: Check IDs procedure failed. Can't start LVs.")
@@ -741,6 +752,7 @@ class BurnIn_Worker(QObject):
 				return
 		
 		#start HV
+		self.SharedDict["BI_Action"].setText("Start HVs")
 		self.Ctrl_PowerHV_Cmd(True,HV_Channel_list,PopUp)
 		if not self.last_op_ok:
 			self.logger.error("WORKER: Check IDs procedure failed. Can't start HVs.")
@@ -756,15 +768,20 @@ class BurnIn_Worker(QObject):
 				return
 				
 		##checking IDS
+		self.SharedDict["BI_Status"].setText("Testing")
+		self.SharedDict["BI_Action"].setText("Testing")
 		for slot in Slot_list:
+			self.SharedDict["BI_SUT"].setText(str(slot))
 			session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
 			session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
 			session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
 			self.logger.info("BI: Checking ID for BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
 			self.BI_StartTest_Cmd(session_dict)
-
+		
+		self.SharedDict["BI_SUT"].setText("None")
 							
 		#stop HV
+		self.SharedDict["BI_Action"].setText("Stop HVs")
 		self.Ctrl_PowerHV_Cmd(False,HV_Channel_list,PopUp)
 		if not self.last_op_ok:
 			self.logger.error("WORKER: Check IDs procedure failed. Can't stop HVs.")
@@ -780,6 +797,7 @@ class BurnIn_Worker(QObject):
 			
 		
 		#stop LV
+		self.SharedDict["BI_Action"].setText("Stop LVs")
 		self.Ctrl_PowerLV_Cmd(False,LV_Channel_list,PopUp)
 		if not self.last_op_ok:
 			self.logger.error("WORKER: Check IDs procedure failed. Can't stop LVs.")
@@ -792,6 +810,9 @@ class BurnIn_Worker(QObject):
 				self.logger.error("WORKER: Check IDs procedure failed. LVs check failed.")
 				self.BI_terminated.emit()
 				return
+				
+		
+		self.SharedDict["BI_Action"].setText("None")
 				
 		self.logger.info("BurnIn CheckIDs COMPLETED SUCCESFULLY!")
 		self.BI_terminated.emit()
@@ -1287,7 +1308,7 @@ class BurnIn_Worker(QObject):
 								inline = proc.stdout.readline()
 								if not inline:
 									break
-								self.logger.info("BI TEST SUBPROCESS: "+inline)
+								self.logger.info("BI TEST SUBPROCESS: "+inline.decode())
 					
 					if proc.returncode ==0:
 						self.logger.info("Module test succesfully completed with exit code "+str(proc.returncode))
