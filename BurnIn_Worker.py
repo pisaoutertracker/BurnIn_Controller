@@ -664,6 +664,7 @@ class BurnIn_Worker(QObject):
 		session_dict["fc7ID"]				= "fc7ot2"
 		session_dict["Current_ModuleID"]	= "unknown"
 		session_dict["fc7Slot"]				= "0"
+		session_dict["TestType"]			= "CheckID"
 		
 		#checking sub-system information
 			
@@ -760,7 +761,7 @@ class BurnIn_Worker(QObject):
 			session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
 			session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
 			self.logger.info("BI: Checking ID for BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
-			self.BI_StartTest_Cmd(session_dict,True)
+			self.BI_StartTest_Cmd(session_dict)
 
 							
 		#stop HV
@@ -1240,13 +1241,14 @@ class BurnIn_Worker(QObject):
 			json.dump(session_dict, outfile)
 
 
-	def BI_StartTest_Cmd(self, session_dict,ID_check=False):
+	def BI_StartTest_Cmd(self, session_dict):
 			self.logger.info("Starting module test...")
 			session=self.SharedDict["TestSession"]
 			
 				
 			dry = True if session_dict["TestType"]=="Dry" else False
-				
+			ID_check = True if	session_dict["TestType"]=="CheckID" else False
+			
 			fc7Slot = session_dict["fc7Slot"]
 			fc7ID = session_dict["fc7ID"]
 			module = session_dict["Current_ModuleID"]
@@ -1310,7 +1312,7 @@ class BurnIn_Worker(QObject):
 				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session, "--useExistingModuleTest","T2023_12_04_16_26_11_224929"],
 													cwd=self.BIcwd)
 			else:
-				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session],
+				result = subprocess.run(["python3", "moduleTest.py", "--readOnlyID" "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session],
 													cwd=self.BIcwd)
 			self.logger.info(result.stdout)
 			self.logger.error(result.stderr)
