@@ -90,8 +90,9 @@ if __name__ == '__main__':
 	logger.debug("Opening GUI")
 	
 	BurnIn_app = BurnIn_GUI(configDict,logger)
-	
 	exit_code=app.exec()
-	logger.debug("GUI closed: exit code "+str(exit_code))
+	BurnIn_app.QuitThreads()
+	
+	logger.info("GUI closed: exit code "+str(exit_code))
 	sys.exit(exit_code)
 	

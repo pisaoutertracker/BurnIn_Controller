@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1125</width>
+    <width>1316</width>
     <height>976</height>
    </rect>
   </property>
@@ -19,11 +19,14 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Burn-In Controller v2.2</string>
+   <string>Burn-In Controller v2.3</string>
   </property>
   <property name="windowIcon">
    <iconset>
     <normaloff>../../../Boss/.designer/backup/logo.png</normaloff>../../../Boss/.designer/backup/logo.png</iconset>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -51,6 +54,12 @@
            <layout class="QVBoxLayout" name="verticalLayout_16">
             <item>
              <widget class="QGroupBox" name="BI_settings_gb">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
               <property name="title">
                <string>BurnIn Session Settings</string>
               </property>
@@ -62,23 +71,13 @@
                  </property>
                 </widget>
                </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_69">
-                 <property name="text">
-                  <string>Undershoot Ramp (C°):</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QDoubleSpinBox" name="BI_LowTemp_dsb">
-                 <property name="minimum">
-                  <double>-40.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>20.000000000000000</double>
+               <item row="3" column="1">
+                <widget class="QDoubleSpinBox" name="BI_UnderRampTemp_dsb">
+                 <property name="singleStep">
+                  <double>1.000000000000000</double>
                  </property>
                  <property name="value">
-                  <double>-30.000000000000000</double>
+                  <double>10.000000000000000</double>
                  </property>
                 </widget>
                </item>
@@ -105,13 +104,44 @@
                  </property>
                 </widget>
                </item>
-               <item row="3" column="1">
-                <widget class="QDoubleSpinBox" name="BI_UnderRampTemp_dsb">
-                 <property name="singleStep">
-                  <double>1.000000000000000</double>
+               <item row="0" column="1">
+                <widget class="QDoubleSpinBox" name="BI_LowTemp_dsb">
+                 <property name="minimum">
+                  <double>-40.000000000000000</double>
+                 </property>
+                 <property name="maximum">
+                  <double>20.000000000000000</double>
                  </property>
                  <property name="value">
-                  <double>10.000000000000000</double>
+                  <double>-30.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_69">
+                 <property name="text">
+                  <string>Undershoot Ramp (C°):</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLabel" name="label_81">
+                 <property name="text">
+                  <string>Operator:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QDoubleSpinBox" name="BI_UnderKeepTemp_dsb">
+                 <property name="value">
+                  <double>3.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="1">
+                <widget class="QLineEdit" name="BI_Operator_line">
+                 <property name="text">
+                  <string>PisaTeam</string>
                  </property>
                 </widget>
                </item>
@@ -125,13 +155,6 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="1">
-                <widget class="QDoubleSpinBox" name="BI_UnderKeepTemp_dsb">
-                 <property name="value">
-                  <double>3.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
                <item row="0" column="0">
                 <widget class="QLabel" name="label_66">
                  <property name="text">
@@ -139,17 +162,23 @@
                  </property>
                 </widget>
                </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="label_81">
+               <item row="8" column="0">
+                <widget class="QLabel" name="label_83">
                  <property name="text">
-                  <string>Operator:</string>
+                  <string>Description:</string>
                  </property>
                 </widget>
                </item>
-               <item row="6" column="1">
-                <widget class="QLineEdit" name="BI_Operator_line">
-                 <property name="text">
-                  <string>PisaTeam</string>
+               <item row="8" column="1">
+                <widget class="QPlainTextEdit" name="BI_Desc_line">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="plainText">
+                  <string/>
                  </property>
                 </widget>
                </item>
@@ -160,23 +189,24 @@
                  </property>
                 </widget>
                </item>
-               <item row="7" column="0">
-                <widget class="QLabel" name="label_83">
-                 <property name="text">
-                  <string>Description:</string>
-                 </property>
+               <item row="7" column="1">
+                <widget class="QComboBox" name="BI_TestType_cb">
+                 <item>
+                  <property name="text">
+                   <string>Standard</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Dry</string>
+                  </property>
+                 </item>
                 </widget>
                </item>
-               <item row="7" column="1">
-                <widget class="QPlainTextEdit" name="BI_Desc_line">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="plainText">
-                  <string/>
+               <item row="7" column="0">
+                <widget class="QLabel" name="label_90">
+                 <property name="text">
+                  <string>Module test type</string>
                  </property>
                 </widget>
                </item>
@@ -459,19 +489,6 @@
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_9">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
              <widget class="QGroupBox" name="groupBox_19">
               <property name="minimumSize">
                <size>
@@ -480,7 +497,7 @@
                </size>
               </property>
               <property name="title">
-               <string>Load Settings</string>
+               <string>Load Settings from DB</string>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_18">
                <item>
@@ -527,6 +544,93 @@
               </layout>
              </widget>
             </item>
+            <item>
+             <spacer name="verticalSpacer_10">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_16">
+              <property name="title">
+               <string>BI control</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_9">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_14">
+                 <item>
+                  <widget class="QPushButton" name="BI_CheckIDs_btn">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Check IDs</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="BI_Start_btn">
+                   <property name="minimumSize">
+                    <size>
+                     <width>140</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                     <kerning>false</kerning>
+                    </font>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::StrongFocus</enum>
+                   </property>
+                   <property name="autoFillBackground">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Start BurnIn</string>
+                   </property>
+                   <property name="flat">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="BI_Stop_btn">
+                   <property name="minimumSize">
+                    <size>
+                     <width>140</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Stop BurnIn</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>
@@ -543,65 +647,6 @@
            </spacer>
           </item>
          </layout>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_16">
-          <property name="title">
-           <string>BI control</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_9">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_14">
-             <item>
-              <widget class="QPushButton" name="BI_Start_btn">
-               <property name="minimumSize">
-                <size>
-                 <width>140</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Start BurnIn</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="BI_Stop_btn">
-               <property name="minimumSize">
-                <size>
-                 <width>140</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Stop BurnIn</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="BI_Dry_cb">
-               <property name="text">
-                <string>Cycle only (no module test)</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_13">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_18">
@@ -637,16 +682,16 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="label_86">
+            <widget class="QLabel" name="label_88">
              <property name="text">
-              <string>Action: </string>
+              <string>Cycle #:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="BI_Action_tag">
+            <widget class="QLabel" name="BI_Cycle_tag">
              <property name="text">
-              <string>None</string>
+              <string>1</string>
              </property>
             </widget>
            </item>
@@ -664,21 +709,48 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="label_88">
+            <widget class="QLabel" name="label_86">
              <property name="text">
-              <string>Cycle #:</string>
+              <string>Action: </string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="BI_Cycle_tag">
+            <widget class="QLabel" name="BI_Action_tag">
              <property name="text">
-              <string>1</string>
+              <string>None</string>
              </property>
             </widget>
            </item>
            <item>
             <spacer name="horizontalSpacer_17">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_89">
+             <property name="text">
+              <string>SUT:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="BI_SUT_tag">
+             <property name="text">
+              <string>None</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_20">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -728,6 +800,9 @@
             <width>16777215</width>
             <height>400</height>
            </size>
+          </property>
+          <property name="cursor">
+           <cursorShape>ArrowCursor</cursorShape>
           </property>
           <property name="tabletTracking">
            <bool>false</bool>
@@ -2504,6 +2579,12 @@
                <property name="enabled">
                 <bool>true</bool>
                </property>
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
                <property name="autoFillBackground">
                 <bool>false</bool>
                </property>
@@ -2514,6 +2595,12 @@
              </item>
              <item>
               <widget class="QPushButton" name="Ctrl_StopJulabo_btn">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
                <property name="text">
                 <string>STOP Chiller</string>
                </property>
@@ -2830,13 +2917,6 @@
            <string>FNAL box control</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
-           <item row="0" column="6">
-            <widget class="QLabel" name="label_50">
-             <property name="text">
-              <string>Magnetic lock</string>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="7">
             <widget class="QPushButton" name="Ctrl_SetLock_btn">
              <property name="text">
@@ -2844,10 +2924,10 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="8">
-            <widget class="QPushButton" name="Ctrl_SetUnlock_btn">
+           <item row="0" column="6">
+            <widget class="QLabel" name="label_50">
              <property name="text">
-              <string>Unlock</string>
+              <string>Magnetic lock</string>
              </property>
             </widget>
            </item>
@@ -2858,15 +2938,15 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="10">
-            <widget class="QLabel" name="Ctrl_StatusLock_tag">
+           <item row="2" column="3">
+            <widget class="QLabel" name="Ctrl_StatusDoor_tag">
              <property name="text">
               <string>?</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="3">
-            <widget class="QLabel" name="Ctrl_StatusDoor_tag">
+           <item row="0" column="10">
+            <widget class="QLabel" name="Ctrl_StatusLock_tag">
              <property name="text">
               <string>?</string>
              </property>
@@ -2879,10 +2959,24 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="4">
-            <widget class="QLabel" name="Ctrl_StatusFlow_tag">
+           <item row="0" column="8">
+            <widget class="QPushButton" name="Ctrl_SetUnlock_btn">
              <property name="text">
-              <string>?</string>
+              <string>Unlock</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
+            <widget class="QLabel" name="label_59">
+             <property name="text">
+              <string>Door status:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="Ctrl_SetHighFlow_btn">
+             <property name="text">
+              <string>High Flow</string>
              </property>
             </widget>
            </item>
@@ -2899,10 +2993,10 @@
              </property>
             </spacer>
            </item>
-           <item row="0" column="1">
-            <widget class="QPushButton" name="Ctrl_SetHighFlow_btn">
+           <item row="0" column="4">
+            <widget class="QLabel" name="Ctrl_StatusFlow_tag">
              <property name="text">
-              <string>High Flow</string>
+              <string>?</string>
              </property>
             </widget>
            </item>
@@ -2913,31 +3007,10 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="2">
-            <widget class="QLabel" name="label_59">
-             <property name="text">
-              <string>Door status:</string>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="2">
             <widget class="QPushButton" name="Ctrl_SetLowFlow_btn">
              <property name="text">
               <string>Low Flow</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLabel" name="Ctrl_ExtDewPoint_tag">
-             <property name="text">
-              <string>?</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="3">
-            <widget class="QLabel" name="label_45">
-             <property name="text">
-              <string>Status</string>
              </property>
             </widget>
            </item>
@@ -2953,6 +3026,20 @@
               </size>
              </property>
             </spacer>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLabel" name="Ctrl_ExtDewPoint_tag">
+             <property name="text">
+              <string>?</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="3">
+            <widget class="QLabel" name="label_45">
+             <property name="text">
+              <string>Status</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -3055,50 +3142,139 @@
               <property name="text">
                <string>LV Ch.</string>
               </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
              </column>
              <column>
               <property name="text">
                <string>Status</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
               </property>
              </column>
              <column>
               <property name="text">
                <string>V set (V)</string>
               </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
              </column>
              <column>
               <property name="text">
                <string>V read (V)</string>
               </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
              </column>
              <column>
               <property name="text">
                <string>Current (A)</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
               </property>
              </column>
              <column>
               <property name="text">
                <string>HV Ch.</string>
               </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
              </column>
              <column>
               <property name="text">
                <string>Status</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
               </property>
              </column>
              <column>
               <property name="text">
                <string>V set(V)</string>
               </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
              </column>
              <column>
               <property name="text">
                <string>V read(V)</string>
               </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
              </column>
              <column>
               <property name="text">
-               <string>Current (A)</string>
+               <string>Current (uA)</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>FC7_ID</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>FC7_OG</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="background">
+               <color>
+                <red>255</red>
+                <green>255</green>
+                <blue>255</blue>
+               </color>
               </property>
              </column>
              <item row="0" column="0">
@@ -3137,6 +3313,12 @@
             <layout class="QHBoxLayout" name="horizontalLayout_10">
              <item>
               <widget class="QPushButton" name="Ctrl_LVOn_btn">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
                <property name="text">
                 <string>LV on</string>
                </property>
@@ -3147,6 +3329,12 @@
              </item>
              <item>
               <widget class="QPushButton" name="Ctrl_LVOff_btn">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
                <property name="text">
                 <string>LV off</string>
                </property>
@@ -3175,9 +3363,22 @@
             </layout>
            </item>
            <item>
+            <widget class="Line" name="line_8">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_11">
              <item>
               <widget class="QPushButton" name="Ctrl_HVOn_btn">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
                <property name="text">
                 <string>HV on</string>
                </property>
@@ -3185,6 +3386,12 @@
              </item>
              <item>
               <widget class="QPushButton" name="Ctrl_HVOff_btn">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
                <property name="text">
                 <string>HV off</string>
                </property>
@@ -3374,7 +3581,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1125</width>
+     <width>1316</width>
      <height>21</height>
     </rect>
    </property>

@@ -42,7 +42,9 @@ class BurnIn_Monitor(QObject):
 			self.SharedDict["MQTTMConn"].setStyleSheet("color: rgb(0, 170, 0);font: 9pt ");
 			self.SharedDict["MQTTMConn"].setText("Connected")
 			
-		while(1):		
+		while(1):	
+			if self.SharedDict["Quitting"]:
+				return
 		
 			self.SharedDict["LastMonitor"].setStyleSheet("");
 			self.SharedDict["LastMonitor"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))

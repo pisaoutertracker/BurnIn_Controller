@@ -61,6 +61,7 @@ class DB_interface():
 		session = {
 			"operator": session_dict["Operator"],
 			"timestamp": session_dict["Timestamp"],
+			"testType": session_dict["TestType"],
                 	"description": session_dict["Description"], 
 			"temperatures": {
 				"low": session_dict["LowTemp"],

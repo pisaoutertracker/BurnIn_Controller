@@ -40,6 +40,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 	MT_StartTest_sig = pyqtSignal(bool)
 	
 	BI_Start_sig = pyqtSignal()
+	BI_CheckIDs_sig = pyqtSignal()
 
 
 	def __init__(self,configDict,logger):
@@ -77,14 +78,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.fc7IDs=["?"] * 10
 		self.fc7IDs[0]="fc7ot2"
 		self.fc7IDs[1]="fc7ot2"
-		self.fc7IDs[2]="fc7ot2"
-		self.fc7IDs[3]="fc7ot2"
-		self.fc7IDs[4]="fc7ot2"
-		self.fc7IDs[5]="fc7ot2"
-		self.fc7IDs[6]="fc7ot2"
-		self.fc7IDs[7]="fc7ot2"
-		self.fc7IDs[8]="fc7ot2"
-		self.fc7IDs[9]="fc7ot2"
 	
 		self.fc7Slots=["?"] * 10
 		self.fc7Slots[0]="0"
@@ -103,10 +96,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.actionExit.setIcon(QtGui.QIcon('exit.jpeg')) 
 		
 		# creating graphs elements
+		date_axis = pg.DateAxisItem(orientation='bottom')
+		self.GraphWidget.setAxisItems({'bottom':date_axis})
 		self.GraphWidget.setBackground("w")
 		styles = { "font-size": "13px"}
 		self.GraphWidget.setLabel("left", "Temperature (°C)", **styles)
-		self.GraphWidget.setLabel("bottom", "Time (?)", **styles)
+		self.GraphWidget.setLabel("bottom", "Time", **styles)
 		self.GraphWidget.showGrid(x=False, y=True)
 		self.GraphWidgetLegend=self.GraphWidget.addLegend(offset=1,colCount=4)
 		self.Temp_arr=[]
@@ -127,9 +122,21 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		# manual adjust of PyQt widget
 		self.BI_ProgressBar_pb.setValue(0)
 		
-		self.BI_Desc_line.setFixedHeight(2 * self.BI_Operator_line.height()) 			
+		self.BI_Desc_line.setFixedHeight(2 * self.BI_Operator_line.height())
 
+		self.TestTypeItems = [self.BI_TestType_cb.itemText(i) for i in range(self.BI_TestType_cb.count())]
 
+		self.BI_Start_btn.setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+		self.BI_Stop_btn.setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+		self.BI_CheckIDs_btn.setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")		
+		self.Ctrl_StartJulabo_btn.setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+		self.Ctrl_StopJulabo_btn.setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+		self.Ctrl_LVOn_btn.setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black; min-width: 10em; ")
+		self.Ctrl_LVOff_btn.setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;min-width: 10em;  ")	
+		self.Ctrl_HVOn_btn.setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black; min-width: 10em; ")
+		self.Ctrl_HVOff_btn.setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;min-width: 10em;  ")
+		self.Ctrl_HVSet_btn.setStyleSheet("background-color : orange;border-radius: 5px;  padding: 3px;border:1px solid black; min-width: 10em; ")
+		self.Ctrl_LVSet_btn.setStyleSheet("background-color : orange;border-radius: 5px;  padding: 3px;border:1px solid black; min-width: 10em; ")
 		
 		
 		#adjust GUI table elements
@@ -144,6 +151,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.Ctrl_CAEN_table.setItem(row,7,QtWidgets.QTableWidgetItem("?"))
 			self.Ctrl_CAEN_table.setItem(row,8,QtWidgets.QTableWidgetItem("?"))
 			self.Ctrl_CAEN_table.setItem(row,9,QtWidgets.QTableWidgetItem("?"))
+			self.Ctrl_CAEN_table.setItem(row,10,QtWidgets.QTableWidgetItem(self.fc7IDs[row]))
+			self.Ctrl_CAEN_table.setItem(row,11,QtWidgets.QTableWidgetItem(self.fc7Slots[row]))
 		
 		self.LV00ID_tag.setText(self.LVNames[0])
 		self.LV01ID_tag.setText(self.LVNames[1])
@@ -192,10 +201,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Module_cbs.append(self.BI_Mod7_cb)
 		self.Module_cbs.append(self.BI_Mod8_cb)
 		self.Module_cbs.append(self.BI_Mod9_cb)
-		
-		#for cb in self.Module_cbs:
-		for i in range (7,10,1):
-			self.Module_cbs[i].setChecked(True)
 		
 		self.JulaboTestCmd_btn.setEnabled(False)    
 		self.FNALBoxTestCmd_btn.setEnabled(False)    
@@ -355,12 +360,14 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		self.SharedDict["BI_Status"]=self.BI_Status_tag
 		self.SharedDict["BI_Action"]=self.BI_Action_tag
+		self.SharedDict["BI_SUT"]=self.BI_SUT_tag
 		self.SharedDict["BI_ProgressBar"]=self.BI_ProgressBar_pb
 		self.SharedDict["BI_Cycle"]=self.BI_Cycle_tag
 		self.SharedDict["BI_Graph"]=self.GraphWidget
 		
 		# Status variable & parameter
 		
+		self.SharedDict["Quitting"]=False
 		self.SharedDict["M5_updated"]=False
 		self.SharedDict["Julabo_updated"]=False
 		self.SharedDict["FNALBox_updated"]=False
@@ -368,8 +375,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["WaitInput"]=False
 		self.SharedDict["Confirmed"]=False
 		self.SharedDict["BI_Active"]=False
+		self.SharedDict["BI_CheckIDs"]=False
 		self.SharedDict["BI_TestActive"]=False
 		self.SharedDict["BI_StopRequest"]=False
+		self.SharedDict["BI_TestType"]=self.BI_TestType_cb.currentText()
 		self.SharedDict["BI_Operator"]=self.BI_Operator_line.text()
 		self.SharedDict["BI_Description"]=self.BI_Desc_line.toPlainText()		
 		self.SharedDict["BI_LowTemp"]= self.BI_LowTemp_dsb.value()
@@ -379,7 +388,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_NCycles"]=self.BI_NCycles_sb.value()
 		self.SharedDict["BI_ActiveSlots"]=[]
 		self.SharedDict["BI_ModuleIDs"]=[]
-		self.SharedDict["BI_Dry"]=False
 		
 		
 		self.SharedDict["TestSession"]=self.TestSession
@@ -465,6 +473,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.BI_Start_btn.clicked.connect(self.BI_Start_Cmd)
 		self.BI_LoadSesh_btn.clicked.connect(self.BI_FillFromDB)
 		self.BI_LoadLast_btn.clicked.connect(self.BI_FillFromLast)
+		self.BI_CheckIDs_btn.clicked.connect(self.BI_CheckIDs_Cmd)
 
 		#menu actions
 		self.actionExit.triggered.connect(self.close)
@@ -492,6 +501,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		
 		self.BI_Start_sig.connect(self.Worker.BI_Start_Cmd)
+		self.BI_CheckIDs_sig.connect(self.Worker.BI_CheckIDs_Cmd)
 		
 		#################################################
 		#connecting worker/monitor signals to local slots
@@ -562,6 +572,29 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.TempTest_arr.clear()
 		self.DewPoint_arr.clear()
 		
+	
+	def BI_CheckIDs_Cmd(self):
+	
+		self.ManualOp_tab.setEnabled(False)
+		self.ModuleTest_tab.setEnabled(False)		
+		
+		
+		#sampling test parameters		
+		self.SharedDict["BI_ActiveSlots"]=[]
+		self.SharedDict["BI_ModuleIDs"]=[]
+		self.SharedDict["BI_fc7IDs"]=[]
+		self.SharedDict["BI_fc7Slots"]=[]
+		for cb in self.Module_cbs:
+			self.SharedDict["BI_ActiveSlots"].append(cb.isChecked())
+		for Id in self.ModuleId_btns:
+			self.SharedDict["BI_ModuleIDs"].append(Id.text())
+		for Id in self.fc7IDs:
+			self.SharedDict["BI_fc7IDs"].append(Id)
+		for Slot in self.fc7Slots:
+			self.SharedDict["BI_fc7Slots"].append(Slot)
+			
+		self.BI_CheckIDs_sig.emit()
+		
 	def BI_Start_Cmd(self):
 		if self.SharedDict["BI_Active"]:
 			self.logger.info("Burn In test already ongoing. Request cancelled")
@@ -590,7 +623,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.SharedDict["BI_fc7IDs"].append(Id)
 		for Slot in self.fc7Slots:
 			self.SharedDict["BI_fc7Slots"].append(Slot)
-		self.SharedDict["BI_Dry"]= self.BI_Dry_cb.isChecked()
+			
+		self.SharedDict["BI_TestType"]= self.BI_TestType_cb.currentText()
+			
 		
 		self.BI_Start_sig.emit()
 	
@@ -607,7 +642,14 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			cb.setChecked(session_dict["ActiveSlots"][idx])
 		for idx,ID in enumerate(self.ModuleId_btns):
 			ID.setText(session_dict["ModuleIDs"][idx])	
-		self.BI_Dry_cb.setChecked(session_dict["Dry"])
+		self.TestTypeItems.index(session_dict["TestType"])
+		
+		try:
+			self.BI_TestType_cb.setCurrentIndex(self.TestTypeItems.index(session_dict["TestType"]))
+		except Exception as e:
+			self.logger.warning (e)
+			self.logger.warning ("GUI: could not recognize test type while recovering session. Setting standard test.")
+			self.BI_TestType_cb.setCurrentIndex(0)
 	
 	
 	def BI_Stop_Cmd(self):
@@ -624,7 +666,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			with open('./lastSession.txt', 'r') as f:
 				targetSession=str(f.read()).strip()
 		else:
-			targetSession=self.BI_TargetSesh_line.text()
+			targetSession="session"+self.BI_TargetSesh_line.text()
 		print("Getting session %s"%targetSession)
 		session_fromDB=databaseTools.getSessionFromDB(sessionName=targetSession)
 		self.logger.info("Filling BI fields from session %s."%targetSession)
@@ -638,6 +680,13 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			else:
 				self.Module_cbs[i].setChecked(True)
 				self.ModuleId_btns[i].setText(session_fromDB["modulesList"][i])
+
+		try:
+			self.BI_TestType_cb.setCurrentIndex(self.TestTypeItems.index(session_fromDB["testType"]))
+		except Exception as e:
+			self.logger.warning (e)
+			self.logger.warning ("GUI: could not recognize test type while recovering session from DB. Setting standard test.")
+			self.BI_TestType_cb.setCurrentIndex(0)
 
 	def BI_FillFromLast(self):
 		 self.BI_FillFromDB(useLast=True)
@@ -663,6 +712,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.logger.info("New Id for module "+str(idx+1)+": "+Id)
 		else:
 			self.logger.info("New Id for module "+str(idx+1)+" aborted by user")
+			
+		
 		
 	@pyqtSlot()					
 	def Ctrl_StartSesh_Cmd(self):
@@ -675,6 +726,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		session = {
 			"operator": self.BI_Operator_line.text(),
 			"timestamp": datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
+			"testType": self.BI_TestType_cb.currentText(),
                 	"description": self.SeshDescription_db.text(), 
 			"temperatures": {
 				"low": self.BI_LowTemp_dsb.value(),
@@ -790,6 +842,21 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		#	self.Ctrl_CAEN_table.update()
 		#	self.Ctrl_CAEN_table.repaint()
 		
+	def QuitThreads(self):
+		self.SharedDict["Quitting"]=True
+		self.logger.info("Stopping sub-threads")
+		self.logger.info("Stopping Worker...")
+		self.WorkerThread.quit()
+		if not self.WorkerThread.wait(5000):
+			self.logger.info ("Can't stop worker thread after 5s.")
+		self.logger.info("Stopping Monitor...")
+		self.MonitorThread.quit()
+		if not self.MonitorThread.wait(5000):
+			self.logger.info ("Can't stop monitor thread after 5s.")
+		self.logger.info("Stopping Supervisor...")
+		self.SupervisorThread.quit()
+		if not self.SupervisorThread.wait(5000):
+			self.logger.info ("Can't stop supervisor thread after 5s.")
 
 if __name__== '__main__':
     

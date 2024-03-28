@@ -43,6 +43,9 @@ class BurnIn_Supervisor(QObject):
 		self.logger.info("SUPERVISOR: SUPERVISOR is now armed")
 			
 		while(self.Enabled):
+			
+			if self.SharedDict["Quitting"]:
+				return
 		
 			self.SharedDict["LastSupervision"].setStyleSheet("");
 			self.SharedDict["LastSupervision"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))

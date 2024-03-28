@@ -37,7 +37,7 @@ class BurnIn_Worker(QObject):
 		self.CAENController = CAENController
 		self.SharedDict = SharedDict
 		
-		self.BIcwd = configDict.get(("BItest","cwd"),"NOKEY")
+		self.BIcwd = configDict.get(("BITest","cwd"),"NOKEY")
 		if self.BIcwd == "NOKEY":
 			self.BIcwd = "/home/thermal/BurnIn_moduleTest_v4-22"
 			self.logger.warning("cwd directory parameter not found. Using default")
@@ -653,7 +653,149 @@ class BurnIn_Worker(QObject):
 	###########################################################################
 	
 	
-	
+	## CheckIDs function
+	# implemented as a is a Pyqt slot
+	@pyqtSlot()			
+	def BI_CheckIDs_Cmd(self):
+		session_dict={}
+		
+		session_dict["ActiveSlots"]			= self.SharedDict["BI_ActiveSlots"]
+		session_dict["ModuleIDs"]			= self.SharedDict["BI_ModuleIDs"]
+		session_dict["fc7ID"]				= "fc7ot2"
+		session_dict["Current_ModuleID"]	= "unknown"
+		session_dict["fc7Slot"]				= "0"
+		
+		#checking sub-system information
+			
+		if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
+			self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
+			return
+		if not (self.SharedDict["Ctrl_StatusDoor"].text() == "CLOSED"):
+			self.BI_Abort("DOOR is not closed!")
+			return
+		self.logger.info("BurnIn CheckIDs started...")
+		
+		#selecting slots under test : LV/HV names defined && slot marked as active in BI tab
+		
+		LV_Channel_list=[]
+		HV_Channel_list=[]
+		Slot_list=[]
+		
+		for row in range(NUM_BI_SLOTS):
+			LV_ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_NAME_COL).text()
+			HV_ch_name = self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_NAME_COL).text() 
+			if (LV_ch_name != "?" and HV_ch_name != "?" and session_dict["ActiveSlots"][row]):
+				LV_Channel_list.append(LV_ch_name)
+				HV_Channel_list.append(HV_ch_name)
+				Slot_list.append(row)
+
+		
+		self.logger.info("BurnIn CheckIDs active slots: "+str(Slot_list))
+		self.logger.info("BurnIn CheckIDs HV names: "+str(HV_Channel_list))
+		self.logger.info("BurnIn CheckIDs LV names: "+str(LV_Channel_list))			   
+		
+		PopUp=False
+		
+		#lock magnet
+		self.Ctrl_SetLock_Cmd(True,PopUp)
+		if not self.last_op_ok:
+			self.logger.error("WORKER: Check IDs procedure failed. can't lock the door.")
+			self.BI_terminated.emit()
+			return
+			
+		#sel SP	
+		self.Ctrl_SelSp_Cmd(0,PopUp)
+		if not self.last_op_ok:
+			self.logger.error("WORKER: Check IDs procedure failed. can't select Julabo SP.")
+			self.BI_terminated.emit()
+			return
+		
+		#put JULABO to 20 degree	
+		self.Ctrl_SetSp_Cmd(0,20.0,PopUp)
+		if not self.last_op_ok:
+			self.logger.error("WORKER: Check IDs procedure failed. Can't set Julabo temperature.")
+			self.BI_terminated.emit()
+			return
+				
+		#start JULABO	
+		self.Ctrl_PowerJulabo_Cmd(True,PopUp)
+		if not self.last_op_ok:
+			self.logger.error("WORKER: Check IDs procedure failed. Can't power ON Julabo.")
+			self.BI_terminated.emit()
+			return
+		
+		##start LV
+		self.Ctrl_PowerLV_Cmd(True,LV_Channel_list,PopUp)
+		if not self.last_op_ok:
+			self.logger.error("WORKER: Check IDs procedure failed. Can't start LVs.")
+			self.BI_terminated.emit()
+			return
+		time.sleep(BI_SLEEP_AFTER_VSET)
+		
+		#check all LVs are ON
+		for row in Slot_list:
+			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="ON"):
+				self.logger.error("WORKER: Check IDs procedure failed. LVs check failed.")
+				self.BI_terminated.emit()
+				return
+		
+		#start HV
+		self.Ctrl_PowerHV_Cmd(True,HV_Channel_list,PopUp)
+		if not self.last_op_ok:
+			self.logger.error("WORKER: Check IDs procedure failed. Can't start HVs.")
+			self.BI_terminated.emit()
+			return
+		
+		time.sleep(BI_SLEEP_AFTER_VSET)
+		#check all HVs are ON
+		for row in Slot_list:
+			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
+				self.logger.error("WORKER: Check IDs procedure failed. HVs check failed.")
+				self.BI_terminated.emit()
+				return
+				
+		##checking IDS
+		for slot in Slot_list:
+			session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
+			session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
+			session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
+			self.logger.info("BI: Checking ID for BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
+			self.BI_StartTest_Cmd(session_dict,True)
+
+							
+		#stop HV
+		self.Ctrl_PowerHV_Cmd(False,HV_Channel_list,PopUp)
+		if not self.last_op_ok:
+			self.logger.error("WORKER: Check IDs procedure failed. Can't stop HVs.")
+			self.BI_terminated.emit()
+			return
+		time.sleep(BI_SLEEP_AFTER_VSET)
+		#check HV stop
+		for row in Slot_list:
+			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
+				self.logger.error("WORKER: Check IDs procedure failed. HVs check failed.")
+				self.BI_terminated.emit()
+				return
+			
+		
+		#stop LV
+		self.Ctrl_PowerLV_Cmd(False,LV_Channel_list,PopUp)
+		if not self.last_op_ok:
+			self.logger.error("WORKER: Check IDs procedure failed. Can't stop LVs.")
+			self.BI_terminated.emit()
+			return
+		time.sleep(BI_SLEEP_AFTER_VSET)
+		#check LV stop	
+		for row in Slot_list:
+			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
+				self.logger.error("WORKER: Check IDs procedure failed. LVs check failed.")
+				self.BI_terminated.emit()
+				return
+				
+		self.logger.info("BurnIn CheckIDs COMPLETED SUCCESFULLY!")
+		self.BI_terminated.emit()
+		
+		
 	## BI main function
 	# implemented as a is a Pyqt slot
 	@pyqtSlot()			
@@ -676,10 +818,10 @@ class BurnIn_Worker(QObject):
 		session_dict["Session"]				= "-1"
 		session_dict["ActiveSlots"]			= self.SharedDict["BI_ActiveSlots"]
 		session_dict["ModuleIDs"]			= self.SharedDict["BI_ModuleIDs"]
-		session_dict["Dry"]					= self.SharedDict["BI_Dry"]
+		session_dict["TestType"]			= self.SharedDict["BI_TestType"]
 		session_dict["Timestamp"]			= datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 		session_dict["fc7ID"]				= "fc7ot2"
-		session_dict["Current_ModuleID"]			= "unknown"
+		session_dict["Current_ModuleID"]	= "unknown"
 		session_dict["fc7Slot"]				= "0"
 		
 		
@@ -703,6 +845,7 @@ class BurnIn_Worker(QObject):
 						self.logger.info("Current Session: "+session_dict["Session"])
 						self.logger.info("Current Cycle: "+str(session_dict["Cycle"]))
 						self.logger.info("Recovery status: "+session_dict["Action"])
+						self.logger.info("test type: "+session_dict["TestType"])
 						
 				except Exception as e:
 					self.logger.error(e)
@@ -733,6 +876,7 @@ class BurnIn_Worker(QObject):
 			
 		self.SharedDict["BI_Action"].setText("Setup")
 		self.SharedDict["BI_Cycle"].setText(str(session_dict["Cycle"])+" of "+str(session_dict["NCycles"]))
+		self.SharedDict["BI_SUT"].setText("None") 
 					
 		
 		#checking sub-system information
@@ -831,6 +975,7 @@ class BurnIn_Worker(QObject):
 				self.SharedDict["BI_Cycle"].setText(str(cycle+1)+"/"+str(NCycles))
 				self.logger.info("BI: runmping down...")
 				self.SharedDict["BI_Action"].setText("Cooling")
+				self.SharedDict["BI_SUT"].setText("None") 
 				if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
 					if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["LowTemp"]):
 						self.logger.info("BI: cooling")
@@ -849,6 +994,7 @@ class BurnIn_Worker(QObject):
 					session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
 					session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
 					session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
+					self.SharedDict["BI_SUT"].setText(str(slot+1)) 
 					self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
 					if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
 							return
@@ -859,6 +1005,7 @@ class BurnIn_Worker(QObject):
 				self.BI_Update_Status_file(session_dict)
 				self.logger.info("BI: going to high temp")
 				self.SharedDict["BI_Action"].setText("Heating")
+				self.SharedDict["BI_SUT"].setText("None") 
 				if float(self.SharedDict["LastFNALBoxTemp0"].text()) < session_dict["HighTemp"]:  #expected
 					self.logger.info("BI: heating")
 					if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["HighTemp"]):
@@ -877,6 +1024,7 @@ class BurnIn_Worker(QObject):
 					session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
 					session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
 					session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
+					self.SharedDict["BI_SUT"].setText(str(slot+1)) 
 					self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
 					if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
 							return
@@ -894,6 +1042,7 @@ class BurnIn_Worker(QObject):
 			self.logger.info("BI: Could not locate session json file")
 		
 		self.SharedDict["BI_Status"].setText("Stopping")
+		self.SharedDict["BI_SUT"].setText("None") 
 		
 		#stop HV
 		self.SharedDict["BI_Action"].setText("Stop HVs")
@@ -1091,10 +1240,13 @@ class BurnIn_Worker(QObject):
 			json.dump(session_dict, outfile)
 
 
-	def BI_StartTest_Cmd(self, session_dict):
+	def BI_StartTest_Cmd(self, session_dict,ID_check=False):
 			self.logger.info("Starting module test...")
 			session=self.SharedDict["TestSession"]
-			dry = session_dict["Dry"]
+			
+				
+			dry = True if session_dict["TestType"]=="Dry" else False
+				
 			fc7Slot = session_dict["fc7Slot"]
 			fc7ID = session_dict["fc7ID"]
 			module = session_dict["Current_ModuleID"]
@@ -1106,8 +1258,12 @@ class BurnIn_Worker(QObject):
 			else:
 				#create non-blocking process
 				try:
-					proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session],
-														cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+					if not ID_check:
+						proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+					else:
+						proc = subprocess.Popen(["python3", "moduleTest.py", "--readOnlyID","--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+					
+														
 					
 					while(proc.returncode==None):
 						
@@ -1117,11 +1273,19 @@ class BurnIn_Worker(QObject):
 							self.last_op_ok= False
 							return
 						try:
-							outs, errs = proc.communicate(timeout=TEST_PROCESS_SLEEP)
-							self.logger.info("BI TEST SUBPROCESS: "+outs.decode())
-							self.logger.error("BI TEST SUBPROCESS: "+errs.decode())
+							proc.wait(timeout=TEST_PROCESS_SLEEP)
+							while True:
+								inline = proc.stdout.readline()
+								if not inline:
+									break
+								self.logger.info("BI TEST SUBPROCESS: "+inline)
 						except subprocess.TimeoutExpired:
 							self.logger.info("WORKER: Waiting test completion....")
+							while True:
+								inline = proc.stdout.readline()
+								if not inline:
+									break
+								self.logger.info("BI TEST SUBPROCESS: "+inline)
 					
 					if proc.returncode ==0:
 						self.logger.info("Module test succesfully completed with exit code "+str(proc.returncode))
