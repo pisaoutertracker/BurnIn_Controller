@@ -776,8 +776,9 @@ class BurnIn_Worker(QObject):
 			session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
 			session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
 			self.logger.info("BI: Checking ID for BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
-			if not self.BI_StartTest_Cmd(session_dict):
-				self.logger.error("WORKER: Check IDs procedure failed. Error returned while checking slot "+str(slot))
+			self.BI_StartTest_Cmd(session_dict)
+			if not self.last_op_ok:
+				self.logger.error("WORKER: Check IDs procedure failed. Error returned while checking slot "+str(slot)")
 				self.BI_terminated.emit()
 				return
 				
@@ -1288,7 +1289,7 @@ class BurnIn_Worker(QObject):
 					if not ID_check:
 						proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 					else:
-						proc = subprocess.Popen(["python3", "moduleTest.py", "--readOnlyID","--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+						proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 					
 														
 					
