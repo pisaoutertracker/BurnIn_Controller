@@ -776,7 +776,11 @@ class BurnIn_Worker(QObject):
 			session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
 			session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
 			self.logger.info("BI: Checking ID for BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
-			self.BI_StartTest_Cmd(session_dict)
+			if not self.BI_StartTest_Cmd(session_dict):
+				self.logger.error("WORKER: Check IDs procedure failed. Error returned while checking slot "+str(slot))
+				self.BI_terminated.emit()
+				return
+				
 		
 		self.SharedDict["BI_SUT"].setText("None")
 							
@@ -1301,7 +1305,7 @@ class BurnIn_Worker(QObject):
 								inline = proc.stdout.readline()
 								if not inline:
 									break
-								self.logger.info("BI TEST SUBPROCESS: "+inline)
+								self.logger.info("BI TEST SUBPROCESS: "+inline.decode())
 						except subprocess.TimeoutExpired:
 							self.logger.info("WORKER: Waiting test completion....")
 							while True:
