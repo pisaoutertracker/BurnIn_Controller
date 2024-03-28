@@ -774,8 +774,8 @@ class BurnIn_Worker(QObject):
 		self.Ctrl_PowerHV_Cmd(True,HV_Channel_list,PopUp)
 		if not self.last_op_ok:
 			self.logger.error("WORKER: Check IDs procedure failed. Can't start HVs.")
-				self.SharedDict["BI_Status"].setText("Failed CheckIDs")
-				self.SharedDict["BI_Action"].setText("None")
+			self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+			self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
 		
