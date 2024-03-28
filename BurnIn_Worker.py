@@ -674,10 +674,16 @@ class BurnIn_Worker(QObject):
 		#checking sub-system information
 			
 		if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
-			self.BI_Abort("CAEN/FNAL/JULABO infos are not updated")
+			self.logger.error("WORKER: Check IDs procedure failed. JULABO/CAEN/FNAL info are not updated.")
+			self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+			self.SharedDict["BI_Action"].setText("None")
+			self.BI_terminated.emit()
 			return
 		if not (self.SharedDict["Ctrl_StatusDoor"].text() == "CLOSED"):
-			self.BI_Abort("DOOR is not closed!")
+			self.logger.error("WORKER: Check IDs procedure failed. Door is not closed.")
+			self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+			self.SharedDict["BI_Action"].setText("None")
+			self.BI_terminated.emit()
 			return
 		self.logger.info("BurnIn CheckIDs started...")
 		
@@ -711,6 +717,8 @@ class BurnIn_Worker(QObject):
 		self.Ctrl_SetLock_Cmd(True,PopUp)
 		if not self.last_op_ok:
 			self.logger.error("WORKER: Check IDs procedure failed. can't lock the door.")
+			self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+			self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
 			
@@ -718,6 +726,8 @@ class BurnIn_Worker(QObject):
 		self.Ctrl_SelSp_Cmd(0,PopUp)
 		if not self.last_op_ok:
 			self.logger.error("WORKER: Check IDs procedure failed. can't select Julabo SP.")
+			self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+			self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
 		
@@ -725,6 +735,8 @@ class BurnIn_Worker(QObject):
 		self.Ctrl_SetSp_Cmd(0,20.0,PopUp)
 		if not self.last_op_ok:
 			self.logger.error("WORKER: Check IDs procedure failed. Can't set Julabo temperature.")
+			self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+			self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
 				
@@ -732,6 +744,8 @@ class BurnIn_Worker(QObject):
 		self.Ctrl_PowerJulabo_Cmd(True,PopUp)
 		if not self.last_op_ok:
 			self.logger.error("WORKER: Check IDs procedure failed. Can't power ON Julabo.")
+			self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+			self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
 		
@@ -740,6 +754,8 @@ class BurnIn_Worker(QObject):
 		self.Ctrl_PowerLV_Cmd(True,LV_Channel_list,PopUp)
 		if not self.last_op_ok:
 			self.logger.error("WORKER: Check IDs procedure failed. Can't start LVs.")
+			self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+			self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
 		time.sleep(BI_SLEEP_AFTER_VSET)
@@ -748,6 +764,8 @@ class BurnIn_Worker(QObject):
 		for row in Slot_list:
 			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="ON"):
 				self.logger.error("WORKER: Check IDs procedure failed. LVs check failed.")
+				self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+				self.SharedDict["BI_Action"].setText("None")
 				self.BI_terminated.emit()
 				return
 		
@@ -756,6 +774,8 @@ class BurnIn_Worker(QObject):
 		self.Ctrl_PowerHV_Cmd(True,HV_Channel_list,PopUp)
 		if not self.last_op_ok:
 			self.logger.error("WORKER: Check IDs procedure failed. Can't start HVs.")
+				self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+				self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
 		
@@ -764,11 +784,13 @@ class BurnIn_Worker(QObject):
 		for row in Slot_list:
 			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
 				self.logger.error("WORKER: Check IDs procedure failed. HVs check failed.")
+				self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+				self.SharedDict["BI_Action"].setText("None")
 				self.BI_terminated.emit()
 				return
 				
 		##checking IDS
-		self.SharedDict["BI_Status"].setText("Testing")
+		self.SharedDict["BI_Status"].setText("CheckingIDs")
 		self.SharedDict["BI_Action"].setText("Testing")
 		for slot in Slot_list:
 			self.SharedDict["BI_SUT"].setText(str(slot))
@@ -778,6 +800,9 @@ class BurnIn_Worker(QObject):
 			self.logger.info("BI: Checking ID for BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
 			self.BI_StartTest_Cmd(session_dict)
 			if not self.last_op_ok:
+				self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+				self.SharedDict["BI_Action"].setText("None")
+				self.SharedDict["BI_SUT"].setText("None")
 				self.logger.error("WORKER: Check IDs procedure failed. Error returned while checking slot "+str(slot))
 				self.BI_terminated.emit()
 				return
@@ -790,6 +815,8 @@ class BurnIn_Worker(QObject):
 		self.Ctrl_PowerHV_Cmd(False,HV_Channel_list,PopUp)
 		if not self.last_op_ok:
 			self.logger.error("WORKER: Check IDs procedure failed. Can't stop HVs.")
+			self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+			self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
 		time.sleep(BI_SLEEP_AFTER_VSET)
@@ -797,6 +824,8 @@ class BurnIn_Worker(QObject):
 		for row in Slot_list:
 			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
 				self.logger.error("WORKER: Check IDs procedure failed. HVs check failed.")
+				self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+				self.SharedDict["BI_Action"].setText("None")
 				self.BI_terminated.emit()
 				return
 			
@@ -806,6 +835,8 @@ class BurnIn_Worker(QObject):
 		self.Ctrl_PowerLV_Cmd(False,LV_Channel_list,PopUp)
 		if not self.last_op_ok:
 			self.logger.error("WORKER: Check IDs procedure failed. Can't stop LVs.")
+			self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+			self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
 		time.sleep(BI_SLEEP_AFTER_VSET)
@@ -813,11 +844,14 @@ class BurnIn_Worker(QObject):
 		for row in Slot_list:
 			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
 				self.logger.error("WORKER: Check IDs procedure failed. LVs check failed.")
+				self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+				self.SharedDict["BI_Action"].setText("None")
 				self.BI_terminated.emit()
 				return
 				
 		
 		self.SharedDict["BI_Action"].setText("None")
+		self.SharedDict["BI_Status"].setText("Idle")
 				
 		self.logger.info("BurnIn CheckIDs COMPLETED SUCCESFULLY!")
 		self.BI_terminated.emit()
