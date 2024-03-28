@@ -778,7 +778,7 @@ class BurnIn_Worker(QObject):
 			self.logger.info("BI: Checking ID for BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
 			self.BI_StartTest_Cmd(session_dict)
 			if not self.last_op_ok:
-				self.logger.error("WORKER: Check IDs procedure failed. Error returned while checking slot "+str(slot)")
+				self.logger.error("WORKER: Check IDs procedure failed. Error returned while checking slot "+str(slot))
 				self.BI_terminated.emit()
 				return
 				
