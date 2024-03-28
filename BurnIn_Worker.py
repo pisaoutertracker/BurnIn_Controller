@@ -1312,7 +1312,7 @@ class BurnIn_Worker(QObject):
 				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session, "--useExistingModuleTest","T2023_12_04_16_26_11_224929"],
 													cwd=self.BIcwd)
 			else:
-				result = subprocess.run(["python3", "moduleTest.py", "--readOnlyID" "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session],
+				result = subprocess.run(["python3", "moduleTest.py", "--readOnlyID", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session],
 													cwd=self.BIcwd)
 			self.logger.info(result.stdout)
 			self.logger.error(result.stderr)
