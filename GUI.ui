@@ -248,7 +248,7 @@
                  <item row="2" column="3">
                   <widget class="QPushButton" name="BI_Mod1ID_btn">
                    <property name="text">
-                    <string>PS_26_05-IPG_00102</string>
+                    <string>PS_26_05-IBA_00102</string>
                    </property>
                   </widget>
                  </item>
@@ -269,7 +269,7 @@
                  <item row="1" column="3">
                   <widget class="QPushButton" name="BI_Mod0ID_btn">
                    <property name="text">
-                    <string>PS_26_05-IBA_00102</string>
+                    <string>PS_26_05-IPG_00102</string>
                    </property>
                   </widget>
                  </item>
