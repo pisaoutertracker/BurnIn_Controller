@@ -1339,12 +1339,10 @@ class BurnIn_Worker(QObject):
 							self.last_op_ok= False
 							return
 						try:
-							proc.wait(timeout=TEST_PROCESS_SLEEP)
-							while True:
-								inline = proc.stdout.readline()
-								if not inline:
-									break
-								self.logger.info("BI TEST SUBPROCESS: "+inline.decode())
+							outs, errs = proc.communicate(timeout=TEST_PROCESS_SLEEP)
+							self.logger.info("BI TEST SUBPROCESS: "+outs.decode())
+							#self.logger.error("BI TEST SUBPROCESS: "+errs.decode())
+							break
 						except subprocess.TimeoutExpired:
 							self.logger.info("WORKER: Waiting test completion....")
 							#while True:
@@ -1355,11 +1353,14 @@ class BurnIn_Worker(QObject):
 					
 					if proc.returncode ==0:
 						self.logger.info("Module test succesfully completed with exit code "+str(proc.returncode))
+					elif proc.returncode ==None:
+						self.logger.info("Module test succesfully completed with exit code NONE")
 					else:
 						self.logger.error("Module test failed with exit code "+str(proc.returncode))
 						self.last_op_ok= False
 						
 				except Exception as e:
+					self.logger.error("Error while testing")
 					self.logger.error(e)
 					self.last_op_ok= False
 							
