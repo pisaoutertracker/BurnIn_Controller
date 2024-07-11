@@ -1327,7 +1327,7 @@ class BurnIn_Worker(QObject):
 					if not ID_check:
 						proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 					else:
-						proc = subprocess.Popen(["python3", "moduleTest.py","--readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+						proc = subprocess.Popen(["python3", "moduleTest.py","--readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 					
 														
 					
@@ -1353,14 +1353,14 @@ class BurnIn_Worker(QObject):
 					
 					if proc.returncode ==0:
 						self.logger.info("Module test succesfully completed with exit code "+str(proc.returncode))
-					elif proc.returncode ==None:
+					elif proc.returncode==None:
 						self.logger.info("Module test succesfully completed with exit code NONE")
 					else:
 						self.logger.error("Module test failed with exit code "+str(proc.returncode))
 						self.last_op_ok= False
 						
 				except Exception as e:
-					self.logger.error("Error while testing")
+					self.logger.error("Erro while testing")
 					self.logger.error(e)
 					self.last_op_ok= False
 							
