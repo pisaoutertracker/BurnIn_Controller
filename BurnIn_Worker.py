@@ -39,7 +39,7 @@ class BurnIn_Worker(QObject):
 		
 		self.BIcwd = configDict.get(("BITest","cwd"),"NOKEY")
 		if self.BIcwd == "NOKEY":
-			self.BIcwd = "/home/thermal/BurnIn_moduleTest_v4-22"
+			self.BIcwd = "/home/thermal/BurnIn_moduleTest_v5-00"
 			self.logger.warning("cwd directory parameter not found. Using default")
 		
 		self.logger.info("Worker class initialized")
@@ -1324,10 +1324,11 @@ class BurnIn_Worker(QObject):
 			else:
 				#create non-blocking process
 				try:
+					os.system("source /home/thermal/Ph2_ACF_20240523/setup.sh")
 					if not ID_check:
-						proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+						proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session, "--localPh2ACF"], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 					else:
-						proc = subprocess.Popen(["python3", "moduleTest.py","--readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+						proc = subprocess.Popen(["python3", "moduleTest.py","--readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session, "--localPh2ACF"], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 					
 														
 					
