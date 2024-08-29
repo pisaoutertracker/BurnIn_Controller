@@ -41,8 +41,12 @@ class MQTT_interface():
 		if self.M5Topic == "NOKEY":
 			self.M5Topic = "/caenstatus/full"
 			self.logger.warning("MQTT M5Topic parameter not found. Using default")
+		try:	
+			self.client = mqtt_client.Client(mqtt_client.CallbackAPIVersion.VERSION1,self.ClientId)
+		except Exception as e:
+			self.logger.warning("MQTT client: client creation failed. Assuming MQTT version <2.0.")
+			self.client = mqtt_client.Client(self.ClientId)
 			
-		self.client = mqtt_client.Client(mqtt_client.CallbackAPIVersion.VERSION1,self.ClientId)
 		self.client.on_connect = self.on_connect
 		self.client.on_message = self.on_message
 		self.client.on_disconnect = self.on_disconnect
