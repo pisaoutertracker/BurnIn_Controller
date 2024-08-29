@@ -248,7 +248,7 @@
                  <item row="2" column="3">
                   <widget class="QPushButton" name="BI_Mod1ID_btn">
                    <property name="text">
-                    <string>PS_26_05-IBA_00102</string>
+                    <string>PS_26_05-IPG_00102</string>
                    </property>
                   </widget>
                  </item>
@@ -269,7 +269,7 @@
                  <item row="1" column="3">
                   <widget class="QPushButton" name="BI_Mod0ID_btn">
                    <property name="text">
-                    <string>PS_26_05-IPG_00102</string>
+                    <string>PS_26_05-IBA_00102</string>
                    </property>
                   </widget>
                  </item>
@@ -560,7 +560,7 @@
             <item>
              <widget class="QGroupBox" name="groupBox_16">
               <property name="title">
-               <string>BI control</string>
+               <string>Burn-In control</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
                <item>
@@ -738,7 +738,7 @@
            <item>
             <widget class="QLabel" name="label_89">
              <property name="text">
-              <string>SUT:</string>
+              <string>Slot Under Test</string>
              </property>
             </widget>
            </item>
@@ -761,22 +761,6 @@
               </size>
              </property>
             </spacer>
-           </item>
-           <item>
-            <widget class="QProgressBar" name="BI_ProgressBar_pb">
-             <property name="maximumSize">
-              <size>
-               <width>400</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="value">
-              <number>20</number>
-             </property>
-             <property name="textVisible">
-              <bool>true</bool>
-             </property>
-            </widget>
            </item>
           </layout>
          </widget>

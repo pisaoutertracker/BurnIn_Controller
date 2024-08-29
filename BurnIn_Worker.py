@@ -1324,12 +1324,10 @@ class BurnIn_Worker(QObject):
 			else:
 				#create non-blocking process
 				try:
-					#os.system("source /home/thermal/Ph2_ACF_20240523/setup.sh")
-					CheckID_cmd= "source /home/thermal/Ph2_ACF_20240523/setup.sh && python3 moduleTest.py --readOnlyID --board "+ fc7ID+ " --slot "+ fc7Slot +" --module "+ module+  " --session "+ session+ " --localPh2ACF"
 					if not ID_check:
-						proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session, "--localPh2ACF"], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+						proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 					else:
-						proc = subprocess.Popen([CheckID_cmd], shell=True,cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+						proc = subprocess.Popen(["python3", "moduleTest.py","--readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 					
 														
 					
@@ -1375,12 +1373,12 @@ class BurnIn_Worker(QObject):
 				msg.setWindowTitle("Module test ongoing. Please wait...")
 				msg.show()
 			session=self.SharedDict["TestSession"]
-			
-			os.system("source /home/thermal/Ph2_ACF_20240523/setup.sh")
 			if dry:
-				proc = subprocess.Popen(["python3", "moduleTest.py","--readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session, "--localPh2ACF"], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session, "--useExistingModuleTest","T2023_12_04_16_26_11_224929"],
+													cwd=self.BIcwd)
 			else:
-				proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session, "--localPh2ACF"], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+				result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session],
+													cwd=self.BIcwd)
 			self.logger.info(result.stdout)
 			self.logger.error(result.stderr)
 			self.logger.info("Module test completed!")

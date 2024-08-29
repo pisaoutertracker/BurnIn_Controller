@@ -120,7 +120,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Test_line=self.GraphWidget.plot(self.TimeTest_arr, self.TempTest_arr, pen=None, symbol='+')		
 		
 		# manual adjust of PyQt widget
-		self.BI_ProgressBar_pb.setValue(0)
+		#self.BI_ProgressBar_pb.setValue(0)
 		
 		self.BI_Desc_line.setFixedHeight(2 * self.BI_Operator_line.height())
 
@@ -361,7 +361,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_Status"]=self.BI_Status_tag
 		self.SharedDict["BI_Action"]=self.BI_Action_tag
 		self.SharedDict["BI_SUT"]=self.BI_SUT_tag
-		self.SharedDict["BI_ProgressBar"]=self.BI_ProgressBar_pb
+		#self.SharedDict["BI_ProgressBar"]=self.BI_ProgressBar_pb
 		self.SharedDict["BI_Cycle"]=self.BI_Cycle_tag
 		self.SharedDict["BI_Graph"]=self.GraphWidget
 		
