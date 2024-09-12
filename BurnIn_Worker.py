@@ -352,6 +352,7 @@ class BurnIn_Worker(QObject):
 	# - UNLOCK with JULABO/FNAL/M5 info not updated	
 	# - UNLOCK with minimal internal temp below EXTERNAL DewPoint
 	# - UNLOCK with JULABO ON and taget temp below external dewpoint
+	# - status of at least one defined HV channels is ON or UNKNOWN
 	# - TCP socket is not connected and connection attempt fails	
 	# Control on cmd execution: reply check from FNAL Box	
 	@pyqtSlot(bool)	
@@ -381,6 +382,13 @@ class BurnIn_Worker(QObject):
 			if self.SharedDict["Ctrl_LowerTemp"] < float(self.SharedDict["Ctrl_ExtDewPoint"].text()):
 				Warning_str = "Operation can't be performed"
 				Reason_str = "Internal minimum temperature below external dew point. Retry later"
+				if PopUp:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
+				return
+			if self.SharedDict["HV_on"]:
+				Warning_str = "Operation can't be performed"
+				Reason_str = "At least one HV channel status is ON"
 				if PopUp:
 					self.Request_msg.emit(Warning_str,Reason_str)
 				self.last_op_ok= False

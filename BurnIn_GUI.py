@@ -337,6 +337,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["LastHV07Status"]=self.LastHV07Status_tag
 		self.SharedDict["LastHV08Status"]=self.LastHV08Status_tag
 		self.SharedDict["LastHV09Status"]=self.LastHV09Status_tag
+		self.SharedDict["HV_on"]=False
 		
 		
 		# PYQT tags in Control tab

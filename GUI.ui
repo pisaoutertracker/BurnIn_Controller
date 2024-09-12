@@ -738,7 +738,7 @@
            <item>
             <widget class="QLabel" name="label_89">
              <property name="text">
-              <string>Slot Under Test</string>
+              <string>Slot Under Test:</string>
              </property>
             </widget>
            </item>

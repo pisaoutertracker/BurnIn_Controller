@@ -69,6 +69,7 @@ class BurnIn_Monitor(QObject):
 					try:
 						
 						CAEN_dict = json.loads(self.MQTT.LastCAENMessage)
+						self.SharedDict["HV_on"]=False
 						for i in range (len(self.LVNames)):
 							if self.LVNames[i]!="?":
 								key = "caen_"+self.LVNames[i]+"_IsOn"
@@ -113,7 +114,8 @@ class BurnIn_Monitor(QObject):
 									if is_active >0 :
 										self.SharedDict["LastHV"+str((int)(i)).zfill(2)+"Status"].setText("ON")
 										self.SharedDict["CAEN_table"].item(i,CTRLTABLE_HV_STAT_COL).setText("ON")
-										self.SharedDict["CAEN_table"].item(i,CTRLTABLE_LV_NAME_COL).setBackground(QtGui.QColor("lightgrey"))	
+										self.SharedDict["CAEN_table"].item(i,CTRLTABLE_LV_NAME_COL).setBackground(QtGui.QColor("lightgrey"))
+										self.SharedDict["HV_ON"]=True
 									else:
 										self.SharedDict["LastHV"+str((int)(i)).zfill(2)+"Status"].setText("OFF")
 										self.SharedDict["CAEN_table"].item(i,CTRLTABLE_HV_STAT_COL).setText("OFF")
