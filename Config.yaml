@@ -21,5 +21,6 @@ DB:
 Supervisor:
  Enabled: "True"
 BITest:
- cwd: "/home/thermal/BurnIn_moduleTest_v5-03"
+ cwd: "/home/thermal/BurnIn_moduleTest"
+ version: "latest"
  

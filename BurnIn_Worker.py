@@ -39,8 +39,13 @@ class BurnIn_Worker(QObject):
 		
 		self.BIcwd = configDict.get(("BITest","cwd"),"NOKEY")
 		if self.BIcwd == "NOKEY":
-			self.BIcwd = "/home/thermal/BurnIn_moduleTest_v5-00"
+			self.BIcwd = "/home/thermal/BurnIn_moduleTest"
 			self.logger.warning("cwd directory parameter not found. Using default")
+			
+		self.Ph2_ACF_version = configDict.get(("BITest","version"),"NOKEY")
+		if self.Ph2_ACF_version == "NOKEY":
+			self.Ph2_ACF_version = "latest"
+			self.logger.warning("Ph2_ACF_version parameter not found. Using latest")
 		
 		self.logger.info("Worker class initialized")
 		self.last_op_ok= True
@@ -1332,10 +1337,16 @@ class BurnIn_Worker(QObject):
 			else:
 				#create non-blocking process
 				try:
-					if not ID_check:
-						proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+					if self.Ph2_ACF_version=="latest":
+						if not ID_check:
+							proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+						else:
+							proc = subprocess.Popen(["python3", "moduleTest.py","--readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 					else:
-						proc = subprocess.Popen(["python3", "moduleTest.py","--readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+						if not ID_check:
+							proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session, "--version", self.Ph2_ACF_version ], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+						else:
+							proc = subprocess.Popen(["python3", "moduleTest.py","--readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session, "--version", self.Ph2_ACF_version], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 					
 														
 					
