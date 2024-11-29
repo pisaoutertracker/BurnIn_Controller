@@ -119,8 +119,33 @@ class BurnIn_Worker(QObject):
 	# implemented as a is a Pyqt slot
 	@pyqtSlot(str)
 	def SendModuleTestCmd(self,cmd):
-		self.logger.info("WORKER: Executing "+cmd)
-		subprocess.run(cmd.split(" "))
+		self.logger.info("Starting custom shell command...")
+		cmdSplit = cmd.split()
+		
+		try:
+			proc = subprocess.Popen(cmdSplit, cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)						
+					
+			while(proc.returncode==None):
+			
+				try:
+					outs, errs = proc.communicate(timeout=TEST_PROCESS_SLEEP)
+					self.logger.info("Custom command output: "+outs.decode())
+					#self.logger.error("BI TEST SUBPROCESS: "+errs.decode())
+					break
+				except subprocess.TimeoutExpired:
+					self.logger.info("WORKER: Waiting command completion....")
+					
+				if proc.returncode ==0:
+					self.logger.info("Command executed with return code "+str(proc.returncode))
+				elif proc.returncode==None:
+					self.logger.info("Command executed with return code NONE")
+				else:
+					self.logger.error("Command failed with return code "+str(proc.returncode))
+						
+		except Exception as e:
+			self.logger.error("Erro while executing custom command")
+			self.logger.error(e)
+							
 		
 		
 	###########################################################################
