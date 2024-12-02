@@ -478,6 +478,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.BI_LoadSesh_btn.clicked.connect(self.BI_FillFromDB)
 		self.BI_LoadLast_btn.clicked.connect(self.BI_FillFromLast)
 		self.BI_CheckIDs_btn.clicked.connect(self.BI_CheckIDs_Cmd)
+		self.BI_ReloadConn_btn.clicked.connect(self.BI_ReloadConn_Cmd)
 
 		#menu actions
 		self.actionExit.triggered.connect(self.close)
@@ -575,6 +576,15 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.TimeTest_arr.clear()
 		self.TempTest_arr.clear()
 		self.DewPoint_arr.clear()
+	
+	def BI_ReloadConn_Cmd(self):
+	
+		self.DB_interface.getConnectionsFromDB(self.fc7IDs,self.fc7Slots)
+		for row in range(10):
+
+			self.Ctrl_CAEN_table.setItem(row,10,QtWidgets.QTableWidgetItem(self.fc7IDs[row]))
+			self.Ctrl_CAEN_table.setItem(row,11,QtWidgets.QTableWidgetItem(self.fc7Slots[row]))
+		
 		
 	
 	def BI_CheckIDs_Cmd(self):

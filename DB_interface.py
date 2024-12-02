@@ -104,8 +104,8 @@ class DB_interface():
 		connect_data_fiber = {
 		"cable1": ID,
 		"cable2": "B1",
-		"port1": "power",
-		"port2": "power"
+		"port1": "fiber",
+		"port2": "fiber"
 		}
 		
 		
