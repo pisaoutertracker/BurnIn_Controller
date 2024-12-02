@@ -73,6 +73,58 @@ class DB_interface():
 			else:
 				self.logger.error("Slot "+ str(slot+1)+ " connections pull failed. Status code:%d", response.status_code)
 		return
+		
+	def uploadModuleNameToDB(self,slot,ID):
+		self.logger.info("Loading new module name to DB")
+		# module = "PS_26_05-IPG_00102"
+		slotName = "B"+str(slot+1)
+		
+		#check if module exists
+		snapshot_data = { "cable": ID, "side": "crateSide"}
+		api_url = "http://%s:%d/snapshot"%(self.Addr, int(self.Port))
+		response = requests.post(api_url, json=snapshot_data)
+		if response.status_code == 200:
+			self.logger.info("Slot "+ str(slot+1)+ " connections successfully pulled.")
+			jsonResponse=response.json()
+			self.logger.debug (jsonResponse)
+			connections = jsonResponse["1"]["connections"]
+			for val in connections:
+				if val["cable"][0:3]=="FC7":
+					fc7IDs[slot] = str.lower(val["cable"])
+					fc7Slots[slot] = str.lower(val["det_port"][0][2:])
+		else:
+			self.logger.error("Slot "+ str(slot+1)+ " connections pull failed. Status code:%d", response.status_code)
+		return
+		connect_data_power = {
+		"cable1": ID,
+		"cable2": "B1",
+		"port1": "power",
+		"port2": "power"
+		}
+		connect_data_fiber = {
+		"cable1": ID,
+		"cable2": "B1",
+		"port1": "power",
+		"port2": "power"
+		}
+		
+		
+		for slot in range(0,10):
+			slotName = "B"+str(slot+1)
+			snapshot_data = { "cable": slotName, "side": "crateSide"}
+			response = requests.post(api_url, json=snapshot_data)
+			if response.status_code == 200:
+				self.logger.info("Slot "+ str(slot+1)+ " connections successfully pulled.")
+				jsonResponse=response.json()
+				self.logger.debug (jsonResponse)
+				connections = jsonResponse["1"]["connections"]
+				for val in connections:
+					if val["cable"][0:3]=="FC7":
+						fc7IDs[slot] = str.lower(val["cable"])
+						fc7Slots[slot] = str.lower(val["det_port"][0][2:])
+			else:
+				self.logger.error("Slot "+ str(slot+1)+ " connections pull failed. Status code:%d", response.status_code)
+		return
 
 	def StartSesh(self,session_dict):
 		self.logger.info("Database session uploading. Please wait...")

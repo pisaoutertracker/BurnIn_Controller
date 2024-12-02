@@ -181,17 +181,17 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		
 		# pack module IDs button
-		self.ModuleId_btns = []
-		self.ModuleId_btns.append(self.BI_Mod0ID_btn)
-		self.ModuleId_btns.append(self.BI_Mod1ID_btn)
-		self.ModuleId_btns.append(self.BI_Mod2ID_btn)
-		self.ModuleId_btns.append(self.BI_Mod3ID_btn)
-		self.ModuleId_btns.append(self.BI_Mod4ID_btn)
-		self.ModuleId_btns.append(self.BI_Mod5ID_btn)
-		self.ModuleId_btns.append(self.BI_Mod6ID_btn)
-		self.ModuleId_btns.append(self.BI_Mod7ID_btn)
-		self.ModuleId_btns.append(self.BI_Mod8ID_btn)
-		self.ModuleId_btns.append(self.BI_Mod9ID_btn)
+		self.ModuleId_lines = []
+		self.ModuleId_lines.append(self.BI_Mod0ID_line)
+		self.ModuleId_lines.append(self.BI_Mod1ID_line)
+		self.ModuleId_lines.append(self.BI_Mod2ID_line)
+		self.ModuleId_lines.append(self.BI_Mod3ID_line)
+		self.ModuleId_lines.append(self.BI_Mod4ID_line)
+		self.ModuleId_lines.append(self.BI_Mod5ID_line)
+		self.ModuleId_lines.append(self.BI_Mod6ID_line)
+		self.ModuleId_lines.append(self.BI_Mod7ID_line)
+		self.ModuleId_lines.append(self.BI_Mod8ID_line)
+		self.ModuleId_lines.append(self.BI_Mod9ID_line)
 		
 		
 		self.Module_cbs = []
@@ -449,16 +449,16 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Ctrl_SelSp1_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(0))
 		self.Ctrl_SelSp2_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(1))
 		self.Ctrl_SelSp3_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(2))
-		self.ModuleId_btns[0].clicked.connect(lambda : self.BI_SetModuleID(0))
-		self.ModuleId_btns[1].clicked.connect(lambda : self.BI_SetModuleID(1))
-		self.ModuleId_btns[2].clicked.connect(lambda : self.BI_SetModuleID(2))
-		self.ModuleId_btns[3].clicked.connect(lambda : self.BI_SetModuleID(3))
-		self.ModuleId_btns[4].clicked.connect(lambda : self.BI_SetModuleID(4))
-		self.ModuleId_btns[5].clicked.connect(lambda : self.BI_SetModuleID(5))
-		self.ModuleId_btns[6].clicked.connect(lambda : self.BI_SetModuleID(6))
-		self.ModuleId_btns[7].clicked.connect(lambda : self.BI_SetModuleID(7))
-		self.ModuleId_btns[8].clicked.connect(lambda : self.BI_SetModuleID(8))
-		self.ModuleId_btns[9].clicked.connect(lambda : self.BI_SetModuleID(9))
+		self.ModuleId_lines[0].returnPressed.connect(lambda : self.BI_SetModuleID(0))
+		self.ModuleId_lines[1].returnPressed.connect(lambda : self.BI_SetModuleID(1))
+		self.ModuleId_lines[2].returnPressed.connect(lambda : self.BI_SetModuleID(2))
+		self.ModuleId_lines[3].returnPressed.connect(lambda : self.BI_SetModuleID(3))
+		self.ModuleId_lines[4].returnPressed.connect(lambda : self.BI_SetModuleID(4))
+		self.ModuleId_lines[5].returnPressed.connect(lambda : self.BI_SetModuleID(5))
+		self.ModuleId_lines[6].returnPressed.connect(lambda : self.BI_SetModuleID(6))
+		self.ModuleId_lines[7].returnPressed.connect(lambda : self.BI_SetModuleID(7))
+		self.ModuleId_lines[8].returnPressed.connect(lambda : self.BI_SetModuleID(8))
+		self.ModuleId_lines[9].returnPressed.connect(lambda : self.BI_SetModuleID(9))
 		self.Ctrl_SetLowFlow_btn.clicked.connect(lambda : self.Ctrl_SetHighFlow_Cmd(False))
 		self.Ctrl_SetHighFlow_btn.clicked.connect(lambda : self.Ctrl_SetHighFlow_Cmd(True))
 		self.Ctrl_SetLock_btn.clicked.connect    (lambda : self.Ctrl_SetLock_Cmd(True))
@@ -590,7 +590,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_fc7Slots"]=[]
 		for cb in self.Module_cbs:
 			self.SharedDict["BI_ActiveSlots"].append(cb.isChecked())
-		for Id in self.ModuleId_btns:
+		for Id in self.ModuleId_lines:
 			self.SharedDict["BI_ModuleIDs"].append(Id.text())
 		for Id in self.fc7IDs:
 			self.SharedDict["BI_fc7IDs"].append(Id)
@@ -644,7 +644,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.BI_NCycles_sb.setValue(session_dict["NCycles"])
 		for idx,cb in enumerate(self.Module_cbs):
 			cb.setChecked(session_dict["ActiveSlots"][idx])
-		for idx,ID in enumerate(self.ModuleId_btns):
+		for idx,ID in enumerate(self.ModuleId_lines):
 			ID.setText(session_dict["ModuleIDs"][idx])	
 		self.TestTypeItems.index(session_dict["TestType"])
 		
@@ -683,7 +683,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 				self.Module_cbs[i].setChecked(False)
 			else:
 				self.Module_cbs[i].setChecked(True)
-				self.ModuleId_btns[i].setText(session_fromDB["modulesList"][i])
+				self.ModuleId_lines[i].setText(session_fromDB["modulesList"][i])
 
 		try:
 			self.BI_TestType_cb.setCurrentIndex(self.TestTypeItems.index(session_fromDB["testType"]))
@@ -708,14 +708,17 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.ManualOp_tab.setEnabled(True) 
 		self.ModuleTest_tab.setEnabled(True)
 		
-	def BI_SetModuleID(self,idx):
+	def BI_SetModuleID(self,slot):
 		
-		Id, ok = QtWidgets.QInputDialog.getText(self,"Enter or scan module IDs","Module ID") 
-		if ok:
-			self.ModuleId_btns[idx].setText(Id)
-			self.logger.info("New Id for module "+str(idx+1)+": "+Id)
+		
+		self.logger.info("New Id for module "+str(slot+1)+": "+self.ModuleId_lines[slot].text())
+		#self.DB_interface.uploadModuleNameToDB(slot,self.ModuleId_lines[slot].text())
+		if slot < 9:
+			self.ModuleId_lines[slot+1].setFocus()
+			self.ModuleId_lines[slot+1].selectAll()
 		else:
-			self.logger.info("New Id for module "+str(idx+1)+" aborted by user")
+			self.ModuleId_lines[0].setFocus()
+			self.ModuleId_lines[0].selectAll()
 			
 		
 		
@@ -746,7 +749,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			if self.Module_cbs[i].isChecked()==False:
                                 session["modulesList"].append("")
 			else:
-				session["modulesList"].append(self.ModuleId_btns[i].text()),
+				session["modulesList"].append(self.ModuleId_lines[i].text()),
         
                 #send session to MongoDB here
 		uploadResponse=databaseTools.uploadSessionToDB(session)
