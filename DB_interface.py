@@ -53,6 +53,26 @@ class DB_interface():
 		else:
 			self.logger.error("Failed to pull the session. Status code:%d", response.status_code)
 		return eval(response.content.decode())
+		
+	def getConnectionsFromDB(self,fc7IDs,fc7Slots):
+		self.logger.info("Getting connection from DB")
+		api_url = "http://%s:%d/snapshot"%(self.Addr, int(self.Port))
+		for slot in range(0,10):
+			slotName = "B"+str(slot+1)
+			snapshot_data = { "cable": slotName, "side": "crateSide"}
+			response = requests.post(api_url, json=snapshot_data)
+			if response.status_code == 200:
+				self.logger.info("Slot "+ str(slot+1)+ " connections successfully pulled.")
+				jsonResponse=response.json()
+				self.logger.debug (jsonResponse)
+				connections = jsonResponse["1"]["connections"]
+				for val in connections:
+					if val["cable"][0:3]=="FC7":
+						fc7IDs[slot] = str.lower(val["cable"])
+						fc7Slots[slot] = str.lower(val["det_port"][0][2:])
+			else:
+				self.logger.error("Slot "+ str(slot+1)+ " connections pull failed. Status code:%d", response.status_code)
+		return
 
 	def StartSesh(self,session_dict):
 		self.logger.info("Database session uploading. Please wait...")

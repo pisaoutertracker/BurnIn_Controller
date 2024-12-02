@@ -83,6 +83,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.fc7Slots[0]="0"
 		self.fc7Slots[1]="1"
 		
+		#cooncting to DB for connection
+		self.DB_interface = DB_interface(self.configDict,self.logger)
+		self.DB_interface.getConnectionsFromDB(self.fc7IDs,self.fc7Slots)
+		
 		self.initUI()
 		
 		
@@ -212,7 +216,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.Julabo = BurnIn_TCP(self.configDict,self.logger,"Julabo")
 		self.FNALBox = BurnIn_TCP(self.configDict,self.logger,"FNALBox")
 		self.CAENController = BurnIn_TCP(self.configDict,self.logger,"CAENController")
-		self.DB_interface = DB_interface(self.configDict,self.logger)
 	
 		
 		########## packing shared infrmation ################
