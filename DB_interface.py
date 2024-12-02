@@ -75,57 +75,121 @@ class DB_interface():
 		return
 		
 	def uploadModuleNameToDB(self,slot,ID):
-		self.logger.info("Loading new module name to DB")
-		# module = "PS_26_05-IPG_00102"
-		slotName = "B"+str(slot+1)
+		self.logger.info("Loading new module connections to DB")
+		reqSlotName = "B"+str(slot+1)
 		
-		#check if module exists
+		#check if module exists and if it is connected to something
+		self.logger.info("Checking module status in DB")
 		snapshot_data = { "cable": ID, "side": "crateSide"}
 		api_url = "http://%s:%d/snapshot"%(self.Addr, int(self.Port))
 		response = requests.post(api_url, json=snapshot_data)
 		if response.status_code == 200:
-			self.logger.info("Slot "+ str(slot+1)+ " connections successfully pulled.")
+			self.logger.info("Module "+ ID+ " connections successfully pulled.")
 			jsonResponse=response.json()
 			self.logger.debug (jsonResponse)
 			connections = jsonResponse["1"]["connections"]
-			for val in connections:
-				if val["cable"][0:3]=="FC7":
-					fc7IDs[slot] = str.lower(val["cable"])
-					fc7Slots[slot] = str.lower(val["det_port"][0][2:])
+			if len(connections):
+				connSlot=connections[0]["cable"]
+				self.logger.info("Module "+ ID+ " is already connected to slot "+connSlot)
+				if connSlot==reqSlotName:
+					self.logger.info("Module "+ ID+ " already connected to slot "+connSlot)
+					return
+				else:
+					self.disconnectModuleSlot(ID,connSlot)
+				
 		else:
-			self.logger.error("Slot "+ str(slot+1)+ " connections pull failed. Status code:%d", response.status_code)
-		return
-		connect_data_power = {
-		"cable1": ID,
-		"cable2": "B1",
-		"port1": "power",
-		"port2": "power"
-		}
-		connect_data_fiber = {
-		"cable1": ID,
-		"cable2": "B1",
-		"port1": "fiber",
-		"port2": "fiber"
-		}
-		
-		
-		for slot in range(0,10):
-			slotName = "B"+str(slot+1)
-			snapshot_data = { "cable": slotName, "side": "crateSide"}
-			response = requests.post(api_url, json=snapshot_data)
-			if response.status_code == 200:
-				self.logger.info("Slot "+ str(slot+1)+ " connections successfully pulled.")
-				jsonResponse=response.json()
-				self.logger.debug (jsonResponse)
-				connections = jsonResponse["1"]["connections"]
-				for val in connections:
-					if val["cable"][0:3]=="FC7":
-						fc7IDs[slot] = str.lower(val["cable"])
-						fc7Slots[slot] = str.lower(val["det_port"][0][2:])
-			else:
-				self.logger.error("Slot "+ str(slot+1)+ " connections pull failed. Status code:%d", response.status_code)
+			self.logger.error("Slot "+ str(slot+1)+ " status check failed. Status code:%d", response.status_code)
+			return
+
+
+		#check if requested slot exists and if it is connected to something			
+		self.logger.info("Checking slot status in DB")
+		snapshot_data = { "cable": reqSlotName, "side": "detSide"}
+		api_url = "http://%s:%d/snapshot"%(self.Addr, int(self.Port))
+		response = requests.post(api_url, json=snapshot_data)
+		if response.status_code == 200:
+			self.logger.info("Slot "+ reqSlotName+ " connections successfully pulled.")
+			jsonResponse=response.json()
+			self.logger.debug (jsonResponse)
+			connections = jsonResponse["1"]["connections"]
+			if len(connections):
+				connID=connections[0]["cable"]
+				self.logger.info("Slot "+ reqSlotName+ " is already connected to module "+connID)
+				if connID==ID:
+					self.logger.info("Module "+ ID+ " already connected to slot "+connSlot)
+					return
+				else:
+					self.disconnectModuleSlot(connID,reqSlotName)
+		else:
+			self.logger.error("Slot "+ str(slot+1)+ " status check failed. Status code:%d", response.status_code)
+			return	
+
+		self.connectModuleSlot(ID,reqSlotName)	
 		return
 
+
+	def disconnectModuleSlot(self,ID,connSlot):
+		self.logger.info("Disconnecting module "+ID+" from slot "+connSlot)
+		api_url = "http://%s:%d/disconnect"%(self.Addr, int(self.Port))
+		data_power = {
+			"cable1": ID,
+			"cable2": connSlot,
+			"port1": "power",
+			"port2": "power"
+		}
+		data_fiber = {
+			"cable1": ID,
+			"cable2": connSlot,
+			"port1": "fiber",
+			"port2": "fiber"
+		}			
+		response = requests.post(api_url, json=data_power)
+		if response.status_code == 200:
+			self.logger.info("Module "+ ID+ " power connection removed.")
+			jsonResponse=response.json()
+			self.logger.debug (jsonResponse)
+		else:
+			self.logger.error("Module "+ ID+ " power connection removal failed. Status code:%d", response.status_code)
+		response = requests.post(api_url, json=data_fiber)
+		if response.status_code == 200:
+			self.logger.info("Module "+ ID+ " fiber connection removed.")
+			jsonResponse=response.json()
+			self.logger.debug (jsonResponse)
+		else:
+			self.logger.error("Module "+ ID+ " fiber connection removal failed. Status code:%d", response.status_code)
+	
+	
+	def connectModuleSlot(self,ID,connSlot):
+		self.logger.info("connecting module "+ID+" from slot "+connSlot)
+		api_url = "http://%s:%d/connect"%(self.Addr, int(self.Port))
+		data_power = {
+			"cable1": ID,
+			"cable2": connSlot,
+			"port1": "power",
+			"port2": "power"
+		}
+		data_fiber = {
+			"cable1": ID,
+			"cable2": connSlot,
+			"port1": "fiber",
+			"port2": "fiber"
+		}			
+		response = requests.post(api_url, json=data_power)
+		if response.status_code == 200:
+			self.logger.info("Module "+ ID+ " power connection added.")
+			jsonResponse=response.json()
+			self.logger.debug (jsonResponse)
+		else:
+			self.logger.error("Module "+ ID+ " power connection failed. Status code:%d", response.status_code)
+		response = requests.post(api_url, json=data_fiber)
+		if response.status_code == 200:
+			self.logger.info("Module "+ ID+ " fiber connection added.")
+			jsonResponse=response.json()
+			self.logger.debug (jsonResponse)
+		else:
+			self.logger.error("Module "+ ID+ " fiber connection failed. Status code:%d", response.status_code)
+	
+	
 	def StartSesh(self,session_dict):
 		self.logger.info("Database session uploading. Please wait...")
                 

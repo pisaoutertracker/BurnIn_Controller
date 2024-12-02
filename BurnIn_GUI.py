@@ -722,7 +722,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		
 		self.logger.info("New Id for module "+str(slot+1)+": "+self.ModuleId_lines[slot].text())
-		#self.DB_interface.uploadModuleNameToDB(slot,self.ModuleId_lines[slot].text())
+		self.DB_interface.uploadModuleNameToDB(slot,self.ModuleId_lines[slot].text())
 		if slot < 9:
 			self.ModuleId_lines[slot+1].setFocus()
 			self.ModuleId_lines[slot+1].selectAll()
