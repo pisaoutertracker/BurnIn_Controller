@@ -631,7 +631,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_fc7Slots"]=[]
 		for cb in self.Module_cbs:
 			self.SharedDict["BI_ActiveSlots"].append(cb.isChecked())
-		for Id in self.ModuleId_btns:
+		for Id in self.ModuleId_lines:
 			self.SharedDict["BI_ModuleIDs"].append(Id.text())
 		for Id in self.fc7IDs:
 			self.SharedDict["BI_fc7IDs"].append(Id)
