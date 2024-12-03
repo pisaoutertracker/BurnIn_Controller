@@ -1361,11 +1361,14 @@ class BurnIn_Worker(QObject):
 				return True
 			else:
 				#create non-blocking process
+				print()
 				try:
 					if self.Ph2_ACF_version=="latest":
 						if not ID_check:
 							proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 						else:
+						    testCmd = ["python3", "moduleTest.py","--readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session]
+							print(testCmd)
 							proc = subprocess.Popen(["python3", "moduleTest.py","--readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 					else:
 						if not ID_check:
