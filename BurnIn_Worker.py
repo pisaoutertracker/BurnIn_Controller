@@ -1367,7 +1367,7 @@ class BurnIn_Worker(QObject):
 						if not ID_check:
 							proc = subprocess.Popen(["python3", "moduleTest.py", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 						else:
-						    testCmd = ["python3", "moduleTest.py","-c","readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session]
+							testCmd = ["python3", "moduleTest.py","-c","readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session]
 							print(testCmd)
 							proc = subprocess.Popen(["python3", "moduleTest.py","-c","readOnlyID", "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 					else:
