@@ -1263,9 +1263,11 @@ class BurnIn_Worker(QObject):
 					self.logger.info("BI: cooling to target temp....")	
 					dewPoint = float(self.SharedDict["Ctrl_IntDewPoint"].text())
 					if dewPoint < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
+						self.logger.info("BI: setting low flow....")	
 						if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,False,PopUp):
 							return
 					elif dewPoint > BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()!="HIGH":
+						self.logger.info("BI: setting high flow....")	
 						if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
 							return
 					if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-(nextTemp+TempRampOffset)) < TempTolerance):
@@ -1274,6 +1276,12 @@ class BurnIn_Worker(QObject):
 						self.last_op_ok= False
 						return	
 					if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
+						if not (self.SharedDict["CAEN_updated"]):
+							self.logger.info("BI: CAEN info not updated while cooling....")	
+						if not (self.SharedDict["FNALBox_updated"]):
+							self.logger.info("BI: FNAL info not updated while cooling....")	
+						if not (self.SharedDict["Julabo_updated"]):
+							self.logger.info("BI: Julabo info not updated while cooling....")	
 						self.last_op_ok= False
 						return
 					time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
@@ -1310,9 +1318,11 @@ class BurnIn_Worker(QObject):
 				self.logger.info("BI: heating to target temp....")	
 				dewPoint = float(self.SharedDict["Ctrl_IntDewPoint"].text())
 				if dewPoint < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
+					self.logger.info("BI: setting low flow....")	
 					if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,False,PopUp):
 						return
-				elif dewPoint > BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()!="HIGH":
+				elif dewPoint > BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()!="HIGH":				
+					self.logger.info("BI: setting high flow....")	
 					if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
 						return
 				if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-HighTemp) < TempTolerance):
@@ -1321,6 +1331,12 @@ class BurnIn_Worker(QObject):
 					self.last_op_ok= False
 					return	
 				if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
+					if not (self.SharedDict["CAEN_updated"]):
+						self.logger.info("BI: CAEN info not updated while heating....")	
+					if not (self.SharedDict["FNALBox_updated"]):
+						self.logger.info("BI: FNAL info not updated while heating....")	
+					if not (self.SharedDict["Julabo_updated"]):
+						self.logger.info("BI: Julabo info not updated while heating....")	
 					self.last_op_ok= False
 					return
 				time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)

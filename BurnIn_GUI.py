@@ -85,7 +85,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		#cooncting to DB for connection
 		self.DB_interface = DB_interface(self.configDict,self.logger)
-		self.DB_interface.getConnectionsFromDB(self.fc7IDs,self.fc7Slots)
+		try:
+			self.DB_interface.getConnectionsFromDB(self.fc7IDs,self.fc7Slots)
+		except Exception as e:
+			self.logger.warning(e)
 		
 		self.initUI()
 		
