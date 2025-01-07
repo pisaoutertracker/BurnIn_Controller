@@ -277,13 +277,14 @@ class BurnIn_Worker(QObject):
 				self.last_op_ok= False
 		self.Julabo.lock.release()
 
-	## Function to select the target temperature of a JULABO SetPoint
+	## Function to power ON/OFF the JULABO
 	# implemented as a is a Pyqt slot
 	# NOT Executed if:
 	# - POWERING ON with JULABO and FNAL info are not updated	
 	# - POWERING ON with target temp below DewPoint	
 	# - POWERING ON with door not locked	
-	# - POWERING ON with door not closed	
+	# - POWERING ON with door not closed
+	# - POWERING OFF with LV ON	
 	# - TCP socket is not connected and connection attempt fails
 	# Control on cmd execution: read back from instrument			
 	@pyqtSlot(bool)	
@@ -292,6 +293,14 @@ class BurnIn_Worker(QObject):
 		
 		if not switch:  # power off
 			self.logger.info("WORKER: Powering Julabo OFF")
+			if self.SharedDict["LV_on"]:
+				Warning_str = "Operation can't be performed"
+				Reason_str = "At least one LV channel status is ON"
+				if PopUp:
+					self.Request_msg.emit(Warning_str,Reason_str)
+				self.last_op_ok= False
+				return
+				
 			self.Julabo.lock.acquire()
 			self.logger.debug("WORKER: Sending Julabo cmd" )
 			if not self.Julabo.is_connected :
@@ -543,6 +552,30 @@ class BurnIn_Worker(QObject):
 					if (not switch) and  HV_defined and (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text() != "OFF"):  # attempt to power down LV with HV not off
 						Warning_str = "Operation can't be performed"
 						Reason_str = "Can't turn OFF LV for slot "+str(row+1)+ " beacause HV is ON or UNKNOWN"
+						if PopUp:
+							self.Request_msg.emit(Warning_str,Reason_str)
+						self.last_op_ok= False
+						return
+					try:
+						HV_value = float(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_VREAD_COL).text())
+					except Exception as e:
+						self.logger.error(e)
+						Warning_str = "Operation can't be performed"
+						Reason_str = "Can't turn OFF LV for slot "+str(row+1)+ " beacause HV value is invalid"
+						if PopUp:
+							self.Request_msg.emit(Warning_str,Reason_str)
+						self.last_op_ok= False
+						return
+					if (not switch) and  HV_defined and (self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text() != "OFF"):  # attempt to power down LV with HV not off
+						Warning_str = "Operation can't be performed"
+						Reason_str = "Can't turn OFF LV for slot "+str(row+1)+ " beacause HV is ON or UNKNOWN"
+						if PopUp:
+							self.Request_msg.emit(Warning_str,Reason_str)
+						self.last_op_ok= False
+						return
+					if (not switch) and  HV_value > HV_ON_THR :  # attempt to power down LV with HV not zero (i.e. still ramping down)
+						Warning_str = "Operation can't be performed"
+						Reason_str = "Can't turn OFF LV for slot "+str(row+1)+ " beacause HV value still too high"
 						if PopUp:
 							self.Request_msg.emit(Warning_str,Reason_str)
 						self.last_op_ok= False
@@ -861,7 +894,7 @@ class BurnIn_Worker(QObject):
 			self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
-		time.sleep(BI_SLEEP_AFTER_VSET)
+		time.sleep(BI_SLEEP_AFTER_HVSTOP)
 		#check HV stop
 		for row in Slot_list:
 			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
@@ -1151,7 +1184,7 @@ class BurnIn_Worker(QObject):
 		self.SharedDict["BI_Action"].setText("Stop HVs")
 		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,False,HV_Channel_list,PopUp):
 			return
-		time.sleep(BI_SLEEP_AFTER_VSET)
+		time.sleep(BI_SLEEP_AFTER_HVSTOP)
 		#check HV stop
 		for row in Slot_list:
 			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
@@ -1248,7 +1281,7 @@ class BurnIn_Worker(QObject):
 				self.logger.info("BI: target low temp OK...")
 				last_step = True
 			else:
-				nextTemp = dewPoint
+				nextTemp = dewPoint+1
 				self.logger.info("BI: target low temp below dew point, going to dewPoint and rising flow...")
 				if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True, True,PopUp):
 					return
