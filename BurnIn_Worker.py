@@ -514,8 +514,9 @@ class BurnIn_Worker(QObject):
 	# NOT Executed if:
 	# - CAEN INFO are not updated
 	# - POWER ON with JULABO OFF
-	# - one of the slots selected by the user does not have a definet LV channel
+	# - one of the slots selected by the user does not have a defined LV channel
 	# - trying to switch off a slot with HV ON
+	# - trying to switch off a slot with HV OFF but unknown/too high voltage
 	# Control on cmd execution: none
 	@pyqtSlot(bool)	
 	def Ctrl_PowerLV_Cmd(self,switch,Channel_list=[], PopUp=True):
@@ -831,7 +832,7 @@ class BurnIn_Worker(QObject):
 			self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
-		time.sleep(BI_SLEEP_AFTER_VSET)
+		time.sleep(BI_SLEEP_AFTER_LVSET)
 		
 		#check all LVs are ON
 		for row in Slot_list:
@@ -852,7 +853,7 @@ class BurnIn_Worker(QObject):
 			self.BI_terminated.emit()
 			return
 		
-		time.sleep(BI_SLEEP_AFTER_VSET)
+		time.sleep(BI_SLEEP_AFTER_HVSET)
 		#check all HVs are ON
 		for row in Slot_list:
 			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
@@ -894,7 +895,7 @@ class BurnIn_Worker(QObject):
 			self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
-		time.sleep(BI_SLEEP_AFTER_HVSTOP)
+		time.sleep(BI_SLEEP_AFTER_HVSET)
 		#check HV stop
 		for row in Slot_list:
 			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
@@ -914,7 +915,7 @@ class BurnIn_Worker(QObject):
 			self.SharedDict["BI_Action"].setText("None")
 			self.BI_terminated.emit()
 			return
-		time.sleep(BI_SLEEP_AFTER_VSET)
+		time.sleep(BI_SLEEP_AFTER_LVSET)
 		#check LV stop	
 		for row in Slot_list:
 			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
@@ -942,8 +943,11 @@ class BurnIn_Worker(QObject):
 		
 		#creating parameter dictionary for the current session
 		session_dict={}
-		session_dict["Action"]				= "Setup"
+		session_dict["CycleStep"]			= 1
+		session_dict["StepList"]			= ["COOL","TEST","HEAT","TEST"]
+		session_dict["Action"]			= session_dict["StepList"][0]
 		session_dict["Cycle"]				= 1
+		session_dict["Status"]				= "Setup"
 		session_dict["LowTemp"]				= self.SharedDict["BI_LowTemp"]
 		session_dict["UnderRamp"]			= self.SharedDict["BI_UnderRamp"]
 		session_dict["UnderKeep"]			= self.SharedDict["BI_UnderKeep"]
@@ -980,8 +984,10 @@ class BurnIn_Worker(QObject):
 						self.logger.info("BI :Previous session parameters loaded")
 						self.logger.info("Current Session: "+session_dict["Session"])
 						self.logger.info("Current Cycle: "+str(session_dict["Cycle"]))
-						self.logger.info("Recovery status: "+session_dict["Action"])
+						self.logger.info("Current Step: "+session_dict["CycleStep"])
+						self.logger.info("Current Action: "+session_dict["Action"])
 						self.logger.info("test type: "+session_dict["TestType"])
+						session_dict["Status"]	= "Recovery"
 						
 				except Exception as e:
 					self.logger.error(e)
@@ -1005,12 +1011,9 @@ class BurnIn_Worker(QObject):
 		
 		# starting setup/recovery procedure
 		
-		if (session_dict["Action"]=="Setup"):
-			self.SharedDict["BI_Status"].setText("Setup")
-		else:
-			self.SharedDict["BI_Status"].setText("Recovery")
+		self.SharedDict["BI_Status"].setText(session_dict["Status"])
 			
-		self.SharedDict["BI_Action"].setText("Setup")
+		self.SharedDict["BI_Action"].setText(session_dict["Action"])
 		self.SharedDict["BI_Cycle"].setText(str(session_dict["Cycle"])+" of "+str(session_dict["NCycles"]))
 		self.SharedDict["BI_SUT"].setText("None") 
 					
@@ -1071,7 +1074,7 @@ class BurnIn_Worker(QObject):
 		self.SharedDict["BI_Action"].setText("Start LVs")
 		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,True,LV_Channel_list,PopUp):
 			return
-		time.sleep(BI_SLEEP_AFTER_VSET)
+		time.sleep(BI_SLEEP_AFTER_LVSET)
 		
 		#check all LVs are ON
 		for row in Slot_list:
@@ -1084,7 +1087,7 @@ class BurnIn_Worker(QObject):
 		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,True,HV_Channel_list,PopUp):
 			return
 		
-		time.sleep(BI_SLEEP_AFTER_VSET)
+		time.sleep(BI_SLEEP_AFTER_HVSET)
 		#check all HVs are ON
 		for row in Slot_list:
 			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
@@ -1092,84 +1095,127 @@ class BurnIn_Worker(QObject):
 				return
 			
 		
-		self.SharedDict["BI_Status"].setText("Cycling")
+		session_dict["Status"] = "Cycling"
+		self.SharedDict["BI_Status"].setText(session_dict["Status"])
 
-		cycle=session_dict["Cycle"]-1
 		NCycles	= session_dict["NCycles"]
 		######cycle start
-		if (session_dict["Action"]=="Setup"):
-			session_dict["Action"]="RampDown"
-		else:
-			self.logger.info("BI: recovered from cycle "+str(cycle+1) + " of "+str(NCycles))
+		if (session_dict["Status"]=="Recovery"):
+			self.logger.info("BI: recovered from cycle "+str(session_dict["Cycle"]) + " of "+str(NCycles)+" @ step "+session_dict["CycleStep"])
 		
-		while(cycle < NCycles):
-			if (session_dict["Action"]=="RampDown"):
-				session_dict["Cycle"]=cycle+1
-				self.BI_Update_Status_file(session_dict)
-				self.logger.info("BI: starting cycle "+str(cycle+1) + " of "+str(NCycles))
-				
-				self.SharedDict["BI_Cycle"].setText(str(cycle+1)+"/"+str(NCycles))
-				self.logger.info("BI: runmping down...")
-				self.SharedDict["BI_Action"].setText("Cooling")
-				self.SharedDict["BI_SUT"].setText("None") 
-				if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
-					if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["LowTemp"]):
-						self.logger.info("BI: cooling")
-						return
-				else:
-					if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["LowTemp"]):
-						return
-				session_dict["Action"]="ColdTest"
-				
-			if (session_dict["Action"]=="ColdTest"):
-				self.BI_Update_Status_file(session_dict)
-				self.logger.info("BI: testing...")
-				self.SharedDict["BI_Action"].setText("Cold Module test")
-				self.SharedDict["BI_TestActive"]=True
-				for slot in Slot_list:
-					session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
-					session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
-					session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
-					self.SharedDict["BI_SUT"].setText(str(slot+1)) 
-					self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
-					if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
-							return
-				self.SharedDict["BI_TestActive"]=False
-				session_dict["Action"]="RampUp"
-				
-			if (session_dict["Action"]=="RampUp"):
-				self.BI_Update_Status_file(session_dict)
-				self.logger.info("BI: going to high temp")
-				self.SharedDict["BI_Action"].setText("Heating")
-				self.SharedDict["BI_SUT"].setText("None") 
-				if float(self.SharedDict["LastFNALBoxTemp0"].text()) < session_dict["HighTemp"]:  #expected
-					self.logger.info("BI: heating")
-					if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["HighTemp"]):
-						return
-				else:
-					if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["HighTemp"]):
-						return
-				session_dict["Action"]="HotTest"
-				
-			if (session_dict["Action"]=="HotTest"):
-				self.BI_Update_Status_file(session_dict)
-				self.logger.info("BI: testing...")
-				self.SharedDict["BI_Action"].setText("Hot Module test")
-				self.SharedDict["BI_TestActive"]=True
-				for slot in Slot_list:
-					session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
-					session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
-					session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
-					self.SharedDict["BI_SUT"].setText(str(slot+1)) 
-					self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
-					if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
-							return
-				self.SharedDict["BI_TestActive"]=False
+		while(session_dict["Cycle"]-1 < NCycles):
+			while session_dict["CycleStep"]-1 < len(StepList):
 			
-				self.logger.info("BI: ended cycle "+str(cycle+1) + " of "+str(NCycles))
-				#self.SharedDict["BI_ProgressBar"].setValue((cycle+1)/NCycles*100)
-				session_dict["Action"]="RampDown"
-				cycle=cycle+1
+				session_dict["Action"]=session_dict["StepList"][session_dict["CycleStep"]-1]
+				self.logger.info("BI: cycle "+session_dict["Cycle"] + " of "+str(NCycles))
+				
+				if (session_dict["Action"]=="COOL"):
+					self.BI_Update_Status_file(session_dict)
+					
+					self.SharedDict["BI_Cycle"].setText(session_dict["Cycle"]+"/"+str(NCycles))
+					self.logger.info("BI: rumping down...")
+					self.SharedDict["BI_Action"].setText("Cooling")
+					self.SharedDict["BI_SUT"].setText("None") 
+					if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
+						if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["LowTemp"]):
+							self.logger.info("BI: cooling")
+							return
+					else:
+						if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["LowTemp"]):
+							return
+					
+				if (session_dict["Action"]=="TEST"):
+					self.BI_Update_Status_file(session_dict)
+					self.logger.info("BI: testing...")
+					self.SharedDict["BI_Action"].setText("Full Module test")
+					self.SharedDict["BI_TestActive"]=True
+					for slot in Slot_list:
+						session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
+						session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
+						session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
+						self.SharedDict["BI_SUT"].setText(str(slot+1)) 
+						self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
+						if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
+								return
+					self.SharedDict["BI_TestActive"]=False
+					
+				if (session_dict["Action"]=="HEAT"):
+					self.BI_Update_Status_file(session_dict)
+					self.logger.info("BI: going to high temp")
+					self.SharedDict["BI_Action"].setText("Heating")
+					self.SharedDict["BI_SUT"].setText("None") 
+					if float(self.SharedDict["LastFNALBoxTemp0"].text()) < session_dict["HighTemp"]:  #expected
+						self.logger.info("BI: heating")
+						if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["HighTemp"]):
+							return
+					else:
+						if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["HighTemp"]):
+							return
+							
+				if (session_dict["Action"]=="LV_ON"):
+					self.BI_Update_Status_file(session_dict)
+					self.logger.info("BI: Starting LVs")
+					self.SharedDict["BI_Action"].setText("Starting LVs")
+					self.SharedDict["BI_SUT"].setText("None") 
+					if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,True,LV_Channel_list,PopUp):
+						return
+					time.sleep(BI_SLEEP_AFTER_LVSET)
+					#check all LVs are ON
+					for row in Slot_list:
+						if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="ON"):
+							self.BI_Abort("BI aborted: some LVs was not turned ON")
+							return
+				
+							
+				if (session_dict["Action"]=="LV_OFF"):
+					self.BI_Update_Status_file(session_dict)
+					self.logger.info("BI: Stopping LVs")
+					self.SharedDict["BI_Action"].setText("Stopping LVs")
+					self.SharedDict["BI_SUT"].setText("None") 
+					if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,False,LV_Channel_list,PopUp):
+						return
+					time.sleep(BI_SLEEP_AFTER_LVSET)
+					#check all LVs are OFF
+					for row in Slot_list:
+						if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
+							self.BI_Abort("BI aborted: some HVs was not turned OFF")
+							return
+							
+				if (session_dict["Action"]=="HV_ON"):
+					self.BI_Update_Status_file(session_dict)
+					self.logger.info("BI: Starting HVs")
+					self.SharedDict["BI_Action"].setText("Starting HVs")
+					self.SharedDict["BI_SUT"].setText("None") 
+					if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,True,HV_Channel_list,PopUp):
+						return
+					time.sleep(BI_SLEEP_AFTER_HVSET)
+					#check all HVs are ON
+					for row in Slot_list:
+						if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
+							self.BI_Abort("BI aborted: some HVs was not turned ON")
+							return
+				
+							
+				if (session_dict["Action"]=="HV_OFF"):
+					self.BI_Update_Status_file(session_dict)
+					self.logger.info("BI: Stopping HVs")
+					self.SharedDict["BI_Action"].setText("Stopping HVs")
+					self.SharedDict["BI_SUT"].setText("None") 
+					if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,False,HV_Channel_list,PopUp):
+						return
+					time.sleep(BI_SLEEP_AFTER_HVSET)
+					#check all HVs are OFF
+					for row in Slot_list:
+						if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
+							self.BI_Abort("BI aborted: some LVs was not turned OFF")
+							return
+				
+					
+				session_dict["CycleStep"]=session_dict["CycleStep"]+1
+				
+			session_dict["CycleStep"]=1
+			self.logger.info("BI: ended cycle "+session_dict["Cycle"] + " of "+str(NCycles))
+			session_dict["Cycle"]=session_dict["Cycle"]+1
 		
 		if (os.path.exists("Session.json")):		
 			os.remove("Session.json")
@@ -1184,7 +1230,7 @@ class BurnIn_Worker(QObject):
 		self.SharedDict["BI_Action"].setText("Stop HVs")
 		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,False,HV_Channel_list,PopUp):
 			return
-		time.sleep(BI_SLEEP_AFTER_HVSTOP)
+		time.sleep(BI_SLEEP_AFTER_HVSET)
 		#check HV stop
 		for row in Slot_list:
 			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
@@ -1196,7 +1242,7 @@ class BurnIn_Worker(QObject):
 		self.SharedDict["BI_Action"].setText("Stop LVs")
 		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,False,LV_Channel_list,PopUp):
 			return
-		time.sleep(BI_SLEEP_AFTER_VSET)
+		time.sleep(BI_SLEEP_AFTER_LVSET)
 		#check LV stop	
 		for row in Slot_list:
 			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
