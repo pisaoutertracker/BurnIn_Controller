@@ -954,6 +954,7 @@ class BurnIn_Worker(QObject):
 	@pyqtSlot()			
 	def BI_Start_Cmd(self):
 	
+		stepAllowed = ["COOL","HEAT","FULLTEST","QUICKTEST","CHECKID","DRYTEST","LV_ON","LV_OFF","HV_ON","HV_OFF","SCANIV"]
 		self.SharedDict["BI_Active"]=True
 		self.logger.info("Starting BurnIN...")
 		
@@ -961,7 +962,7 @@ class BurnIn_Worker(QObject):
 		session_dict={}
 		session_dict["CycleStep"]			= 1
 		session_dict["StepList"]			= self.SharedDict["StepList"]
-		session_dict["Action"]				= session_dict["StepList"][0]
+		session_dict["Action"]				= "Undef"
 		session_dict["Cycle"]				= 1
 		session_dict["Status"]				= "Setup"
 		session_dict["LowTemp"]				= self.SharedDict["BI_LowTemp"]
@@ -1001,9 +1002,17 @@ class BurnIn_Worker(QObject):
 						self.logger.info("BI :Previous session parameters loaded")
 						self.logger.info("Current Session: "+session_dict["Session"])
 						self.logger.info("Current Cycle: "+str(session_dict["Cycle"]))
-						self.logger.info("Current Step: "+session_dict["CycleStep"])
+						self.logger.info("Current Step: "+str(session_dict["CycleStep"]))
 						self.logger.info("Current Action: "+session_dict["Action"])
 						session_dict["Status"]	= "Recovery"
+						
+						if len(session_dict["StepList"])==0:
+							self.BI_Abort("Empty cycle description")
+							return	
+						for step in self.SharedDict["StepList"]:
+							if not (step.upper() in stepAllowed):
+								self.BI_Abort("Undefined step in cycle description")
+								return
 						
 				except Exception as e:
 					self.logger.error(e)
@@ -1012,12 +1021,26 @@ class BurnIn_Worker(QObject):
 					return
 			else:
 				self.logger.info("Prevoius session overrided. Starting new session")
+				if len(session_dict["StepList"])==0:
+					self.BI_Abort("Empty cycle description")
+					return
+				for step in self.SharedDict["StepList"]:
+					if not (step.upper() in stepAllowed):
+						self.BI_Abort("Undefined step in cycle description")
+						return
 				self.DB_interface.StartSesh(session_dict)
 				self.BI_Update_Status_file(session_dict)
 				self.BI_Clear_Monitor_sig.emit()
 
 		else:
 			self.logger.info("No session file found. Starting new BurnIn session")
+			if len(session_dict["StepList"])==0:
+				self.BI_Abort("Empty cycle description")
+				return	
+			for step in self.SharedDict["StepList"]:
+				if not (step.upper() in stepAllowed):
+					self.BI_Abort("Undefined step in cycle description")
+					return
 			self.DB_interface.StartSesh(session_dict)
 			self.BI_Update_Status_file(session_dict)
 			self.BI_Clear_Monitor_sig.emit()

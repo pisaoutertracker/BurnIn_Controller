@@ -16,6 +16,8 @@ import databaseTools
 from pprint import pprint
 import requests
 
+StepList=[]
+
 class BurnIn_GUI(QtWidgets.QMainWindow):
 
     
@@ -632,28 +634,28 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.SharedDict["BI_fc7Slots"].append(Slot)
 			
 		self.BI_CheckIDs_sig.emit()
-		
+	
 	def BI_Start_Cmd(self):
 		if self.SharedDict["BI_Active"]:
 			self.logger.info("Burn In test already ongoing. Request cancelled")
 			return
-		
+		StepList.clear()
 		#checking cycle step validity
-		stepAllowed = ["COOL","HEAT","FULLTEST","QUICKTEST","CHECKID","DRYTEST","LV_ON","LV_OFF","HV_ON","HV_OFF","SCANIV"]
-		stepList = self.BI_Cycle_line.toPlainText().splitlines()
-		stepList = [i.strip() for i in stepList]
-		for step in stepList:
-			if not (step.upper() in stepAllowed):
-				self.logger.error("Step list contains invalid steps: "+step)
-				return
+		code = self.BI_Cycle_line.toPlainText()
+		try:
+			exec(compile(code,"Widget","exec"))
+		except Exception as e:
+			self.logger.warning(e)
+			self.logger.warning("Failed to evaluate cycle description. Please reload from previous session or fix it")
 		
+		self.logger.info(StepList)	
 		
 		self.ManualOp_tab.setEnabled(False)
 		self.ModuleTest_tab.setEnabled(False)
 		
 		
 		#sampling test parameters
-		self.SharedDict["StepList"]=stepList	
+		self.SharedDict["StepList"]=StepList	
 		self.SharedDict["BI_Operator"]=self.BI_Operator_line.text()
 		self.SharedDict["BI_Description"]=self.BI_Desc_line.toPlainText()		
 		self.SharedDict["BI_LowTemp"]= self.BI_LowTemp_dsb.value()
@@ -677,7 +679,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			
 		
 		self.BI_Start_sig.emit()
-	
+		
+		
 	@pyqtSlot(dict)	
 	def BI_Update_GUI_Cmd(self,session_dict):
 		self.BI_Operator_line.setText(session_dict["Operator"])
@@ -693,7 +696,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			ID.setText(session_dict["ModuleIDs"][idx])	
 			
 		delimiter = "\n" # Define a delimiter
-		stepPlainList = delimiter.join(session_dict["StepList"])
+		recoStepList = ["addStep(\""+step+"\")" for step in session_dict["StepList"]]
+		stepPlainList = delimiter.join(recoStepList)
 		self.BI_Cycle_line.setPlainText(stepPlainList)
 			
 			
@@ -740,7 +744,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			
 		if "stepList" in session_fromDB.keys():
 			delimiter = "\n" # Define a delimiter
-			stepPlainList = delimiter.join(session_fromDB["stepList"])
+			recoStepList = ["addStep(\""+step+"\")" for step in session_fromDB["stepList"]]
+			stepPlainList = delimiter.join(recoStepList)
 			self.BI_Cycle_line.setPlainText(stepPlainList)
 		else:
 			self.logger.warning("Step list not found in session JSON")
@@ -923,3 +928,7 @@ if __name__== '__main__':
     app = QtWidgets.QApplication(sys.argv)
     BurnIn_app = BurnIn_GUI(0, 0)
     sys.exit(app.exec_()) #continua esecuzione finchè non chiudo
+
+
+def addStep(stepName):
+	StepList.append(stepName)
