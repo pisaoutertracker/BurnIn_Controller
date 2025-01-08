@@ -641,9 +641,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			return
 		StepList.clear()
 		#checking cycle step validity
-		code = self.BI_Cycle_line.toPlainText()
+		code = "def addStep(Step):\n StepList.append(Step)\n"
+		code = code+self.BI_Cycle_line.toPlainText()
 		try:
-			exec(compile(code,"Widget","exec"))
+			exec(compile(code,"Widget","exec"),{"__builtins__": {},"StepList": StepList},{})
 		except Exception as e:
 			self.logger.warning(e)
 			self.logger.warning("Failed to evaluate cycle description. Please reload from previous session or fix it")
@@ -928,7 +929,3 @@ if __name__== '__main__':
     app = QtWidgets.QApplication(sys.argv)
     BurnIn_app = BurnIn_GUI(0, 0)
     sys.exit(app.exec_()) #continua esecuzione finchè non chiudo
-
-
-def addStep(stepName):
-	StepList.append(stepName)
