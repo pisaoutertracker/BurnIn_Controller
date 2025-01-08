@@ -23,4 +23,8 @@ Supervisor:
 BITest:
  cwd: "/home/thermal/BurnIn_moduleTest"
  version: "latest"
- 
+IVScan:
+ cwd: "/home/thermal/BurnIn_moduleTest"
+ scanType: "before_encapsulation"
+ delay: "5.0"
+ settlingTime: "0.5"

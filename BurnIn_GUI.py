@@ -644,7 +644,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		stepList = [i.strip() for i in stepList]
 		for step in stepList:
 			if not (step.upper() in stepAllowed):
-				self.logger.error("Step list contains not recgnized steps: "+step)
+				self.logger.error("Step list contains invalid steps: "+step)
 				return
 		
 		
@@ -691,6 +691,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			cb.setChecked(session_dict["ActiveSlots"][idx])
 		for idx,ID in enumerate(self.ModuleId_lines):
 			ID.setText(session_dict["ModuleIDs"][idx])	
+			
+		delimiter = "\n" # Define a delimiter
+		stepPlainList = delimiter.join(session_dict["StepList"])
+		self.BI_Cycle_line.setPlainText(stepPlainList)
+			
+			
 	
 	
 	def BI_Stop_Cmd(self):
@@ -708,7 +714,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 				targetSession=str(f.read()).strip()
 		else:
 			targetSession="session"+self.BI_TargetSesh_line.text()
-		print("Getting session %s"%targetSession)
+		self.logger.info("Getting session %s"%targetSession)
 		session_fromDB=databaseTools.getSessionFromDB(sessionName=targetSession)
 		self.logger.info("Filling BI fields from session %s."%targetSession)
 		#only fill basic info, description and number of cycles must be added by operator
@@ -721,7 +727,24 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			else:
 				self.Module_cbs[i].setChecked(True)
 				self.ModuleId_lines[i].setText(session_fromDB["modulesList"][i])
-
+		
+		if "underRamp" in session_fromDB.keys():
+			self.BI_UnderRampTemp_dsb.setValue(session_fromDB["underRamp"])
+		else:
+			self.logger.warning("UnderRamp parameter not found in session JSON")
+		
+		if "underKeep" in session_fromDB.keys():
+			self.BI_UnderKeepTemp_dsb.setValue(session_fromDB["underKeep"])
+		else:
+			self.logger.warning("UnderKeep parameter not found in session JSON")
+			
+		if "stepList" in session_fromDB.keys():
+			delimiter = "\n" # Define a delimiter
+			stepPlainList = delimiter.join(session_fromDB["stepList"])
+			self.BI_Cycle_line.setPlainText(stepPlainList)
+		else:
+			self.logger.warning("Step list not found in session JSON")
+ 		
 
 	def BI_FillFromLast(self):
 		 self.BI_FillFromDB(useLast=True)

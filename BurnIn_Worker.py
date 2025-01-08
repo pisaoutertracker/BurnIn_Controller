@@ -46,6 +46,22 @@ class BurnIn_Worker(QObject):
 		if self.Ph2_ACF_version == "NOKEY":
 			self.Ph2_ACF_version = "latest"
 			self.logger.warning("Ph2_ACF_version parameter not found. Using latest")
+			
+		self.IV_scanType = configDict.get(("IVScan","scanType"),"NOKEY")
+		if self.IV_scanType == "NOKEY":
+			self.IV_scanType = "before_encapsulation"
+			self.logger.warning("IV_scanType parameter not found. Using before_encapsulation")
+			
+		self.IV_delay = configDict.get(("IVScan","delay"),"NOKEY")
+		if self.IV_delay == "NOKEY":
+			self.IV_delay = "5.0"
+			self.logger.warning("IV_delay parameter not found. Using 5.0")
+			
+		self.IV_settlingTime = configDict.get(("IVScan","settlingTime"),"NOKEY")
+		if self.IV_settlingTime == "NOKEY":
+			self.IV_settlingTime = "0.5"
+			self.logger.warning("IV_settlingTime parameter not found. Using 0.5")
+			
 		
 		self.logger.info("Worker class initialized")
 		self.last_op_ok= True
@@ -958,11 +974,12 @@ class BurnIn_Worker(QObject):
 		session_dict["Session"]				= "-1"
 		session_dict["ActiveSlots"]			= self.SharedDict["BI_ActiveSlots"]
 		session_dict["ModuleIDs"]			= self.SharedDict["BI_ModuleIDs"]
-		session_dict["TestType"]			= "Full"
+		session_dict["TestType"]			= "Undef"
 		session_dict["Timestamp"]			= datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-		session_dict["fc7ID"]				= "fc7ot2"
-		session_dict["Current_ModuleID"]	= "unknown"
-		session_dict["fc7Slot"]				= "0"
+		session_dict["fc7ID"]				= "Undef"
+		session_dict["Current_ModuleID"]	= "Undef"
+		session_dict["fc7Slot"]				= "Undef"
+		session_dict["Current_ModuleHV"]	= "Undef"
 		
 		
 		
@@ -1151,6 +1168,7 @@ class BurnIn_Worker(QObject):
 						if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
 								return
 					self.SharedDict["BI_TestActive"]=False
+					session_dict["TestType"]="Undef"
 					
 				if (session_dict["Action"].upper()=="SCANIV"):
 					self.BI_Update_Status_file(session_dict)
@@ -1159,6 +1177,7 @@ class BurnIn_Worker(QObject):
 					self.SharedDict["BI_TestActive"]=True
 					for slot in Slot_list:
 						session_dict["Current_ModuleID"]	= self.SharedDict["BI_ModuleIDs"][slot]
+						session_dict["Current_ModuleHV"]    = HV_Channel_list[slot]
 						self.SharedDict["BI_SUT"].setText(str(slot+1)) 
 						self.logger.info("BI: IV scan for slot "+str(slot)+": module name "+session_dict["Current_ModuleID"])
 						if not self.BI_Action(self.BI_StartIV_Cmd,False,session_dict):
@@ -1451,11 +1470,51 @@ class BurnIn_Worker(QObject):
 			json.dump(session_dict, outfile)
 
 	def BI_StartIV_Cmd(self, session_dict):
-			self.logger.info("Starting IV scan on module "+module+" ...")
-			self.logger.warning("just kidding...not yet implemented")
-			self.last_op_ok= True
+	
+		module = session_dict["Current_ModuleID"]
+		HV_ch = session_dict["Current_ModuleHV"]
+		self.logger.info("Starting IV scan on module "+module+" on HV channel "+HV_ch+" ...")
+		self.last_op_ok= True
+
+		try:
+			proc = subprocess.Popen(["python3", "measure_iv_curve.py","--channel",HV_ch, "--scan-type", self.IV_scanType, "--delay", self.IV_delay ,"--settling-time", self.IV_settlingTime,  "-–module_name", module ], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)									
+			
+			while(proc.returncode==None):
+				
+				if self.SharedDict["BI_StopRequest"]:
+					self.logger.error("WORKER: Aborting module IV scan on external request")
+					proc.kill()
+					self.last_op_ok= False
+					return
+				try:
+					outs, errs = proc.communicate(timeout=TEST_PROCESS_SLEEP)
+					self.logger.info("BI IV SCAN SUBPROCESS: "+outs.decode())
+					#self.logger.error("BI TEST SUBPROCESS: "+errs.decode())
+					break
+				except subprocess.TimeoutExpired:
+					self.logger.info("WORKER: Waiting IV SCAN completion....")
+					#while True:
+					#	inline = proc.stdout.readline()
+					#	if not inline:
+					#		break
+					#	self.logger.info("BI TEST SUBPROCESS: "+inline.decode())
+			
+			if proc.returncode ==0:
+				self.logger.info("Module IV Scan succesfully completed with exit code "+str(proc.returncode))
+			elif proc.returncode==None:
+				self.logger.info("Module IV Scan succesfully completed with exit code NONE")
+			else:
+				self.logger.error("Module IV Scan failed with exit code "+str(proc.returncode))
+				self.last_op_ok= False
+				
+		except Exception as e:
+			self.logger.error("Erro during IV Scan")
+			self.logger.error(e)
+			self.last_op_ok= False
+			
 			
 	def BI_StartTest_Cmd(self, session_dict):
+		module = session_dict["Current_ModuleID"]
 		self.logger.info("Starting module "+module+" test...")
 		session=self.SharedDict["TestSession"]
 		
@@ -1474,7 +1533,7 @@ class BurnIn_Worker(QObject):
 		
 		fc7Slot = session_dict["fc7Slot"]
 		fc7ID = session_dict["fc7ID"]
-		module = session_dict["Current_ModuleID"]
+		
 		self.last_op_ok= True
 		
 		#create non-blocking process

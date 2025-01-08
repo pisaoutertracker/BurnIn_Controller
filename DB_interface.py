@@ -198,15 +198,18 @@ class DB_interface():
 			"operator": session_dict["Operator"],
 			"timestamp": session_dict["Timestamp"],
 			"testType": session_dict["TestType"],
-                	"description": session_dict["Description"], 
+			"description": session_dict["Description"], 
 			"temperatures": {
 				"low": session_dict["LowTemp"],
-        			"high": session_dict["HighTemp"],
-                	},                         
-                        "nCycles": session_dict["NCycles"],
-#                        "status": "Open" #to be implemented
+				"high": session_dict["HighTemp"],
+				},
+			"underRamp": session_dict["UnderRamp"], 
+			"underKeep": session_dict["UnderKeep"], 
+			"nCycles": session_dict["NCycles"],
+			"test": session_dict["NCycles"],
 			"modulesList": [],
-                }
+			"stepList": session_dict["StepList"]
+		}
 
                 #omit disabled modules
 		for idx,ActiveSlot in enumerate(session_dict["ActiveSlots"]):
