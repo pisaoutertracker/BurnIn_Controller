@@ -64,13 +64,6 @@
                <string>BurnIn Session Settings</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_11">
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_70">
-                 <property name="text">
-                  <string>Undershoot keep (C°):</string>
-                 </property>
-                </widget>
-               </item>
                <item row="3" column="1">
                 <widget class="QDoubleSpinBox" name="BI_UnderRampTemp_dsb">
                  <property name="singleStep">
@@ -78,6 +71,13 @@
                  </property>
                  <property name="value">
                   <double>10.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_70">
+                 <property name="text">
+                  <string>Undershoot keep (C°):</string>
                  </property>
                 </widget>
                </item>
@@ -104,6 +104,13 @@
                  </property>
                 </widget>
                </item>
+               <item row="4" column="1">
+                <widget class="QDoubleSpinBox" name="BI_UnderKeepTemp_dsb">
+                 <property name="value">
+                  <double>3.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
                <item row="0" column="1">
                 <widget class="QDoubleSpinBox" name="BI_LowTemp_dsb">
                  <property name="minimum">
@@ -117,10 +124,10 @@
                  </property>
                 </widget>
                </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_69">
+               <item row="6" column="1">
+                <widget class="QLineEdit" name="BI_Operator_line">
                  <property name="text">
-                  <string>Undershoot Ramp (C°):</string>
+                  <string>PisaTeam</string>
                  </property>
                 </widget>
                </item>
@@ -131,17 +138,30 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="1">
-                <widget class="QDoubleSpinBox" name="BI_UnderKeepTemp_dsb">
-                 <property name="value">
-                  <double>3.000000000000000</double>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_69">
+                 <property name="text">
+                  <string>Undershoot Ramp (C°):</string>
                  </property>
                 </widget>
                </item>
-               <item row="6" column="1">
-                <widget class="QLineEdit" name="BI_Operator_line">
+               <item row="7" column="1">
+                <widget class="QPlainTextEdit" name="BI_Desc_line">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="plainText">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_66">
                  <property name="text">
-                  <string>PisaTeam</string>
+                  <string>Low temp (C°):</string>
                  </property>
                 </widget>
                </item>
@@ -155,30 +175,10 @@
                  </property>
                 </widget>
                </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_66">
-                 <property name="text">
-                  <string>Low temp (C°):</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="8" column="0">
+               <item row="7" column="0">
                 <widget class="QLabel" name="label_83">
                  <property name="text">
                   <string>Description:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="8" column="1">
-                <widget class="QPlainTextEdit" name="BI_Desc_line">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="plainText">
-                  <string/>
                  </property>
                 </widget>
                </item>
@@ -189,27 +189,6 @@
                  </property>
                 </widget>
                </item>
-               <item row="7" column="1">
-                <widget class="QComboBox" name="BI_TestType_cb">
-                 <item>
-                  <property name="text">
-                   <string>Standard</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Dry</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="7" column="0">
-                <widget class="QLabel" name="label_90">
-                 <property name="text">
-                  <string>Module test type</string>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </widget>
             </item>
@@ -217,6 +196,112 @@
           </item>
           <item>
            <spacer name="horizontalSpacer_12">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_22" stretch="0">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetDefaultConstraint</enum>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QGroupBox" name="groupBox_20">
+              <property name="title">
+               <string>Cycle configuration</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_24">
+               <item>
+                <widget class="QLabel" name="label_90">
+                 <property name="text">
+                  <string>Valid steps (case insensitive):</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_91">
+                 <property name="text">
+                  <string>  Cool, Heat</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_92">
+                 <property name="text">
+                  <string>  DryTest, QuickTest, CheckID, FullTest</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_93">
+                 <property name="text">
+                  <string>  LV_on, LV_off, HV_on, HV_off</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_23">
+                 <item>
+                  <widget class="QPlainTextEdit" name="BI_Cycle_line">
+                   <property name="plainText">
+                    <string>Cool
+LV_on
+HV_on
+FullTest
+HV_off
+LV_off
+Heat
+LV_on
+HV_on
+FullTest
+HV_off
+LV_off</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_19">
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QPushButton" name="BI_LoadCycle_btn">
+                     <property name="text">
+                      <string>Load from File</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="BI_SaveCycle_btn">
+                     <property name="text">
+                      <string>Save to File</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_13">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -681,19 +766,6 @@
              </widget>
             </item>
            </layout>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_14">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </item>

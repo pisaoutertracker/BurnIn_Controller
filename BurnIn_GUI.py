@@ -131,8 +131,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		
 		self.BI_Desc_line.setFixedHeight(2 * self.BI_Operator_line.height())
 
-		self.TestTypeItems = [self.BI_TestType_cb.itemText(i) for i in range(self.BI_TestType_cb.count())]
-
 		self.BI_Start_btn.setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
 		self.BI_Stop_btn.setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;  ")
 		self.BI_CheckIDs_btn.setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")		
@@ -386,7 +384,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_CheckIDs"]=False
 		self.SharedDict["BI_TestActive"]=False
 		self.SharedDict["BI_StopRequest"]=False
-		self.SharedDict["BI_TestType"]=self.BI_TestType_cb.currentText()
 		self.SharedDict["BI_Operator"]=self.BI_Operator_line.text()
 		self.SharedDict["BI_Description"]=self.BI_Desc_line.toPlainText()		
 		self.SharedDict["BI_LowTemp"]= self.BI_LowTemp_dsb.value()
@@ -483,6 +480,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.BI_LoadLast_btn.clicked.connect(self.BI_FillFromLast)
 		self.BI_CheckIDs_btn.clicked.connect(self.BI_CheckIDs_Cmd)
 		self.BI_ReloadConn_btn.clicked.connect(self.BI_ReloadConn_Cmd)
+		self.BI_LoadCycle_btn.clicked.connect(self.BI_LoadCycle_Cmd)
+		self.BI_SaveCycle_btn.clicked.connect(self.BI_SaveCycle_Cmd)
 
 		#menu actions
 		self.actionExit.triggered.connect(self.close)
@@ -588,6 +587,27 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 
 			self.Ctrl_CAEN_table.setItem(row,10,QtWidgets.QTableWidgetItem(self.fc7IDs[row]))
 			self.Ctrl_CAEN_table.setItem(row,11,QtWidgets.QTableWidgetItem(self.fc7Slots[row]))
+			
+	def BI_LoadCycle_Cmd(self):
+	
+		fileName, filt = QtWidgets.QFileDialog.getOpenFileName(self,"Cycle file selection",".","Text files (*.txt)")
+		self.logger.info("Loading cycle configuration from file "+ fileName)
+		
+		if fileName:	
+			file = open(fileName, "r")
+			content = file.read()
+			self.BI_Cycle_line.setPlainText(content)
+			file.close()
+			
+	def BI_SaveCycle_Cmd(self):
+	
+		fileName, filt = QtWidgets.QFileDialog.getSaveFileName(self,"Cycle file selection",".","Text files (*.txt)")
+		self.logger.info("Saving cycle configuration to file "+ fileName)
+		
+		if fileName:	
+			file = open(fileName, "w")
+			file.write(str(self.BI_Cycle_line.toPlainText()))
+			file.close()
 		
 		
 	
@@ -618,10 +638,22 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			self.logger.info("Burn In test already ongoing. Request cancelled")
 			return
 		
+		#checking cycle step validity
+		stepAllowed = ["COOL","HEAT","FULLTEST","QUICKTEST","CHECKID","DRYTEST","LV_ON","LV_OFF","HV_ON","HV_OFF","SCANIV"]
+		stepList = self.BI_Cycle_line.toPlainText().splitlines()
+		stepList = [i.strip() for i in stepList]
+		for step in stepList:
+			if not (step.upper() in stepAllowed):
+				self.logger.error("Step list contains not recgnized steps: "+step)
+				return
+		
+		
 		self.ManualOp_tab.setEnabled(False)
 		self.ModuleTest_tab.setEnabled(False)
 		
-		#sampling test parameters		
+		
+		#sampling test parameters
+		self.SharedDict["StepList"]=stepList	
 		self.SharedDict["BI_Operator"]=self.BI_Operator_line.text()
 		self.SharedDict["BI_Description"]=self.BI_Desc_line.toPlainText()		
 		self.SharedDict["BI_LowTemp"]= self.BI_LowTemp_dsb.value()
@@ -642,7 +674,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		for Slot in self.fc7Slots:
 			self.SharedDict["BI_fc7Slots"].append(Slot)
 			
-		self.SharedDict["BI_TestType"]= self.BI_TestType_cb.currentText()
 			
 		
 		self.BI_Start_sig.emit()
@@ -660,14 +691,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			cb.setChecked(session_dict["ActiveSlots"][idx])
 		for idx,ID in enumerate(self.ModuleId_lines):
 			ID.setText(session_dict["ModuleIDs"][idx])	
-		self.TestTypeItems.index(session_dict["TestType"])
-		
-		try:
-			self.BI_TestType_cb.setCurrentIndex(self.TestTypeItems.index(session_dict["TestType"]))
-		except Exception as e:
-			self.logger.warning (e)
-			self.logger.warning ("GUI: could not recognize test type while recovering session. Setting standard test.")
-			self.BI_TestType_cb.setCurrentIndex(0)
 	
 	
 	def BI_Stop_Cmd(self):
@@ -699,12 +722,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 				self.Module_cbs[i].setChecked(True)
 				self.ModuleId_lines[i].setText(session_fromDB["modulesList"][i])
 
-		try:
-			self.BI_TestType_cb.setCurrentIndex(self.TestTypeItems.index(session_fromDB["testType"]))
-		except Exception as e:
-			self.logger.warning (e)
-			self.logger.warning ("GUI: could not recognize test type while recovering session from DB. Setting standard test.")
-			self.BI_TestType_cb.setCurrentIndex(0)
 
 	def BI_FillFromLast(self):
 		 self.BI_FillFromDB(useLast=True)
@@ -747,7 +764,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		session = {
 			"operator": self.BI_Operator_line.text(),
 			"timestamp": datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
-			"testType": self.BI_TestType_cb.currentText(),
                 	"description": self.SeshDescription_db.text(), 
 			"temperatures": {
 				"low": self.BI_LowTemp_dsb.value(),
