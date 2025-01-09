@@ -648,6 +648,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 			exec(compile(code,"Widget","exec"),{"StepList": StepList},{})
 		except Exception as e:
 			self.logger.warning(e)
+			StepList.clear()
 			self.logger.warning("Failed to evaluate cycle description. Please reload from previous session or fix it")
 		
 		self.logger.info(StepList)	
