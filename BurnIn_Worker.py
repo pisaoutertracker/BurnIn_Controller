@@ -1147,7 +1147,7 @@ class BurnIn_Worker(QObject):
 			
 				session_dict["Action"]=session_dict["StepList"][session_dict["CycleStep"]-1]
 				self.logger.info("BI: cycle "+str(session_dict["Cycle"]) + " of "+str(NCycles))
-				self.SharedDict["BI_Step"].setText(str(session_dict["CycleStep"])+" of "+str(len(session_dict["StepList"]))
+				self.SharedDict["BI_Step"].setText(str(session_dict["CycleStep"])+" of "+str(len(session_dict["StepList"])))
 				
 				if (session_dict["Action"].upper()=="COOL"):
 					self.BI_Update_Status_file(session_dict)
