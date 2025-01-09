@@ -1553,6 +1553,8 @@ class BurnIn_Worker(QObject):
 		elif session_dict["TestType"]=="CheckID":
 			test_type = "readOnlyID"
 		
+		self.logger.info("Test type: "+test_type)
+		
 		fc7Slot = session_dict["fc7Slot"]
 		fc7ID = session_dict["fc7ID"]
 		

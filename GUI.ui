@@ -308,7 +308,7 @@
                <item>
                 <widget class="QLabel" name="label_91">
                  <property name="text">
-                  <string>  Cool, Heat</string>
+                  <string>  Cool, Heat, ScanIV</string>
                  </property>
                 </widget>
                </item>
