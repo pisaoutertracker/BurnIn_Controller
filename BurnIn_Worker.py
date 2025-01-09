@@ -1497,9 +1497,12 @@ class BurnIn_Worker(QObject):
 		HV_ch = session_dict["Current_ModuleHV"]
 		self.logger.info("Starting IV scan on module "+module+" on HV channel "+HV_ch+" ...")
 		self.last_op_ok= True
-
+		
+		cmd = "python3 measure_iv_curve.py --channel "+HV_ch+ " --scan-type "+ self.IV_scanType+ " --delay "+ self.IV_delay +" --settling-time "+ self.IV_settlingTime+  " -–module_name " module 
+		self.logger.info("Executing command: " + cmd)
+		
 		try:
-			proc = subprocess.Popen(["python3", "measure_iv_curve.py","--channel",HV_ch, "--scan-type", self.IV_scanType, "--delay", self.IV_delay ,"--settling-time", self.IV_settlingTime,  "-–module_name", module ], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)									
+			proc = subprocess.Popen(cmd.split(), cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)									
 			
 			while(proc.returncode==None):
 				
@@ -1547,7 +1550,7 @@ class BurnIn_Worker(QObject):
 		
 		test_type = "readOnlyID"	
 		if session_dict["TestType"]=="FullTest":
-			test_type = "PSfullTest"
+			test_type = "P
 		elif session_dict["TestType"]=="QuickTest":
 			test_type = "PSquickTest"
 		elif session_dict["TestType"]=="CheckID":
@@ -1563,13 +1566,14 @@ class BurnIn_Worker(QObject):
 		self.last_op_ok= True
 		
 		#create non-blocking process
-		try:
-			if self.Ph2_ACF_version=="latest":
-				proc = subprocess.Popen(["python3", "moduleTest.py","-c",test_type, "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-			else:
-				proc = subprocess.Popen(["python3", "moduleTest.py","-c",test_type, "--board", fc7ID, "--slot", fc7Slot ,"--module", module,  "--session", session, "--version", self.Ph2_ACF_version ], cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-			
-												
+		if self.Ph2_ACF_version=="latest":
+			cmd = "python3 moduleTest.py -c "+test_type+ " --board "+ fc7ID + " --slot "+ fc7Slot +" --module "+ module+  " --session " + session
+		else:
+			cmd = "python3 moduleTest.py -c "+test_type+ " --board "+ fc7ID + " --slot "+ fc7Slot +" --module "+ module+  " --session " + session+" --version "+ self.Ph2_ACF_version
+		
+		self.logger.info("Executing command: " + cmd)
+		try:	
+			proc = subprocess.Popen(cmd.split(), cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)									
 			
 			while(proc.returncode==None):
 				
