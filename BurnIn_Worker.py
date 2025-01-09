@@ -1109,29 +1109,29 @@ class BurnIn_Worker(QObject):
 		if not self.BI_Action(self.Ctrl_PowerJulabo_Cmd,True,True,PopUp):
 			return
 		
-		##start LV
-		self.SharedDict["BI_Action"].setText("Start LVs")
-		if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,True,LV_Channel_list,PopUp):
-			return
-		time.sleep(BI_SLEEP_AFTER_LVSET)
-		
-		#check all LVs are ON
-		for row in Slot_list:
-			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="ON"):
-				self.BI_Abort("BI aborted: some LVs was not turned ON")
-				return
-		
-		#start HV
-		self.SharedDict["BI_Action"].setText("Start HVs")
-		if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,True,HV_Channel_list,PopUp):
-			return
-		
-		time.sleep(BI_SLEEP_AFTER_HVSET)
-		#check all HVs are ON
-		for row in Slot_list:
-			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
-				self.BI_Abort("BI aborted: some HVs was not turned ON")
-				return
+		###start LV
+		#self.SharedDict["BI_Action"].setText("Start LVs")
+		#if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,True,LV_Channel_list,PopUp):
+		#	return
+		#time.sleep(BI_SLEEP_AFTER_LVSET)
+		#
+		##check all LVs are ON
+		#for row in Slot_list:
+		#	if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="ON"):
+		#		self.BI_Abort("BI aborted: some LVs was not turned ON")
+		#		return
+		#
+		##start HV
+		#self.SharedDict["BI_Action"].setText("Start HVs")
+		#if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,True,HV_Channel_list,PopUp):
+		#	return
+		#
+		#time.sleep(BI_SLEEP_AFTER_HVSET)
+		##check all HVs are ON
+		#for row in Slot_list:
+		#	if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
+		#		self.BI_Abort("BI aborted: some HVs was not turned ON")
+		#		return
 			
 		
 		session_dict["Status"] = "Cycling"
@@ -1143,7 +1143,7 @@ class BurnIn_Worker(QObject):
 			self.logger.info("BI: recovered from cycle "+str(session_dict["Cycle"]) + " of "+str(NCycles)+" @ step "+session_dict["CycleStep"])
 		
 		while(session_dict["Cycle"]-1 < NCycles):
-			while session_dict["CycleStep"]-1 < len(StepList):
+			while session_dict["CycleStep"]-1 < len(session_dict["StepList"]):
 			
 				session_dict["Action"]=session_dict["StepList"][session_dict["CycleStep"]-1]
 				self.logger.info("BI: cycle "+session_dict["Cycle"] + " of "+str(NCycles))
