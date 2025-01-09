@@ -1269,7 +1269,7 @@ class BurnIn_Worker(QObject):
 				session_dict["CycleStep"]=session_dict["CycleStep"]+1
 				
 			session_dict["CycleStep"]=1
-			self.logger.info("BI: ended cycle "+session_dict["Cycle"] + " of "+str(NCycles))
+			self.logger.info("BI: ended cycle "+str(session_dict["Cycle"]) + " of "+str(NCycles))
 			session_dict["Cycle"]=session_dict["Cycle"]+1
 		
 		if (os.path.exists("Session.json")):		
