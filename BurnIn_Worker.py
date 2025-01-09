@@ -1550,7 +1550,7 @@ class BurnIn_Worker(QObject):
 		
 		test_type = "readOnlyID"	
 		if session_dict["TestType"]=="FullTest":
-			test_type = "P
+			test_type = "PSfullTest"
 		elif session_dict["TestType"]=="QuickTest":
 			test_type = "PSquickTest"
 		elif session_dict["TestType"]=="CheckID":
