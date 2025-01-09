@@ -1546,12 +1546,14 @@ class BurnIn_Worker(QObject):
 			return True 
 		
 		test_type = "readOnlyID"	
-		if session_dict["TestType"]=="CheckID":
+		if session_dict["TestType"]=="FullTest":
 			test_type = "PSfullTest"
 		elif session_dict["TestType"]=="QuickTest":
 			test_type = "PSquickTest"
 		elif session_dict["TestType"]=="CheckID":
 			test_type = "readOnlyID"
+		else :
+			self.logger.warning("Unrecognized test type: "+test_type+". Checking ID")
 		
 		self.logger.info("Test type: "+test_type)
 		
