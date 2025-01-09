@@ -331,18 +331,8 @@
                  <item>
                   <widget class="QPlainTextEdit" name="BI_Cycle_line">
                    <property name="plainText">
-                    <string>Cool
-LV_on
-HV_on
-FullTest
-HV_off
-LV_off
-Heat
-LV_on
-HV_on
-FullTest
-HV_off
-LV_off</string>
+                    <string>addStep(&quot;Cool&quot;)
+addStep(&quot;Heat&quot;)</string>
                    </property>
                   </widget>
                  </item>
@@ -811,6 +801,33 @@ LV_off</string>
            </item>
            <item>
             <widget class="QLabel" name="BI_Cycle_tag">
+             <property name="text">
+              <string>1</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_12">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_94">
+             <property name="text">
+              <string>Step #:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="BI_Step_tag">
              <property name="text">
               <string>1</string>
              </property>

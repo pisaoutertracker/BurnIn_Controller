@@ -1147,11 +1147,10 @@ class BurnIn_Worker(QObject):
 			
 				session_dict["Action"]=session_dict["StepList"][session_dict["CycleStep"]-1]
 				self.logger.info("BI: cycle "+str(session_dict["Cycle"]) + " of "+str(NCycles))
+				self.SharedDict["BI_Step"].setText(str(session_dict["CycleStep"])+" of "+str(len(session_dict["StepList"]))
 				
 				if (session_dict["Action"].upper()=="COOL"):
 					self.BI_Update_Status_file(session_dict)
-					
-					self.SharedDict["BI_Cycle"].setText(session_dict["Cycle"]+"/"+str(NCycles))
 					self.logger.info("BI: rumping down...")
 					self.SharedDict["BI_Action"].setText("Cooling")
 					self.SharedDict["BI_SUT"].setText("None") 
@@ -1233,7 +1232,7 @@ class BurnIn_Worker(QObject):
 					#check all LVs are OFF
 					for row in Slot_list:
 						if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
-							self.BI_Abort("BI aborted: some HVs was not turned OFF")
+							self.BI_Abort("BI aborted: some LVs was not turned OFF")
 							return
 							
 				if (session_dict["Action"].upper()=="HV_ON"):

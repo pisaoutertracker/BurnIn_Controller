@@ -371,6 +371,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 		self.SharedDict["BI_SUT"]=self.BI_SUT_tag
 		#self.SharedDict["BI_ProgressBar"]=self.BI_ProgressBar_pb
 		self.SharedDict["BI_Cycle"]=self.BI_Cycle_tag
+		self.SharedDict["BI_Step"]=self.BI_Step_tag
 		self.SharedDict["BI_Graph"]=self.GraphWidget
 		
 		# Status variable & parameter
