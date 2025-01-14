@@ -859,25 +859,25 @@ class BurnIn_Worker(QObject):
 				self.BI_terminated.emit()
 				return
 		
-		#start HV
-		self.SharedDict["BI_Action"].setText("Start HVs")
-		self.Ctrl_PowerHV_Cmd(True,HV_Channel_list,PopUp)
-		if not self.last_op_ok:
-			self.logger.error("WORKER: Check IDs procedure failed. Can't start HVs.")
-			self.SharedDict["BI_Status"].setText("Failed CheckIDs")
-			self.SharedDict["BI_Action"].setText("None")
-			self.BI_terminated.emit()
-			return
-		
-		time.sleep(BI_SLEEP_AFTER_HVSET)
-		#check all HVs are ON
-		for row in Slot_list:
-			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
-				self.logger.error("WORKER: Check IDs procedure failed. HVs check failed.")
-				self.SharedDict["BI_Status"].setText("Failed CheckIDs")
-				self.SharedDict["BI_Action"].setText("None")
-				self.BI_terminated.emit()
-				return
+		##start HV
+		#self.SharedDict["BI_Action"].setText("Start HVs")
+		#self.Ctrl_PowerHV_Cmd(True,HV_Channel_list,PopUp)
+		#if not self.last_op_ok:
+		#	self.logger.error("WORKER: Check IDs procedure failed. Can't start HVs.")
+		#	self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+		#	self.SharedDict["BI_Action"].setText("None")
+		#	self.BI_terminated.emit()
+		#	return
+		#
+		#time.sleep(BI_SLEEP_AFTER_HVSET)
+		##check all HVs are ON
+		#for row in Slot_list:
+		#	if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
+		#		self.logger.error("WORKER: Check IDs procedure failed. HVs check failed.")
+		#		self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+		#		self.SharedDict["BI_Action"].setText("None")
+		#		self.BI_terminated.emit()
+		#		return
 				
 		##checking IDS
 		self.SharedDict["BI_Status"].setText("CheckingIDs")
@@ -900,26 +900,26 @@ class BurnIn_Worker(QObject):
 		
 		self.SharedDict["BI_SUT"].setText("None")
 							
-		#stop HV
-		
-		self.SharedDict["BI_Status"].setText("CheckIDs stopping")
-		self.SharedDict["BI_Action"].setText("Stop HVs")
-		self.Ctrl_PowerHV_Cmd(False,HV_Channel_list,PopUp)
-		if not self.last_op_ok:
-			self.logger.error("WORKER: Check IDs procedure failed. Can't stop HVs.")
-			self.SharedDict["BI_Status"].setText("Failed CheckIDs")
-			self.SharedDict["BI_Action"].setText("None")
-			self.BI_terminated.emit()
-			return
-		time.sleep(BI_SLEEP_AFTER_HVSET)
-		#check HV stop
-		for row in Slot_list:
-			if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
-				self.logger.error("WORKER: Check IDs procedure failed. HVs check failed.")
-				self.SharedDict["BI_Status"].setText("Failed CheckIDs")
-				self.SharedDict["BI_Action"].setText("None")
-				self.BI_terminated.emit()
-				return
+		##stop HV
+		#
+		#self.SharedDict["BI_Status"].setText("CheckIDs stopping")
+		#self.SharedDict["BI_Action"].setText("Stop HVs")
+		#self.Ctrl_PowerHV_Cmd(False,HV_Channel_list,PopUp)
+		#if not self.last_op_ok:
+		#	self.logger.error("WORKER: Check IDs procedure failed. Can't stop HVs.")
+		#	self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+		#	self.SharedDict["BI_Action"].setText("None")
+		#	self.BI_terminated.emit()
+		#	return
+		#time.sleep(BI_SLEEP_AFTER_HVSET)
+		##check HV stop
+		#for row in Slot_list:
+		#	if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
+		#		self.logger.error("WORKER: Check IDs procedure failed. HVs check failed.")
+		#		self.SharedDict["BI_Status"].setText("Failed CheckIDs")
+		#		self.SharedDict["BI_Action"].setText("None")
+		#		self.BI_terminated.emit()
+		#		return
 			
 		
 		#stop LV
