@@ -54,9 +54,10 @@ class DB_interface():
 			self.logger.error("Failed to pull the session. Status code:%d", response.status_code)
 		return eval(response.content.decode())
 		
-	def getConnectionsFromDB(self,fc7IDs,fc7Slots):
+	def getConnectionsFromDB(self,LVNames,HVNames,fc7IDs,fc7Slots):
 		self.logger.info("Getting connection from DB")
 		api_url = "http://%s:%d/snapshot"%(self.Addr, int(self.Port))
+		print(api_url)
 		for slot in range(0,10):
 			slotName = "B"+str(slot+1)
 			snapshot_data = { "cable": slotName, "side": "crateSide"}
@@ -65,11 +66,19 @@ class DB_interface():
 				self.logger.info("Slot "+ str(slot+1)+ " connections successfully pulled.")
 				jsonResponse=response.json()
 				self.logger.debug (jsonResponse)
-				connections = jsonResponse["1"]["connections"]
-				for val in connections:
+				if slot==0:
+					self.logger.info (jsonResponse)
+				for val in jsonResponse["4"]["connections"]:
+					if val["cable"][0:5]=="XSLOT":
+					        LVNames[slot] = "LV%s_%d"%(str.lower(val["cable"][5:]),int(val["line"]))
+				for val in jsonResponse["3"]["connections"]:
+					if val["cable"][0:5]=="ASLOT":
+					        HVNames[slot] = "HV%s_%d"%(str.lower(val["cable"][5:]),int(val["line"]))
+				for val in jsonResponse["1"]["connections"]:
 					if val["cable"][0:3]=="FC7":
 						fc7IDs[slot] = str.lower(val["cable"])
 						fc7Slots[slot] = str.lower(val["det_port"][0][2:])
+					        #
 			else:
 				self.logger.error("Slot "+ str(slot+1)+ " connections pull failed. Status code:%d", response.status_code)
 		return
