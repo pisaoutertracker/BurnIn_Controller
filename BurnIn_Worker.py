@@ -1151,7 +1151,7 @@ class BurnIn_Worker(QObject):
                 
                 if (session_dict["Action"].upper()=="COOL"):
                     self.BI_Update_Status_file(session_dict)
-                    self.logger.info("BI: rumping down...")
+                    self.logger.info("BI: ramping down...")
                     self.SharedDict["BI_Action"].setText("Cooling")
                     self.SharedDict["BI_SUT"].setText("None") 
                     if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
@@ -1367,9 +1367,9 @@ class BurnIn_Worker(QObject):
     ## BI generic function to change temp
     def BI_GoSelectedTemp(self,session_dict,SelectedTemp,isCooling,PopUp=False):
 
-        TempTolerance        = BI_TEMP_TOLERANCE
-        TempRampOffset        = session_dict["UnderRamp"]
-        TempMantainOffset    = session_dict["UnderKeep"]
+        TempTolerance     = BI_TEMP_TOLERANCE
+        TempRampOffset    = session_dict["UnderRamp"]
+        TempMantainOffset = session_dict["UnderKeep"]
 
         self.last_op_ok= True
         last_step=False # assume we cannot go directly to the target temperature
@@ -1378,11 +1378,11 @@ class BurnIn_Worker(QObject):
         #initialise and keep if heating
         TargetTemp = SelectedTemp+TempMantainOffset #aim slightly above target
         TempMargin = - TempMantainOffset
-        action="cooling"
+        verb="heating"
         if isCooling:
             TargetTemp = SelectedTemp-TempRampOffset #aim below target
             TempMargin = TempRampOffset
-            action="heating"
+            verb="cooling"
         
         #cooling loops
         while (not last_step):
@@ -1412,16 +1412,22 @@ class BurnIn_Worker(QObject):
             #while changing temperature, check if we reach the target and adjust the flow
             while(True):
                 try:
-                    self.logger.info("BI: cooling/heating to target temp....")    
+                    self.logger.info("BI: %s to target temperature..."%(verb))
                     dewPoint = float(self.SharedDict["Ctrl_IntDewPoint"].text())
-                    if dewPoint < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
-                        self.logger.info("BI: setting low flow....")    
-                        if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,False,PopUp):
-                            return
-                    elif dewPoint > BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()!="HIGH":
+                    #dry airflow increases heat and lowers humidity
+                    #I want high flow when warming up or when the dew point is too high during the cooling phase
+                    #If the dew point is sufficiently low and I'm cooling, switch to low flow
+                    #If we are not at the last step, then it's obviously the former and lowering humidity takes priority
+                    if last_step and isCooling:
+                        if self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
+                            self.logger.info("BI: setting low flow....")    
+                            if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,False,PopUp):
+                                return
+                    elif self.SharedDict["Ctrl_StatusFlow"].text()!="HIGH":
                         self.logger.info("BI: setting high flow....")    
                         if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
                             return
+                    #
                     if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-(nextTemp+TempMargin)) < TempTolerance):
                         #this happens when we reach SelectedTemp when heating or at the last cooling step, or TempRampOffset above target at intermediate cooling steps
                         break
@@ -1430,11 +1436,11 @@ class BurnIn_Worker(QObject):
                         return    
                     if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
                         if not (self.SharedDict["CAEN_updated"]):
-                            self.logger.info("BI: CAEN info not updated while cooling....")    
+                            self.logger.info("BI: CAEN info not updated while %s..."%(verb))
                         if not (self.SharedDict["FNALBox_updated"]):
-                            self.logger.info("BI: FNAL info not updated while cooling....")    
+                            self.logger.info("BI: FNAL info not updated while %s..."%(verb))
                         if not (self.SharedDict["Julabo_updated"]):
-                            self.logger.info("BI: Julabo info not updated while cooling....")    
+                            self.logger.info("BI: Julabo info not updated while %s..."%(verb))
                         self.last_op_ok= False
                         return
                     time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
@@ -1445,6 +1451,9 @@ class BurnIn_Worker(QObject):
             #end while(True)
         #end while (not last_step)
 
+        #set high flow in case it was set to low
+        if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
+            return
         # set target temperature mantain
         self.logger.info("BI: keep temperature ....")
         if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,SelectedTemp-TempMantainOffset,PopUp):
