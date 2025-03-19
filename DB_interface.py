@@ -66,10 +66,10 @@ class DB_interface():
                 #
                 for val in jsonResponse["4"]["connections"]:
                     if val["cable"][0:5]=="XSLOT":
-                            LVNames[slot] = "LV%s_%d"%(str.lower(val["cable"][5:]),int(val["line"]))
+                            LVNames[slot] = "LV%s.%d"%(str.lower(val["cable"][5:]),int(val["line"]))
                 for val in jsonResponse["3"]["connections"]:
                     if val["cable"][0:5]=="ASLOT":
-                            HVNames[slot] = "HV%s_%d"%(str.lower(val["cable"][5:]),int(val["line"]))
+                            HVNames[slot] = "HV%s.%d"%(str.lower(val["cable"][5:]),int(val["line"]))
                 for val in jsonResponse["1"]["connections"]:
                     if val["cable"][0:3]=="FC7":
                         fc7IDs[slot] = str.lower(val["cable"])
