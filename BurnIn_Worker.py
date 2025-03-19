@@ -1151,7 +1151,7 @@ class BurnIn_Worker(QObject):
                 
                 if (session_dict["Action"].upper()=="COOL"):
                     self.BI_Update_Status_file(session_dict)
-                    self.logger.info("BI: rumping down...")
+                    self.logger.info("BI: ramping down...")
                     self.SharedDict["BI_Action"].setText("Cooling")
                     self.SharedDict["BI_SUT"].setText("None") 
                     if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
@@ -1358,63 +1358,89 @@ class BurnIn_Worker(QObject):
 
     ## BI function to ramp down in temp
     def BI_GoLowTemp(self,session_dict,LowTemp):
-    
-        TempTolerance        = BI_TEMP_TOLERANCE
-        TempRampOffset        = session_dict["UnderRamp"]
-        TempMantainOffset    = session_dict["UnderKeep"]
+        self.BI_GoSelectedTemp(session_dict,LowTemp,isCooling=True,PopUp=False)
+            
+    ## BI function to ramp up in temp
+    def BI_GoHighTemp(self,session_dict,HighTemp):
+        self.BI_GoSelectedTemp(session_dict,HighTemp,isCooling=False,PopUp=False)
         
-        last_step=False
+    ## BI generic function to change temp
+    def BI_GoSelectedTemp(self,session_dict,SelectedTemp,isCooling,PopUp=False):
+
+        TempTolerance     = BI_TEMP_TOLERANCE
+        TempRampOffset    = session_dict["UnderRamp"]
+        TempMantainOffset = session_dict["UnderKeep"]
+
         self.last_op_ok= True
-        PopUp=False
-        nextTemp = 0.0
+        last_step=False # assume we cannot go directly to the target temperature
         
+        nextTemp = 0.0
+        #initialise and keep if heating
+        TargetTemp = SelectedTemp+TempMantainOffset #aim slightly above target
+        TempMargin = - TempMantainOffset
+        verb="heating"
+        if isCooling:
+            TargetTemp = SelectedTemp-TempRampOffset #aim below target
+            TempMargin = TempRampOffset
+            verb="cooling"
+        
+        #cooling loops
         while (not last_step):
             try:
+                #acquire dewpoint, must be done at every step
                 dewPoint = float(self.SharedDict["Ctrl_IntDewPoint"].text())
             except Exception as e:
                 self.logger.error(e)
                 self.last_op_ok= False
                 return
             
-            if (LowTemp-TempRampOffset> dewPoint):
-                nextTemp = LowTemp-TempRampOffset
-                self.logger.info("BI: target low temp OK...")
+            if (TargetTemp> dewPoint):#if the temperature we aim for is above the dewpoint everything is fine and there will be no further steps; this is always true if heating
+                nextTemp = TargetTemp
+                self.logger.info("BI: target temp above dew point - OK!")
                 last_step = True
-            else:
+            else: #if not, we aim slightly above the dewpoint and rise flow (FT: should this really be hardcoded?)
                 nextTemp = dewPoint+1
-                self.logger.info("BI: target low temp below dew point, going to dewPoint and rising flow...")
+                self.logger.info("BI: target temp below dew point, going to dew point and switching to high flow.")
                 if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True, True,PopUp):
                     return
-                
-            
+
+            #set to hold temperature at the target nextTemp
             if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,nextTemp,PopUp):
                 self.last_op_ok= False
                 return    
-                
+
+            #while changing temperature, check if we reach the target and adjust the flow
             while(True):
                 try:
-                    self.logger.info("BI: cooling to target temp....")    
+                    self.logger.info("BI: %s to target temperature..."%(verb))
                     dewPoint = float(self.SharedDict["Ctrl_IntDewPoint"].text())
-                    if dewPoint < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
-                        self.logger.info("BI: setting low flow....")    
-                        if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,False,PopUp):
-                            return
-                    elif dewPoint > BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()!="HIGH":
+                    #dry airflow increases heat and lowers humidity
+                    #I want high flow when warming up or when the dew point is too high during the cooling phase
+                    #If the dew point is sufficiently low and I'm cooling, switch to low flow
+                    #If we are not at the last step, then it's obviously the former and lowering humidity takes priority
+                    if last_step and isCooling:
+                        if self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
+                            self.logger.info("BI: setting low flow....")    
+                            if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,False,PopUp):
+                                return
+                    elif self.SharedDict["Ctrl_StatusFlow"].text()!="HIGH":
                         self.logger.info("BI: setting high flow....")    
                         if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
                             return
-                    if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-(nextTemp+TempRampOffset)) < TempTolerance):
+                    #
+                    if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-(nextTemp+TempMargin)) < TempTolerance):
+                        #this happens when we reach SelectedTemp when heating or at the last cooling step, or TempRampOffset above target at intermediate cooling steps
                         break
                     if self.SharedDict["BI_StopRequest"]:
                         self.last_op_ok= False
                         return    
                     if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
                         if not (self.SharedDict["CAEN_updated"]):
-                            self.logger.info("BI: CAEN info not updated while cooling....")    
+                            self.logger.info("BI: CAEN info not updated while %s..."%(verb))
                         if not (self.SharedDict["FNALBox_updated"]):
-                            self.logger.info("BI: FNAL info not updated while cooling....")    
+                            self.logger.info("BI: FNAL info not updated while %s..."%(verb))
                         if not (self.SharedDict["Julabo_updated"]):
-                            self.logger.info("BI: Julabo info not updated while cooling....")    
+                            self.logger.info("BI: Julabo info not updated while %s..."%(verb))
                         self.last_op_ok= False
                         return
                     time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
@@ -1422,74 +1448,23 @@ class BurnIn_Worker(QObject):
                     self.logger.error(e)
                     self.last_op_ok= False
                     return
-            
-            
-        # set target temperature mantain
-        self.logger.info("BI: keep temperature ....")
-        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,LowTemp-TempMantainOffset,PopUp):
-            self.last_op_ok= False
-            return
-    
-    ## BI function to ramp up in temp
-    def BI_GoHighTemp(self,session_dict,HighTemp):
-    
-        TempTolerance        = BI_TEMP_TOLERANCE
-        TempRampOffset        = session_dict["UnderRamp"]
-        TempMantainOffset    = session_dict["UnderKeep"]
-        
-        self.last_op_ok= True
-        PopUp=False
-        
-        nextTemp=HighTemp+TempMantainOffset
-        
-        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,nextTemp,PopUp):
-            self.last_op_ok= False
-            return    
-            
-        while(True):
-            try:
-                self.logger.info("BI: heating to target temp....")    
-                dewPoint = float(self.SharedDict["Ctrl_IntDewPoint"].text())
-                if dewPoint < BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()=="HIGH":
-                    self.logger.info("BI: setting low flow....")    
-                    if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,False,PopUp):
-                        return
-                elif dewPoint > BI_HIGHFLOW_THRESHOLD and self.SharedDict["Ctrl_StatusFlow"].text()!="HIGH":                
-                    self.logger.info("BI: setting high flow....")    
-                    if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
-                        return
-                if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-HighTemp) < TempTolerance):
-                    break
-                if self.SharedDict["BI_StopRequest"]:
-                    self.last_op_ok= False
-                    return    
-                if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"] and self.SharedDict["Julabo_updated"]):
-                    if not (self.SharedDict["CAEN_updated"]):
-                        self.logger.info("BI: CAEN info not updated while heating....")    
-                    if not (self.SharedDict["FNALBox_updated"]):
-                        self.logger.info("BI: FNAL info not updated while heating....")    
-                    if not (self.SharedDict["Julabo_updated"]):
-                        self.logger.info("BI: Julabo info not updated while heating....")    
-                    self.last_op_ok= False
-                    return
-                time.sleep(BI_SLEEP_AFTER_TEMP_CHECK)
-            except Exception as e:
-                self.logger.error(e)
-                self.last_op_ok= False
-                return
-                
-            
-            
-        # set target temperature mantain
-        self.logger.info("BI: keep temperature ....")
-        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,HighTemp-TempMantainOffset,PopUp):
-            self.last_op_ok= False
-            return
+            #end while(True)
+        #end while (not last_step)
 
+        #set high flow in case it was set to low
+        if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
+            return
+        # set target temperature mantain
+        self.logger.info("BI: keep temperature ....")
+        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,SelectedTemp-TempMantainOffset,PopUp):
+            self.last_op_ok= False
+            return
+               
     def BI_Update_Status_file(self,session_dict):
     
         with open("Session.json", "w") as outfile: 
             json.dump(session_dict, outfile)
+
 
     def BI_StartIV_Cmd(self, session_dict):
     
