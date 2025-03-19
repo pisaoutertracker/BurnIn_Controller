@@ -1465,6 +1465,7 @@ class BurnIn_Worker(QObject):
         with open("Session.json", "w") as outfile: 
             json.dump(session_dict, outfile)
 
+
     def BI_StartIV_Cmd(self, session_dict):
     
         module = session_dict["Current_ModuleID"]

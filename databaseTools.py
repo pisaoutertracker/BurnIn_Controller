@@ -41,7 +41,6 @@ def getSessionFromDB(sessionName):
     else:
         print("Failed to pull the session. Status code:", response.status_code)
     return eval(response.content.decode())
-	
 
 def updateSessionFromDB(sessionName,sessionDescription = {}):
     if verbose>0: print("Calling updateSessionFromDB()", sessionName)
