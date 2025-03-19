@@ -5,7 +5,6 @@ Julabo:
 MQTT:
  Addr: "192.168.0.45"
  Port: "1883"
- ClientId: BurnIn_Controller
  CAENTopic: "/caenstatus/full"
  M5Topic: "/environment/HumAndTemp001"
  EnableMonitor: "True"
@@ -16,4 +15,16 @@ FNALBox:
 CAENController:
  Addr: "192.168.0.45"
  Port: "7000"
- 
+DB:
+ Addr: "192.168.0.45"
+ Port: "5000"
+Supervisor:
+ Enabled: "True"
+BITest:
+ cwd: "/home/thermal/BurnIn_moduleTest"
+ version: "latest"
+IVScan:
+ cwd: "/home/thermal/BurnIn_moduleTest"
+ scanType: "before_encapsulation"
+ delay: "5.0"
+ settlingTime: "0.5"

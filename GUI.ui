@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1300</width>
-    <height>827</height>
+    <width>1316</width>
+    <height>976</height>
    </rect>
   </property>
   <property name="font">
@@ -19,11 +19,14 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Burn-In Controller v1.0</string>
+   <string>Burn-In Controller v2.3</string>
   </property>
   <property name="windowIcon">
    <iconset>
     <normaloff>../../../Boss/.designer/backup/logo.png</normaloff>../../../Boss/.designer/backup/logo.png</iconset>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -38,7 +41,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -46,629 +49,738 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
-         <spacer name="verticalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_11">
-          <item row="0" column="0">
-           <widget class="QPushButton" name="BI_Start_btn">
-            <property name="text">
-             <string>Start BurnIn</string>
-            </property>
-           </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_16">
+            <item>
+             <widget class="QGroupBox" name="BI_settings_gb">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="title">
+               <string>BurnIn Session Settings</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_11">
+               <item row="3" column="1">
+                <widget class="QDoubleSpinBox" name="BI_UnderRampTemp_dsb">
+                 <property name="singleStep">
+                  <double>1.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>10.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_70">
+                 <property name="text">
+                  <string>Undershoot keep (C°):</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QDoubleSpinBox" name="BI_HighTemp_dsb">
+                 <property name="minimum">
+                  <double>-50.000000000000000</double>
+                 </property>
+                 <property name="maximum">
+                  <double>30.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>1.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>10.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_67">
+                 <property name="text">
+                  <string>High Temp (C°):</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QDoubleSpinBox" name="BI_UnderKeepTemp_dsb">
+                 <property name="value">
+                  <double>3.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QDoubleSpinBox" name="BI_LowTemp_dsb">
+                 <property name="minimum">
+                  <double>-40.000000000000000</double>
+                 </property>
+                 <property name="maximum">
+                  <double>20.000000000000000</double>
+                 </property>
+                 <property name="value">
+                  <double>-30.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="1">
+                <widget class="QLineEdit" name="BI_Operator_line">
+                 <property name="text">
+                  <string>PisaTeam</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLabel" name="label_81">
+                 <property name="text">
+                  <string>Operator:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_69">
+                 <property name="text">
+                  <string>Undershoot Ramp (C°):</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="1">
+                <widget class="QPlainTextEdit" name="BI_Desc_line">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="plainText">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_66">
+                 <property name="text">
+                  <string>Low temp (C°):</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QSpinBox" name="BI_NCycles_sb">
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                 <property name="value">
+                  <number>1</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="0">
+                <widget class="QLabel" name="label_83">
+                 <property name="text">
+                  <string>Description:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="label_68">
+                 <property name="text">
+                  <string>N Cycles:</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_10">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_16">
+              <property name="title">
+               <string>Burn-In control</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_9">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_14">
+                 <item>
+                  <widget class="QPushButton" name="BI_CheckIDs_btn">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Check IDs</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="BI_Start_btn">
+                   <property name="minimumSize">
+                    <size>
+                     <width>140</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                     <kerning>false</kerning>
+                    </font>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::StrongFocus</enum>
+                   </property>
+                   <property name="autoFillBackground">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Start BurnIn</string>
+                   </property>
+                   <property name="flat">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="BI_Stop_btn">
+                   <property name="minimumSize">
+                    <size>
+                     <width>140</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Stop BurnIn</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
           </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="BI_Stop_btn">
-            <property name="text">
-             <string>Stop BurnIn</string>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_22" stretch="0">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetDefaultConstraint</enum>
             </property>
-           </widget>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QGroupBox" name="groupBox_20">
+              <property name="title">
+               <string>Cycle configuration</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_24">
+               <item>
+                <widget class="QLabel" name="label_90">
+                 <property name="text">
+                  <string>Valid steps (case insensitive):</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_91">
+                 <property name="text">
+                  <string>  Cool, Heat, ScanIV</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_92">
+                 <property name="text">
+                  <string>  DryTest, QuickTest, CheckID, FullTest</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_93">
+                 <property name="text">
+                  <string>  LV_on, LV_off, HV_on, HV_off</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_23">
+                 <item>
+                  <widget class="QPlainTextEdit" name="BI_Cycle_line">
+                   <property name="plainText">
+                    <string>addStep(&quot;Cool&quot;)
+addStep(&quot;Heat&quot;)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_19">
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QPushButton" name="BI_LoadCycle_btn">
+                     <property name="text">
+                      <string>Load from File</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="BI_SaveCycle_btn">
+                     <property name="text">
+                      <string>Save to File</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_13">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_17">
+            <item>
+             <widget class="QGroupBox" name="groupBox_14">
+              <property name="title">
+               <string>Architecture (Press to edit ID)</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_18">
+               <item>
+                <layout class="QGridLayout" name="gridLayout_12">
+                 <item row="2" column="1">
+                  <widget class="QLabel" name="label_73">
+                   <property name="text">
+                    <string>Slot 02</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="9">
+                  <widget class="QLabel" name="label_77">
+                   <property name="text">
+                    <string>Slot 06</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="1">
+                  <widget class="QLabel" name="label_75">
+                   <property name="text">
+                    <string>Slot 04</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QLabel" name="label_74">
+                   <property name="text">
+                    <string>Slot 03</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLabel" name="label_71">
+                   <property name="text">
+                    <string>Slot 01</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="4">
+                  <widget class="QLineEdit" name="BI_Mod3ID_line">
+                   <property name="layoutDirection">
+                    <enum>Qt::LeftToRight</enum>
+                   </property>
+                   <property name="autoFillBackground">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Module  ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="7">
+                  <widget class="QLineEdit" name="BI_Mod6ID_line">
+                   <property name="text">
+                    <string>Module  ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="7">
+                  <widget class="QLineEdit" name="BI_Mod5ID_line">
+                   <property name="text">
+                    <string>Module  ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="4">
+                  <widget class="QLineEdit" name="BI_Mod4ID_line">
+                   <property name="layoutDirection">
+                    <enum>Qt::LeftToRight</enum>
+                   </property>
+                   <property name="autoFillBackground">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Module  ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="9">
+                  <widget class="QLabel" name="label_80">
+                   <property name="text">
+                    <string>Slot 09</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="1">
+                  <widget class="QLabel" name="label_76">
+                   <property name="text">
+                    <string>Slot 05</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="9">
+                  <widget class="QLabel" name="label_78">
+                   <property name="text">
+                    <string>Slot 07</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="9">
+                  <widget class="QLabel" name="label_79">
+                   <property name="text">
+                    <string>Slot 08</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="9">
+                  <widget class="QLabel" name="label_72">
+                   <property name="text">
+                    <string>Slot 10</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="5">
+                  <widget class="Line" name="line_6">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="5">
+                  <widget class="Line" name="line_3">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="2">
+                  <widget class="QCheckBox" name="BI_Mod2_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="5">
+                  <widget class="Line" name="line_4">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="5">
+                  <widget class="Line" name="line_5">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="5">
+                  <widget class="Line" name="line_7">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QCheckBox" name="BI_Mod0_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="8">
+                  <widget class="QCheckBox" name="BI_Mod7_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="8">
+                  <widget class="QCheckBox" name="BI_Mod8_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="2">
+                  <widget class="QCheckBox" name="BI_Mod4_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="2">
+                  <widget class="QCheckBox" name="BI_Mod3_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="8">
+                  <widget class="QCheckBox" name="BI_Mod6_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="8">
+                  <widget class="QCheckBox" name="BI_Mod5_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="8">
+                  <widget class="QCheckBox" name="BI_Mod9_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QCheckBox" name="BI_Mod1_cb">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="4">
+                  <widget class="QLineEdit" name="BI_Mod1ID_line">
+                   <property name="layoutDirection">
+                    <enum>Qt::LeftToRight</enum>
+                   </property>
+                   <property name="autoFillBackground">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Module  ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="4">
+                  <widget class="QLineEdit" name="BI_Mod0ID_line">
+                   <property name="font">
+                    <font>
+                     <strikeout>false</strikeout>
+                    </font>
+                   </property>
+                   <property name="focusPolicy">
+                    <enum>Qt::ClickFocus</enum>
+                   </property>
+                   <property name="layoutDirection">
+                    <enum>Qt::LeftToRight</enum>
+                   </property>
+                   <property name="autoFillBackground">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>PS_26_IPG-10006</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="4">
+                  <widget class="QLineEdit" name="BI_Mod2ID_line">
+                   <property name="layoutDirection">
+                    <enum>Qt::LeftToRight</enum>
+                   </property>
+                   <property name="autoFillBackground">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Module  ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="7">
+                  <widget class="QLineEdit" name="BI_Mod8ID_line">
+                   <property name="text">
+                    <string>Module  ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="7">
+                  <widget class="QLineEdit" name="BI_Mod7ID_line">
+                   <property name="text">
+                    <string>Module  ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="7">
+                  <widget class="QLineEdit" name="BI_Mod9ID_line">
+                   <property name="text">
+                    <string>Module  ID</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_9">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="groupBox_19">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="title">
+               <string>Load Settings from DB</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_15">
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_19">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_17">
+                   <item>
+                    <widget class="QPushButton" name="BI_LoadSesh_btn">
+                     <property name="text">
+                      <string>Fill from Session:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="BI_TargetSesh_line">
+                     <property name="minimumSize">
+                      <size>
+                       <width>150</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_19">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="BI_LoadLast_btn">
+                     <property name="text">
+                      <string>Fill from Last Session</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="BI_ReloadConn_btn">
+                   <property name="text">
+                    <string>Reload Connections from DB</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
         <item>
-         <widget class="PlotWidget" name="GraphWidget" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>300</height>
-           </size>
-          </property>
-          <property name="tabletTracking">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="ModuleTest_tab">
-       <attribute name="title">
-        <string>Module Test</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_16">
-        <item>
-         <widget class="QGroupBox" name="groupBox_15">
+         <widget class="QGroupBox" name="groupBox_18">
           <property name="title">
-           <string>GroupBox</string>
+           <string>BI status</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_18">
+          <layout class="QHBoxLayout" name="horizontalLayout_15">
            <item>
-            <widget class="QLabel" name="label_72">
-             <property name="text">
-              <string>Session ID:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="Ctrl_SeshID_tag">
-             <property name="text">
-              <string>?</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="Ctrl_StartSesh_btn">
-             <property name="minimumSize">
-              <size>
-               <width>400</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Start Session</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_13">
-          <property name="title">
-           <string>Module test</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_13">
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_15">
-             <item>
-              <widget class="QPushButton" name="Ctrl_StartTest_btn">
-               <property name="text">
-                <string>TEST!</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_14">
-          <property name="title">
-           <string>Status Summary</string>
-          </property>
-          <widget class="QLabel" name="label_66">
-           <property name="geometry">
-            <rect>
-             <x>19</x>
-             <y>30</y>
-             <width>91</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Flow</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="Ctrl_StatusFlow_tag_2">
-           <property name="geometry">
-            <rect>
-             <x>120</x>
-             <y>30</y>
-             <width>5</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>?</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_67">
-           <property name="geometry">
-            <rect>
-             <x>19</x>
-             <y>60</y>
-             <width>91</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Magnetic Lock</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="Ctrl_StatusFlow_tag_3">
-           <property name="geometry">
-            <rect>
-             <x>120</x>
-             <y>60</y>
-             <width>5</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>?</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="Ctrl_StatusDoor_tag_2">
-           <property name="geometry">
-            <rect>
-             <x>120</x>
-             <y>90</y>
-             <width>33</width>
-             <height>11</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>?</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_68">
-           <property name="geometry">
-            <rect>
-             <x>20</x>
-             <y>90</y>
-             <width>73</width>
-             <height>11</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Door:</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_69">
-           <property name="geometry">
-            <rect>
-             <x>180</x>
-             <y>30</y>
-             <width>88</width>
-             <height>11</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Ext Dew Point (C°):</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="Ctrl_ExtDewPoint_tag_2">
-           <property name="geometry">
-            <rect>
-             <x>280</x>
-             <y>30</y>
-             <width>75</width>
-             <height>11</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>?</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="Ctrl_IntDewPoint_tag_2">
-           <property name="geometry">
-            <rect>
-             <x>280</x>
-             <y>60</y>
-             <width>5</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>?</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_70">
-           <property name="geometry">
-            <rect>
-             <x>180</x>
-             <y>60</y>
-             <width>86</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Int Dew Point (C°):</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_71">
-           <property name="geometry">
-            <rect>
-             <x>180</x>
-             <y>90</y>
-             <width>86</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Temperature</string>
-           </property>
-          </widget>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="ManualOp_tab">
-       <attribute name="title">
-        <string>Manual Operations</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_11">
-        <item>
-         <widget class="QGroupBox" name="groupBox_9">
-          <property name="title">
-           <string>Julabo Control</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_12">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_8">
-             <item>
-              <widget class="QPushButton" name="Ctrl_StartJulabo_btn">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="autoFillBackground">
-                <bool>false</bool>
-               </property>
-               <property name="text">
-                <string>START Chiller</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="Ctrl_StopJulabo_btn">
-               <property name="text">
-                <string>STOP Chiller</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="Line" name="line_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QGridLayout" name="gridLayout_7">
-             <item row="1" column="1">
-              <widget class="QLabel" name="Ctrl_Sp2_tag">
-               <property name="text">
-                <string>?</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QLabel" name="Ctrl_Sp3_tag">
-               <property name="text">
-                <string>?</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="6">
-              <widget class="QPushButton" name="Ctrl_SelSp2_btn">
-               <property name="text">
-                <string>Set as target T</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="6">
-              <widget class="QPushButton" name="Ctrl_SelSp3_btn">
-               <property name="text">
-                <string>Set as target T</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="3">
-              <widget class="QLabel" name="label_38">
-               <property name="text">
-                <string>New value:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QLabel" name="Ctrl_Sp1_tag">
-               <property name="text">
-                <string>?</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="3">
-              <widget class="QLabel" name="label_39">
-               <property name="text">
-                <string>New value:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="3">
-              <widget class="QLabel" name="label_40">
-               <property name="text">
-                <string>New value:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_34">
-               <property name="text">
-                <string>Setpoint 3 (C°): </string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="4">
-              <widget class="QDoubleSpinBox" name="Ctrl_ValSp1_dsb">
-               <property name="minimum">
-                <double>-50.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>30.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_33">
-               <property name="text">
-                <string>Setpoint 2 (C°): </string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="6">
-              <widget class="QPushButton" name="Ctrl_SelSp1_btn">
-               <property name="text">
-                <string>Set as target T</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="5">
-              <widget class="QPushButton" name="Ctrl_SetSp1_btn">
-               <property name="text">
-                <string>Set value</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="5">
-              <widget class="QPushButton" name="Ctrl_SetSp2_btn">
-               <property name="text">
-                <string>Set value</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="4">
-              <widget class="QDoubleSpinBox" name="Ctrl_ValSp3_dsb">
-               <property name="minimum">
-                <double>-50.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>30.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="4">
-              <widget class="QDoubleSpinBox" name="Ctrl_ValSp2_dsb">
-               <property name="minimum">
-                <double>-50.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>30.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="5">
-              <widget class="QPushButton" name="Ctrl_SetSp3_btn">
-               <property name="text">
-                <string>Set value</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_32">
-               <property name="text">
-                <string>Setpoint 1 (C°): </string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2">
-              <spacer name="horizontalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="0" column="7">
-              <spacer name="horizontalSpacer_4">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="Line" name="line">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_9">
-             <item>
-              <widget class="QLabel" name="label_51">
-               <property name="text">
-                <string>Chiiler status:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="Ctrl_StatusJulabo_tag">
-               <property name="text">
-                <string>?</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_8">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_35">
-               <property name="text">
-                <string>Setpoint:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="Ctrl_TSp_tag">
-               <property name="text">
-                <string>?</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_9">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_41">
-               <property name="text">
-                <string>Target temperature (C°):</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="Ctrl_TargetTemp_tag">
-               <property name="text">
-                <string>?</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_6">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_43">
-               <property name="text">
-                <string>Int Dew Point (C°):</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="Ctrl_IntDewPoint_tag">
-               <property name="text">
-                <string>?</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_5">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_10">
-          <property name="title">
-           <string>FNAL box control</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_8">
-           <item row="1" column="4">
-            <widget class="QLabel" name="Ctrl_StatusLock_tag">
-             <property name="text">
-              <string>?</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="3">
-            <widget class="QLabel" name="Ctrl_StatusDoor_tag">
-             <property name="text">
-              <string>?</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_53">
-             <property name="text">
-              <string>Ext Dew Point (C°):</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="3">
-            <widget class="QLabel" name="label_47">
+            <widget class="QLabel" name="label_84">
              <property name="text">
               <string>Status:</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="5">
-            <spacer name="horizontalSpacer_7">
+           <item>
+            <widget class="QLabel" name="BI_Status_tag">
+             <property name="text">
+              <string>StandBy</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_15">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -680,349 +792,157 @@
              </property>
             </spacer>
            </item>
-           <item row="0" column="4">
-            <widget class="QLabel" name="Ctrl_StatusFlow_tag">
-             <property name="text">
-              <string>?</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <widget class="QPushButton" name="Ctrl_SetUnlock_btn">
-             <property name="text">
-              <string>Unlock</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QPushButton" name="Ctrl_SetHighFlow_btn">
-             <property name="text">
-              <string>High Flow</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_49">
-             <property name="text">
-              <string>Dry air flow</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="2">
-            <widget class="QLabel" name="label_59">
-             <property name="text">
-              <string>Door status:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QPushButton" name="Ctrl_SetLock_btn">
-             <property name="text">
-              <string>Lock</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QPushButton" name="Ctrl_SetLowFlow_btn">
-             <property name="text">
-              <string>Low Flow</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_50">
-             <property name="text">
-              <string>Magnetic lock</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLabel" name="Ctrl_ExtDewPoint_tag">
-             <property name="text">
-              <string>?</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="3">
-            <widget class="QLabel" name="label_45">
-             <property name="text">
-              <string>Status</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="groupBox_12">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="title">
-           <string>CAEN LV/HV </string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_14">
            <item>
-            <widget class="QTableWidget" name="Ctrl_CAEN_table">
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>16777215</height>
-              </size>
+            <widget class="QLabel" name="label_88">
+             <property name="text">
+              <string>Cycle #:</string>
              </property>
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="verticalScrollBarPolicy">
-              <enum>Qt::ScrollBarAsNeeded</enum>
-             </property>
-             <property name="sizeAdjustPolicy">
-              <enum>QAbstractScrollArea::AdjustToContents</enum>
-             </property>
-             <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
-             </property>
-             <property name="sortingEnabled">
-              <bool>false</bool>
-             </property>
-             <property name="cornerButtonEnabled">
-              <bool>true</bool>
-             </property>
-             <attribute name="horizontalHeaderCascadingSectionResizes">
-              <bool>true</bool>
-             </attribute>
-             <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-              <bool>true</bool>
-             </attribute>
-             <row>
-              <property name="text">
-               <string>Slot 0</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>Slot 1</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>Slot 2</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>Slot 3</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>Slot 4</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>Slot 5</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>Slot 6</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>Slot 7</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>Slot 8</string>
-              </property>
-             </row>
-             <row>
-              <property name="text">
-               <string>Slot 9</string>
-              </property>
-             </row>
-             <column>
-              <property name="text">
-               <string>LV Ch.</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Status</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>V set (V)</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>V read (V)</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Current (A)</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>HV Ch.</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Status</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>V set(V)</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>V read(V)</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Current (A)</string>
-              </property>
-             </column>
-             <item row="0" column="0">
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item row="1" column="0">
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item row="2" column="0">
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item row="2" column="1">
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item row="3" column="0">
-              <property name="text">
-               <string/>
-              </property>
-             </item>
-             <item row="4" column="0">
-              <property name="text">
-               <string/>
-              </property>
-             </item>
             </widget>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_10">
-             <item>
-              <widget class="QPushButton" name="Ctrl_LVOn_btn">
-               <property name="text">
-                <string>LV on</string>
-               </property>
-               <property name="flat">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="Ctrl_LVOff_btn">
-               <property name="text">
-                <string>LV off</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="Ctrl_LVSet_btn">
-               <property name="text">
-                <string>Set LV</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_10">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
+            <widget class="QLabel" name="BI_Cycle_tag">
+             <property name="text">
+              <string>1</string>
+             </property>
+            </widget>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_11">
-             <item>
-              <widget class="QPushButton" name="Ctrl_HVOn_btn">
-               <property name="text">
-                <string>HV on</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="Ctrl_HVOff_btn">
-               <property name="text">
-                <string>HV off</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="Ctrl_HVSet_btn">
-               <property name="text">
-                <string>Set HV</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_11">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_4">
+            <spacer name="horizontalSpacer_12">
              <property name="orientation">
-              <enum>Qt::Vertical</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>20</width>
-               <height>40</height>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_94">
+             <property name="text">
+              <string>Step #:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="BI_Step_tag">
+             <property name="text">
+              <string>1</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_16">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_86">
+             <property name="text">
+              <string>Action: </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="BI_Action_tag">
+             <property name="text">
+              <string>None</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_17">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_89">
+             <property name="text">
+              <string>Slot Under Test:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="BI_SUT_tag">
+             <property name="text">
+              <string>None</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_20">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
               </size>
              </property>
             </spacer>
            </item>
           </layout>
          </widget>
+        </item>
+        <item>
+         <widget class="PlotWidget" name="GraphWidget" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>300</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>400</height>
+           </size>
+          </property>
+          <property name="cursor">
+           <cursorShape>ArrowCursor</cursorShape>
+          </property>
+          <property name="tabletTracking">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -1079,90 +999,128 @@
          </layout>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox_4">
-          <property name="font">
-           <font>
-            <pointsize>9</pointsize>
-           </font>
-          </property>
-          <property name="title">
-           <string>Connection status</string>
-          </property>
-          <layout class="QGridLayout" name="gridLayout">
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string>JULABO:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLabel" name="MQTTConn_tag">
-             <property name="styleSheet">
-              <string notr="true">color: rgb(255, 0, 0);</string>
-             </property>
-             <property name="text">
-              <string>Disconnected</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_8">
-             <property name="text">
-              <string>MQTT server:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string>FNAL box:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLabel" name="FNALConn_tag">
-             <property name="styleSheet">
-              <string notr="true">color: rgb(255, 0, 0);</string>
-             </property>
-             <property name="text">
-              <string>Disconnected</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QLabel" name="JULABOConn_tag">
-             <property name="accessibleDescription">
-              <string>color: rgb(255, 0, 0);</string>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">color: rgb(255, 0, 0);</string>
-             </property>
-             <property name="text">
-              <string>Disconnected</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_16">
+          <item>
+           <widget class="QLabel" name="label_87">
+            <property name="text">
+             <string>Last supervision cycle:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="LastSupervision_tag">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 0, 0);</string>
+            </property>
+            <property name="text">
+             <string>Never</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_18">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_10">
+            <item>
+             <widget class="QGroupBox" name="groupBox_4">
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
+              <property name="title">
+               <string>Connection status</string>
+              </property>
+              <layout class="QGridLayout" name="gridLayout">
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_9">
+                 <property name="text">
+                  <string>JULABO:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_8">
+                 <property name="text">
+                  <string>MQTT server (Worker):</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLabel" name="MQTTMConn_tag">
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(255, 0, 0);</string>
+                 </property>
+                 <property name="text">
+                  <string>Disconnected</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_10">
+                 <property name="text">
+                  <string>FNAL box:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLabel" name="FNALConn_tag">
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(255, 0, 0);</string>
+                 </property>
+                 <property name="text">
+                  <string>Disconnected</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLabel" name="JULABOConn_tag">
+                 <property name="accessibleDescription">
+                  <string>color: rgb(255, 0, 0);</string>
+                 </property>
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(255, 0, 0);</string>
+                 </property>
+                 <property name="text">
+                  <string>Disconnected</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_85">
+                 <property name="text">
+                  <string>MQTT server (Supervisor)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLabel" name="MQTTSConn_tag">
+                 <property name="styleSheet">
+                  <string notr="true">color: rgb(255, 0, 0);</string>
+                 </property>
+                 <property name="text">
+                  <string>Disconnected</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
             <item>
              <widget class="QGroupBox" name="groupBox_7">
               <property name="title">
@@ -1195,6 +1153,7 @@
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
+                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -1205,15 +1164,99 @@
                </item>
                <item>
                 <layout class="QGridLayout" name="gridLayout_5">
-                 <item row="2" column="1">
-                  <widget class="QLabel" name="LastLV01Status_tag">
+                 <item row="8" column="0">
+                  <widget class="QLabel" name="LV07ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="3">
-                  <widget class="QLabel" name="LastLV08Voltage_tag">
+                 <item row="8" column="3">
+                  <widget class="QLabel" name="LastLV07Voltage_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
+                  <widget class="QLabel" name="label_24">
+                   <property name="text">
+                    <string>V read</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="0">
+                  <widget class="QLabel" name="LV09ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="3">
+                  <widget class="QLabel" name="LastLV02Voltage_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLabel" name="label_23">
+                   <property name="text">
+                    <string>Status</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="0">
+                  <widget class="QLabel" name="LV06ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="1">
+                  <widget class="QLabel" name="LastLV04Status_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="0">
+                  <widget class="QLabel" name="LV08ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="1">
+                  <widget class="QLabel" name="LastLV09Status_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="4">
+                  <widget class="QLabel" name="LastLV02Current_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_22">
+                   <property name="text">
+                    <string>Ch name</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="4">
+                  <widget class="QLabel" name="LastLV03Current_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="3">
+                  <widget class="QLabel" name="LastLV09Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1226,8 +1269,15 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="6" column="0">
-                  <widget class="QLabel" name="LV05ID_tag">
+                 <item row="9" column="3">
+                  <widget class="QLabel" name="LastLV08Voltage_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QLabel" name="LastLV01Status_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1235,6 +1285,13 @@
                  </item>
                  <item row="2" column="0">
                   <widget class="QLabel" name="LV01ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="0">
+                  <widget class="QLabel" name="LV05ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1249,13 +1306,6 @@
                  </item>
                  <item row="10" column="4">
                   <widget class="QLabel" name="LastLV09Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="6" column="4">
-                  <widget class="QLabel" name="LastLV05Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1282,113 +1332,15 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="0">
-                  <widget class="QLabel" name="LV09ID_tag">
+                 <item row="6" column="4">
+                  <widget class="QLabel" name="LastLV05Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="3">
-                  <widget class="QLabel" name="label_24">
-                   <property name="text">
-                    <string>V read</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="8" column="0">
-                  <widget class="QLabel" name="LV07ID_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="8" column="3">
-                  <widget class="QLabel" name="LastLV07Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QLabel" name="label_23">
-                   <property name="text">
-                    <string>Status</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="0">
-                  <widget class="QLabel" name="LV08ID_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="3">
-                  <widget class="QLabel" name="LastLV02Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="1">
-                  <widget class="QLabel" name="LastLV04Status_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="7" column="0">
-                  <widget class="QLabel" name="LV06ID_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="4">
-                  <widget class="QLabel" name="LastLV02Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="10" column="3">
-                  <widget class="QLabel" name="LastLV09Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_22">
-                   <property name="text">
-                    <string>Ch name</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="4">
-                  <widget class="QLabel" name="LastLV03Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="10" column="1">
-                  <widget class="QLabel" name="LastLV09Status_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QLabel" name="LastLV00Status_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="3">
-                  <widget class="QLabel" name="LastLV03Voltage_tag">
+                 <item row="4" column="0">
+                  <widget class="QLabel" name="LV03ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1401,15 +1353,15 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="0">
-                  <widget class="QLabel" name="LV03ID_tag">
+                 <item row="9" column="4">
+                  <widget class="QLabel" name="LastLV08Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="4">
-                  <widget class="QLabel" name="LastLV08Current_tag">
+                 <item row="4" column="3">
+                  <widget class="QLabel" name="LastLV03Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1450,6 +1402,13 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="8" column="4">
+                  <widget class="QLabel" name="LastLV07Current_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="2" column="3">
                   <widget class="QLabel" name="LastLV01Voltage_tag">
                    <property name="text">
@@ -1464,29 +1423,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="4">
-                  <widget class="QLabel" name="LastLV07Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="5" column="4">
                   <widget class="QLabel" name="LastLV04Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="1">
-                  <widget class="QLabel" name="LastLV08Status_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="LV00ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1499,29 +1437,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="4">
-                  <widget class="QLabel" name="LastLV00Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="3">
-                  <widget class="QLabel" name="LastLV00Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QLabel" name="label_64">
-                   <property name="text">
-                    <string>V set</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QLabel" name="LastLV00VoltageSet_tag">
+                 <item row="9" column="1">
+                  <widget class="QLabel" name="LastLV08Status_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1541,22 +1458,22 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="2">
-                  <widget class="QLabel" name="LastLV03VoltageSet_tag">
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="label_64">
                    <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="2">
-                  <widget class="QLabel" name="LastLV04VoltageSet_tag">
-                   <property name="text">
-                    <string>?</string>
+                    <string>V set</string>
                    </property>
                   </widget>
                  </item>
                  <item row="6" column="2">
                   <widget class="QLabel" name="LastLV05VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="2">
+                  <widget class="QLabel" name="LastLV03VoltageSet_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1569,15 +1486,15 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="2">
-                  <widget class="QLabel" name="LastLV07VoltageSet_tag">
+                 <item row="5" column="2">
+                  <widget class="QLabel" name="LastLV04VoltageSet_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="2">
-                  <widget class="QLabel" name="LastLV08VoltageSet_tag">
+                 <item row="8" column="2">
+                  <widget class="QLabel" name="LastLV07VoltageSet_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1590,6 +1507,48 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="9" column="2">
+                  <widget class="QLabel" name="LastLV08VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="LV00ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <widget class="QLabel" name="LastLV00Voltage_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QLabel" name="LastLV00VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLabel" name="LastLV00Status_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="4">
+                  <widget class="QLabel" name="LastLV00Current_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </item>
                <item>
@@ -1597,6 +1556,7 @@
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
+                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -1614,29 +1574,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="3">
-                  <widget class="QLabel" name="LastHV02Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="7" column="4">
-                  <widget class="QLabel" name="LastHV06Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="3" column="1">
                   <widget class="QLabel" name="LastHV02Status_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="9" column="3">
-                  <widget class="QLabel" name="LastHV08Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1649,22 +1588,22 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="0">
-                  <widget class="QLabel" name="HV03ID_tag">
+                 <item row="3" column="3">
+                  <widget class="QLabel" name="LastHV02Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="6" column="0">
-                  <widget class="QLabel" name="HV05ID_tag">
+                 <item row="9" column="3">
+                  <widget class="QLabel" name="LastHV08Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="HV01ID_tag">
+                 <item row="7" column="4">
+                  <widget class="QLabel" name="LastHV06Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1677,8 +1616,22 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="3">
-                  <widget class="QLabel" name="LastHV01Voltage_tag">
+                 <item row="4" column="0">
+                  <widget class="QLabel" name="HV03ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="HV01ID_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="0">
+                  <widget class="QLabel" name="HV05ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1686,6 +1639,20 @@
                  </item>
                  <item row="8" column="4">
                   <widget class="QLabel" name="LastHV07Current_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="4">
+                  <widget class="QLabel" name="label_63">
+                   <property name="text">
+                    <string>Current</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="3">
+                  <widget class="QLabel" name="LastHV01Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1705,15 +1672,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="4">
-                  <widget class="QLabel" name="label_63">
-                   <property name="text">
-                    <string>Current</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="6" column="4">
-                  <widget class="QLabel" name="LastHV05Current_tag">
+                 <item row="7" column="0">
+                  <widget class="QLabel" name="HV06ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1726,15 +1686,15 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="0">
-                  <widget class="QLabel" name="HV09ID_tag">
+                 <item row="6" column="4">
+                  <widget class="QLabel" name="LastHV05Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="0">
-                  <widget class="QLabel" name="HV06ID_tag">
+                 <item row="10" column="0">
+                  <widget class="QLabel" name="HV09ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1761,15 +1721,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="3">
-                  <widget class="QLabel" name="LastHV00Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="HV00ID_tag">
+                 <item row="3" column="4">
+                  <widget class="QLabel" name="LastHV02Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1789,13 +1742,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="4">
-                  <widget class="QLabel" name="LastHV02Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="1">
                   <widget class="QLabel" name="label_61">
                    <property name="text">
@@ -1803,8 +1749,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="3">
-                  <widget class="QLabel" name="LastHV06Voltage_tag">
+                 <item row="2" column="1">
+                  <widget class="QLabel" name="LastHV01Status_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1817,29 +1763,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="4">
-                  <widget class="QLabel" name="LastHV00Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QLabel" name="LastHV01Status_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="4">
-                  <widget class="QLabel" name="LastHV04Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="1">
-                  <widget class="QLabel" name="LastHV04Status_tag">
+                 <item row="7" column="3">
+                  <widget class="QLabel" name="LastHV06Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1852,8 +1777,15 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QLabel" name="LastHV00Status_tag">
+                 <item row="5" column="1">
+                  <widget class="QLabel" name="LastHV04Status_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="4">
+                  <widget class="QLabel" name="LastHV04Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1866,22 +1798,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="4">
-                  <widget class="QLabel" name="LastHV08Current_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="8" column="0">
                   <widget class="QLabel" name="HV07ID_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="10" column="4">
-                  <widget class="QLabel" name="LastHV09Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1894,8 +1812,29 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="9" column="4">
+                  <widget class="QLabel" name="LastHV08Current_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="4">
+                  <widget class="QLabel" name="LastHV09Current_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="5" column="3">
                   <widget class="QLabel" name="LastHV04Voltage_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="3">
+                  <widget class="QLabel" name="LastHV05Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1908,13 +1847,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="6" column="3">
-                  <widget class="QLabel" name="LastHV05Voltage_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="2">
                   <widget class="QLabel" name="label_65">
                    <property name="text">
@@ -1922,22 +1854,8 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="2">
-                  <widget class="QLabel" name="LastHV00VoltageSet_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="2" column="2">
                   <widget class="QLabel" name="LastHV01VoltageSet_tag">
-                   <property name="text">
-                    <string>?</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="2">
-                  <widget class="QLabel" name="LastHV02VoltageSet_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1950,8 +1868,36 @@
                    </property>
                   </widget>
                  </item>
+                 <item row="3" column="2">
+                  <widget class="QLabel" name="LastHV02VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="5" column="2">
                   <widget class="QLabel" name="LastHV04VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="2">
+                  <widget class="QLabel" name="LastHV08VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="8" column="2">
+                  <widget class="QLabel" name="LastHV07VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="10" column="2">
+                  <widget class="QLabel" name="LastHV09VoltageSet_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1971,22 +1917,36 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="2">
-                  <widget class="QLabel" name="LastHV07VoltageSet_tag">
+                 <item row="1" column="3">
+                  <widget class="QLabel" name="LastHV00Voltage_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="2">
-                  <widget class="QLabel" name="LastHV08VoltageSet_tag">
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="HV00ID_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="2">
-                  <widget class="QLabel" name="LastHV09VoltageSet_tag">
+                 <item row="1" column="1">
+                  <widget class="QLabel" name="LastHV00Status_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QLabel" name="LastHV00VoltageSet_tag">
+                   <property name="text">
+                    <string>?</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="4">
+                  <widget class="QLabel" name="LastHV00Current_tag">
                    <property name="text">
                     <string>?</string>
                    </property>
@@ -1996,6 +1956,19 @@
                </item>
               </layout>
              </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </item>
@@ -2007,31 +1980,24 @@
                <string>FNAL Box</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_4">
-               <item row="4" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW0_tag">
+               <item row="1" column="1">
+                <widget class="QLabel" name="LastFNALBoxTemp0_tag">
                  <property name="text">
                   <string>?</string>
                  </property>
                 </widget>
                </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="label_42">
-                 <property name="text">
-                  <string>OneWire 2</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW2_tag">
+               <item row="2" column="1">
+                <widget class="QLabel" name="LastFNALBoxTemp1_tag">
                  <property name="text">
                   <string>?</string>
                  </property>
                 </widget>
                </item>
-               <item row="11" column="0">
-                <widget class="QLabel" name="label_54">
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_18">
                  <property name="text">
-                  <string>OneWire 7</string>
+                  <string>Temp 1  (C°)</string>
                  </property>
                 </widget>
                </item>
@@ -2039,20 +2005,6 @@
                 <widget class="QLabel" name="LastFNALBoxDP_tag">
                  <property name="text">
                   <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="11" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW7_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="0">
-                <widget class="QLabel" name="label_44">
-                 <property name="text">
-                  <string>OneWire 3</string>
                  </property>
                 </widget>
                </item>
@@ -2070,31 +2022,10 @@
                  </property>
                 </widget>
                </item>
-               <item row="9" column="0">
-                <widget class="QLabel" name="label_48">
-                 <property name="text">
-                  <string>OneWire 5</string>
-                 </property>
-                </widget>
-               </item>
                <item row="1" column="0">
                 <widget class="QLabel" name="label_6">
                  <property name="text">
                   <string>Temp 0 (C°)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_17">
-                 <property name="text">
-                  <string>Last valid readout: </string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW1_tag">
-                 <property name="text">
-                  <string>?</string>
                  </property>
                 </widget>
                </item>
@@ -2105,17 +2036,10 @@
                  </property>
                 </widget>
                </item>
-               <item row="9" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW5_tag">
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_17">
                  <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="8" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW4_tag">
-                 <property name="text">
-                  <string>?</string>
+                  <string>Last valid readout: </string>
                  </property>
                 </widget>
                </item>
@@ -2126,8 +2050,22 @@
                  </property>
                 </widget>
                </item>
-               <item row="13" column="1">
-                <widget class="QLabel" name="LastFNALBoxOW9_tag">
+               <item row="6" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW2_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="12" column="0">
+                <widget class="QLabel" name="label_55">
+                 <property name="text">
+                  <string>OneWire 09</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW1_tag">
                  <property name="text">
                   <string>?</string>
                  </property>
@@ -2140,10 +2078,73 @@
                  </property>
                 </widget>
                </item>
-               <item row="2" column="1">
-                <widget class="QLabel" name="LastFNALBoxTemp1_tag">
+               <item row="13" column="0">
+                <widget class="QLabel" name="label_56">
+                 <property name="text">
+                  <string>OneWire 10</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="9" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW5_tag">
                  <property name="text">
                   <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="11" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW7_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="9" column="0">
+                <widget class="QLabel" name="label_48">
+                 <property name="text">
+                  <string>OneWire 06</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="11" column="0">
+                <widget class="QLabel" name="label_54">
+                 <property name="text">
+                  <string>OneWire 08</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="7" column="0">
+                <widget class="QLabel" name="label_44">
+                 <property name="text">
+                  <string>OneWire 04</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="8" column="0">
+                <widget class="QLabel" name="label_46">
+                 <property name="text">
+                  <string>OneWire 05</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="label_37">
+                 <property name="text">
+                  <string>OneWire 02</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW0_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLabel" name="label_42">
+                 <property name="text">
+                  <string>OneWire 03</string>
                  </property>
                 </widget>
                </item>
@@ -2154,10 +2155,17 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_36">
+               <item row="10" column="0">
+                <widget class="QLabel" name="label_52">
                  <property name="text">
-                  <string>OneWire 0</string>
+                  <string>OneWire 07</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="13" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW9_tag">
+                 <property name="text">
+                  <string>?</string>
                  </property>
                 </widget>
                </item>
@@ -2168,75 +2176,23 @@
                  </property>
                 </widget>
                </item>
-               <item row="13" column="0">
-                <widget class="QLabel" name="label_56">
-                 <property name="text">
-                  <string>OneWire 9</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QLabel" name="LastFNALBoxTemp0_tag">
+               <item row="8" column="1">
+                <widget class="QLabel" name="LastFNALBoxOW4_tag">
                  <property name="text">
                   <string>?</string>
                  </property>
                 </widget>
                </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_18">
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_36">
                  <property name="text">
-                  <string>Temp 1  (C°)</string>
+                  <string>OneWire 01</string>
                  </property>
                 </widget>
-               </item>
-               <item row="10" column="0">
-                <widget class="QLabel" name="label_52">
-                 <property name="text">
-                  <string>OneWire 6</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="8" column="0">
-                <widget class="QLabel" name="label_46">
-                 <property name="text">
-                  <string>OneWire 4</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="12" column="0">
-                <widget class="QLabel" name="label_55">
-                 <property name="text">
-                  <string>OneWire 8</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="0">
-                <widget class="QLabel" name="label_37">
-                 <property name="text">
-                  <string>OneWire 1</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="15" column="0">
-                <spacer name="verticalSpacer_6">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
                </item>
               </layout>
              </widget>
             </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="verticalLayout_9">
             <item>
              <widget class="QGroupBox" name="groupBox_6">
               <property name="title">
@@ -2438,7 +2394,7 @@
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_2">
+             <spacer name="verticalSpacer_3">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
@@ -2455,7 +2411,7 @@
          </layout>
         </item>
         <item>
-         <spacer name="verticalSpacer_3">
+         <spacer name="verticalSpacer_6">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
@@ -2466,6 +2422,1127 @@
            </size>
           </property>
          </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="ModuleTest_tab">
+       <attribute name="title">
+        <string>Module Test</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_16">
+        <item>
+         <widget class="QGroupBox" name="groupBox_15">
+          <property name="title">
+           <string>Start Session</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <item>
+            <widget class="QGroupBox" name="groupBox_16">
+             <property name="title">
+              <string>Current Test Session Database Entry</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_13">
+              <item row="1" column="0">
+               <widget class="QLabel" name="Ctrl_lowTemp_db">
+                <property name="text">
+                 <string>Low Temp (C°): ??</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="Ctrl_hiTemp_db">
+                <property name="text">
+                 <string>High Temp (C°): ??</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLabel" name="Ctrl_Operator_db">
+                <property name="text">
+                 <string>Operator: ??</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="Ctrl_SeshID_db">
+                <property name="text">
+                 <string>Session ID: ??</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0" colspan="3">
+               <widget class="QFrame" name="frame">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_10">
+                 <item row="1" column="2">
+                  <widget class="QLabel" name="Ctrl_Module07_tag">
+                   <property name="text">
+                    <string>Module 07: ??</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="Ctrl_Module05_tag">
+                   <property name="text">
+                    <string>Module 05: ??</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="Ctrl_Module00_tag">
+                   <property name="text">
+                    <string>Module 00: ??</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="4">
+                  <widget class="QLabel" name="Ctrl_Module04_tag">
+                   <property name="text">
+                    <string>Module 04: ??</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
+                  <widget class="QLabel" name="Ctrl_Module03_tag">
+                   <property name="text">
+                    <string>Module 03: ??</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="4">
+                  <widget class="QLabel" name="Ctrl_Module09_tag">
+                   <property name="text">
+                    <string>Module 09: ??</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLabel" name="Ctrl_Module06_tag">
+                   <property name="text">
+                    <string>Module 06: ??</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <widget class="QLabel" name="Ctrl_Module08_tag">
+                   <property name="text">
+                    <string>Module 08: ??</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLabel" name="Ctrl_Module01_tag">
+                   <property name="text">
+                    <string>Module 01: ??</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="Ctrl_Module02_tag">
+                   <property name="text">
+                    <string>Module 02: ??</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="Ctrl_StartTime_db">
+                <property name="text">
+                 <string>Start Time: ??:??:??</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="Ctrl_SeshDescription_db">
+                <property name="text">
+                 <string>Session Description:</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_82">
+             <property name="text">
+              <string>Description</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="SeshDescription_db">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="Ctrl_StartSesh_btn">
+             <property name="minimumSize">
+              <size>
+               <width>400</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Start Session</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_7">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_13">
+          <property name="title">
+           <string>Module test</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_13">
+           <item>
+            <spacer name="verticalSpacer_8">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_12">
+             <item>
+              <widget class="QCheckBox" name="Ctrl_DryRun_cb">
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Dry run</string>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="Ctrl_StartTest_btn">
+               <property name="text">
+                <string>TEST!</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_17">
+          <property name="title">
+           <string>Configuration Control</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="ManualOp_tab">
+       <attribute name="title">
+        <string>Manual Operations</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_11">
+        <item>
+         <widget class="QGroupBox" name="groupBox_9">
+          <property name="title">
+           <string>Julabo Control</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_12">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_8">
+             <item>
+              <widget class="QPushButton" name="Ctrl_StartJulabo_btn">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>START Chiller</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="Ctrl_StopJulabo_btn">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>STOP Chiller</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="Line" name="line_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QGridLayout" name="gridLayout_7">
+             <item row="1" column="1">
+              <widget class="QLabel" name="Ctrl_Sp2_tag">
+               <property name="text">
+                <string>?</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLabel" name="Ctrl_Sp3_tag">
+               <property name="text">
+                <string>?</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="6">
+              <widget class="QPushButton" name="Ctrl_SelSp2_btn">
+               <property name="text">
+                <string>Set as target T</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="6">
+              <widget class="QPushButton" name="Ctrl_SelSp3_btn">
+               <property name="text">
+                <string>Set as target T</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLabel" name="label_38">
+               <property name="text">
+                <string>New value:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="Ctrl_Sp1_tag">
+               <property name="text">
+                <string>?</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QLabel" name="label_39">
+               <property name="text">
+                <string>New value:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QLabel" name="label_40">
+               <property name="text">
+                <string>New value:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_34">
+               <property name="text">
+                <string>Setpoint 3 (C°): </string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="4">
+              <widget class="QDoubleSpinBox" name="Ctrl_ValSp1_dsb">
+               <property name="minimum">
+                <double>-50.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>30.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_33">
+               <property name="text">
+                <string>Setpoint 2 (C°): </string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="6">
+              <widget class="QPushButton" name="Ctrl_SelSp1_btn">
+               <property name="text">
+                <string>Set as target T</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="5">
+              <widget class="QPushButton" name="Ctrl_SetSp1_btn">
+               <property name="text">
+                <string>Set value</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="5">
+              <widget class="QPushButton" name="Ctrl_SetSp2_btn">
+               <property name="text">
+                <string>Set value</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="4">
+              <widget class="QDoubleSpinBox" name="Ctrl_ValSp3_dsb">
+               <property name="minimum">
+                <double>-50.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>30.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="4">
+              <widget class="QDoubleSpinBox" name="Ctrl_ValSp2_dsb">
+               <property name="minimum">
+                <double>-50.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>30.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="5">
+              <widget class="QPushButton" name="Ctrl_SetSp3_btn">
+               <property name="text">
+                <string>Set value</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_32">
+               <property name="text">
+                <string>Setpoint 1 (C°): </string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="7">
+              <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="Line" name="line">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_9">
+             <item>
+              <widget class="QLabel" name="label_51">
+               <property name="text">
+                <string>Chiiler status:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="Ctrl_StatusJulabo_tag">
+               <property name="text">
+                <string>?</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_8">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_35">
+               <property name="text">
+                <string>Setpoint:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="Ctrl_TSp_tag">
+               <property name="text">
+                <string>?</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_9">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_41">
+               <property name="text">
+                <string>Target temperature (C°):</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="Ctrl_TargetTemp_tag">
+               <property name="text">
+                <string>?</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_43">
+               <property name="text">
+                <string>Int Dew Point (C°):</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="Ctrl_IntDewPoint_tag">
+               <property name="text">
+                <string>?</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_10">
+          <property name="title">
+           <string>FNAL box control</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_8">
+           <item row="0" column="7">
+            <widget class="QPushButton" name="Ctrl_SetLock_btn">
+             <property name="text">
+              <string>Lock</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="6">
+            <widget class="QLabel" name="label_50">
+             <property name="text">
+              <string>Magnetic lock</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="9">
+            <widget class="QLabel" name="label_47">
+             <property name="text">
+              <string>Status:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="3">
+            <widget class="QLabel" name="Ctrl_StatusDoor_tag">
+             <property name="text">
+              <string>?</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="10">
+            <widget class="QLabel" name="Ctrl_StatusLock_tag">
+             <property name="text">
+              <string>?</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_53">
+             <property name="text">
+              <string>Ext Dew Point (C°):</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="8">
+            <widget class="QPushButton" name="Ctrl_SetUnlock_btn">
+             <property name="text">
+              <string>Unlock</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2">
+            <widget class="QLabel" name="label_59">
+             <property name="text">
+              <string>Door status:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="Ctrl_SetHighFlow_btn">
+             <property name="text">
+              <string>High Flow</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="11">
+            <spacer name="horizontalSpacer_7">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="4">
+            <widget class="QLabel" name="Ctrl_StatusFlow_tag">
+             <property name="text">
+              <string>?</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_49">
+             <property name="text">
+              <string>Dry air flow</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QPushButton" name="Ctrl_SetLowFlow_btn">
+             <property name="text">
+              <string>Low Flow</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="5">
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLabel" name="Ctrl_ExtDewPoint_tag">
+             <property name="text">
+              <string>?</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="3">
+            <widget class="QLabel" name="label_45">
+             <property name="text">
+              <string>Status</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_12">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>CAEN LV/HV </string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_14">
+           <item>
+            <widget class="QTableWidget" name="Ctrl_CAEN_table">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="verticalScrollBarPolicy">
+              <enum>Qt::ScrollBarAsNeeded</enum>
+             </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QAbstractScrollArea::AdjustToContents</enum>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="sortingEnabled">
+              <bool>false</bool>
+             </property>
+             <property name="cornerButtonEnabled">
+              <bool>true</bool>
+             </property>
+             <attribute name="horizontalHeaderCascadingSectionResizes">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+              <bool>true</bool>
+             </attribute>
+             <row>
+              <property name="text">
+               <string>Slot 01</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Slot 02</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Slot 03</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Slot 04</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Slot 05</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Slot 06</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Slot 07</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Slot 08</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Slot 09</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>Slot 10</string>
+              </property>
+             </row>
+             <column>
+              <property name="text">
+               <string>LV Ch.</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Status</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>V set (V)</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>V read (V)</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Current (A)</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>HV Ch.</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Status</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>V set(V)</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>V read(V)</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Current (uA)</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>FC7_ID</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>FC7_OG</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="background">
+               <color>
+                <red>255</red>
+                <green>255</green>
+                <blue>255</blue>
+               </color>
+              </property>
+             </column>
+             <item row="0" column="0">
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item row="1" column="0">
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item row="2" column="0">
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item row="2" column="1">
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item row="3" column="0">
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item row="4" column="0">
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_10">
+             <item>
+              <widget class="QPushButton" name="Ctrl_LVOn_btn">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>LV on</string>
+               </property>
+               <property name="flat">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="Ctrl_LVOff_btn">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>LV off</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="Ctrl_LVSet_btn">
+               <property name="text">
+                <string>Set LV</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_10">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="Line" name="line_8">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <item>
+              <widget class="QPushButton" name="Ctrl_HVOn_btn">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>HV on</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="Ctrl_HVOff_btn">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>HV off</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="Ctrl_HVSet_btn">
+               <property name="text">
+                <string>Set HV</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_11">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -2586,7 +3663,7 @@
              <item>
               <widget class="QLineEdit" name="ModuleTestCmd_line">
                <property name="text">
-                <string>python3 moduleTest.py</string>
+                <string>cd BurnIn_moduleTest &amp;&amp; python3 moduleTest.py session1 --useExistingModuleTest T2023_12_04_16_26_11_224929</string>
                </property>
               </widget>
              </item>
@@ -2626,8 +3703,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1300</width>
-     <height>24</height>
+     <width>1316</width>
+     <height>21</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
