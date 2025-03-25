@@ -613,18 +613,17 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_ModuleIDs"]=[]
         self.SharedDict["BI_fc7IDs"]=[]
         self.SharedDict["BI_fc7Slots"]=[]
-        for cb in self.Module_cbs:
-            self.SharedDict["BI_ActiveSlots"].append(cb.isChecked())
         for i in range(10):
             if self.Module_cbs[i].isChecked():
-                self.Module_CheckID_isOK[i].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+                self.Module_CheckID_isOK[i].setStyleSheet("background-color : grey;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+            self.SharedDict["BI_ActiveSlots"].append(self.Module_cbs[i].isChecked())
+        #
         for Id in self.ModuleId_lines:
             self.SharedDict["BI_ModuleIDs"].append(Id.text())
         for Id in self.fc7IDs:
             self.SharedDict["BI_fc7IDs"].append(Id)
         for Slot in self.fc7Slots:
             self.SharedDict["BI_fc7Slots"].append(Slot)
-        print("Active slots are: ",self.SharedDict["BI_ActiveSlots"])
         self.BI_CheckIDs_sig.emit()
     
     def BI_Start_Cmd(self):
@@ -773,11 +772,13 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
             
     @pyqtSlot(int,bool)
     def BI_CheckID_isOK(self,goodslot,success):
-        if success: #tested succesfully
+        if success=0: #tested successfully
             self.Module_CheckID_isOK[goodslot].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-        else: #only started testing
+        elif success=1: #only started testing
+            self.Module_CheckID_isOK[goodslot].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+        else:
             self.Module_CheckID_isOK[goodslot].setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-        
+            
     @pyqtSlot()                    
     def Ctrl_StartSesh_Cmd(self):
         self.logger.info("Starting Test Session")

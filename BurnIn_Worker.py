@@ -22,7 +22,7 @@ class BurnIn_Worker(QObject):
     BI_terminated = pyqtSignal()
     
     BI_Update_GUI_sig = pyqtSignal(dict)
-    BI_CheckID_isOK_sig = pyqtSignal(int,bool)
+    BI_CheckID_isOK_sig = pyqtSignal(int,int)
     BI_Clear_Monitor_sig = pyqtSignal()
 
     ## Init function.
@@ -889,17 +889,19 @@ class BurnIn_Worker(QObject):
             session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
             session_dict["Current_ModuleID"]    = self.SharedDict["BI_ModuleIDs"][slot]
             self.logger.info("BI: Checking ID for BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
-            self.BI_CheckID_isOK_sig.emit(slot,False)
+            self.BI_CheckID_isOK_sig.emit(slot,0)#0 means we just started testing
             self.BI_StartTest_Cmd(session_dict)
             if not self.last_op_ok:
                 self.SharedDict["BI_Status"].setText("Failed CheckIDs")
-                self.SharedDict["BI_Action"].setText("None")
-                self.SharedDict["BI_SUT"].setText("None")
+                #let's comment these for now and continue testing even if the label is wrong
+                #self.SharedDict["BI_Action"].setText("None")
+                #self.SharedDict["BI_SUT"].setText("None")
                 self.logger.error("WORKER: Check IDs procedure failed. Error returned while checking slot "+str(slot+1))
-                self.BI_terminated.emit()
-                return
+                self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure
+                #self.BI_terminated.emit()
+                #return
             else:
-                self.BI_CheckID_isOK_sig.emit(slot,True)
+                self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success
 
         
         self.SharedDict["BI_SUT"].setText("None")
