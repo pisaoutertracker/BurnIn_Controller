@@ -186,6 +186,22 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.FNALBoxTestCmd_btn.setEnabled(False)    
         self.CAENControllerTestCmd_btn.setEnabled(False)    
         self.ModuleTestCmd_btn.setEnabled(False)    
+
+
+        self.Module_CheckID_isOK = []
+        self.Module_CheckID_isOK.append(self.BI_SUT_1)
+        self.Module_CheckID_isOK.append(self.BI_SUT_2)
+        self.Module_CheckID_isOK.append(self.BI_SUT_3)
+        self.Module_CheckID_isOK.append(self.BI_SUT_4)
+        self.Module_CheckID_isOK.append(self.BI_SUT_5)
+        self.Module_CheckID_isOK.append(self.BI_SUT_6)
+        self.Module_CheckID_isOK.append(self.BI_SUT_7)
+        self.Module_CheckID_isOK.append(self.BI_SUT_8)
+        self.Module_CheckID_isOK.append(self.BI_SUT_9)
+        self.Module_CheckID_isOK.append(self.BI_SUT_10)
+
+        for status in self.Module_CheckID_isOK:
+            status.setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;  ")
         
         
         # creating interfaces
@@ -746,8 +762,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.ModuleTest_tab.setEnabled(True)
         
     def BI_SetModuleID(self,slot):
-        
-        
         self.logger.info("New Id for module "+str(slot+1)+": "+self.ModuleId_lines[slot].text())
         self.DB_interface.uploadModuleNameToDB(slot,self.ModuleId_lines[slot].text())
         if slot < 9:
@@ -757,7 +771,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
             self.ModuleId_lines[0].setFocus()
             self.ModuleId_lines[0].selectAll()
             
-        
+    @pyqtSlot(int)
+    def BI_CheckID_isOK_sig(self,goodslot,success):
+        if success: #tested succesfully
+            self.Module_CheckID_isOK[goodslot+1].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+        else: #only started testing
+            self.Module_CheckID_isOK[goodslot+1].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
         
     @pyqtSlot()                    
     def Ctrl_StartSesh_Cmd(self):
