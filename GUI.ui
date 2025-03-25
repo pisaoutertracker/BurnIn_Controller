@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1316</width>
-    <height>976</height>
+    <height>1047</height>
    </rect>
   </property>
   <property name="font">
@@ -687,7 +687,7 @@ addStep(&quot;Heat&quot;)</string>
               <item row="2" column="2">
                <widget class="QPushButton" name="BI_Mod2_isok">
                 <property name="text">
-                 <string>Slot Under Test 3</string>
+                 <string>--- --- --- ---</string>
                 </property>
                </widget>
               </item>
@@ -708,7 +708,7 @@ addStep(&quot;Heat&quot;)</string>
               <item row="3" column="2">
                <widget class="QPushButton" name="BI_Mod3_isok">
                 <property name="text">
-                 <string>Slot Under Test 4</string>
+                 <string>--- --- --- ---</string>
                 </property>
                </widget>
               </item>
@@ -756,7 +756,7 @@ addStep(&quot;Heat&quot;)</string>
                  </sizepolicy>
                 </property>
                 <property name="text">
-                 <string>Slot Under Test 1</string>
+                 <string>--- --- --- ---</string>
                 </property>
                </widget>
               </item>
@@ -780,14 +780,14 @@ addStep(&quot;Heat&quot;)</string>
                  <bool>true</bool>
                 </property>
                 <property name="text">
-                 <string>Slot Under Test 6</string>
+                 <string>--- --- --- ---</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="2">
                <widget class="QPushButton" name="BI_Mod1_isok">
                 <property name="text">
-                 <string>Slot Under Test 2</string>
+                 <string>--- --- --- ---</string>
                 </property>
                </widget>
               </item>
@@ -815,14 +815,14 @@ addStep(&quot;Heat&quot;)</string>
               <item row="3" column="3">
                <widget class="QPushButton" name="BI_Mod8_isok">
                 <property name="text">
-                 <string>Slot Under Test 9</string>
+                 <string>--- --- --- ---</string>
                 </property>
                </widget>
               </item>
               <item row="4" column="3">
                <widget class="QPushButton" name="BI_Mod9_isok">
                 <property name="text">
-                 <string>Slot Under Test 10</string>
+                 <string>--- --- --- ---</string>
                 </property>
                </widget>
               </item>
@@ -850,21 +850,21 @@ addStep(&quot;Heat&quot;)</string>
               <item row="4" column="2">
                <widget class="QPushButton" name="BI_Mod4_isok">
                 <property name="text">
-                 <string>Slot Under Test 5</string>
+                 <string>--- --- --- ---</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="3">
                <widget class="QPushButton" name="BI_Mod6_isok">
                 <property name="text">
-                 <string>Slot Under Test 7</string>
+                 <string>--- --- --- ---</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="3">
                <widget class="QPushButton" name="BI_Mod7_isok">
                 <property name="text">
-                 <string>Slot Under Test 8</string>
+                 <string>--- --- --- ---</string>
                 </property>
                </widget>
               </item>
