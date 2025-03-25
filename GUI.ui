@@ -684,7 +684,184 @@ addStep(&quot;Heat&quot;)</string>
             </item>
             <item>
              <layout class="QGridLayout" name="gridLayout_14">
+              <item row="2" column="2">
+               <widget class="QPushButton" name="BI_SUT_3">
+                <property name="text">
+                 <string>Slot Under Test 3</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QPushButton" name="pushButton_3">
+                <property name="text">
+                 <string>HV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QPushButton" name="pushButton_5">
+                <property name="text">
+                 <string>HV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QPushButton" name="BI_SUT_4">
+                <property name="text">
+                 <string>Slot Under Test 4</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QPushButton" name="pushButton_8">
+                <property name="text">
+                 <string>LV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="5">
+               <widget class="QPushButton" name="pushButton_12">
+                <property name="text">
+                 <string>HV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="pushButton_2">
+                <property name="text">
+                 <string>HV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="4">
+               <widget class="QPushButton" name="pushButton_15">
+                <property name="text">
+                 <string>LV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QPushButton" name="pushButton">
+                <property name="text">
+                 <string>HV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QPushButton" name="BI_SUT_1">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Slot Under Test 1</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QPushButton" name="pushButton_6">
+                <property name="text">
+                 <string>LV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4">
+               <widget class="QPushButton" name="pushButton_10">
+                <property name="text">
+                 <string>LV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QPushButton" name="BI_SUT_6">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string>Slot Under Test 6</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QPushButton" name="BI_SUT_2">
+                <property name="text">
+                 <string>Slot Under Test 2</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="4">
+               <widget class="QPushButton" name="pushButton_14">
+                <property name="text">
+                 <string>LV</string>
+                </property>
+               </widget>
+              </item>
               <item row="2" column="1">
+               <widget class="QPushButton" name="pushButton_4">
+                <property name="text">
+                 <string>HV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QPushButton" name="pushButton_11">
+                <property name="text">
+                 <string>LV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="3">
+               <widget class="QPushButton" name="BI_SUT_9">
+                <property name="text">
+                 <string>Slot Under Test 9</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="3">
+               <widget class="QPushButton" name="BI_SUT_10">
+                <property name="text">
+                 <string>Slot Under Test 10</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QPushButton" name="pushButton_9">
+                <property name="text">
+                 <string>LV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="4">
+               <widget class="QPushButton" name="pushButton_13">
+                <property name="text">
+                 <string>LV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="4">
+               <widget class="QPushButton" name="pushButton_16">
+                <property name="text">
+                 <string>LV</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <widget class="QPushButton" name="BI_SUT_5">
+                <property name="text">
+                 <string>Slot Under Test 5</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="3">
+               <widget class="QPushButton" name="BI_SUT_7">
+                <property name="text">
+                 <string>Slot Under Test 7</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="3">
                <widget class="QPushButton" name="BI_SUT_8">
                 <property name="text">
                  <string>Slot Under Test 8</string>
@@ -692,65 +869,37 @@ addStep(&quot;Heat&quot;)</string>
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QPushButton" name="BI_SUT_2">
+               <widget class="QPushButton" name="pushButton_7">
                 <property name="text">
-                 <string>Slot Under Test 2</string>
+                 <string>LV</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="0">
-               <widget class="QPushButton" name="BI_SUT_5">
+              <item row="1" column="5">
+               <widget class="QPushButton" name="pushButton_17">
                 <property name="text">
-                 <string>Slot Under Test 5</string>
+                 <string>HV</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
-               <widget class="QPushButton" name="BI_SUT_3">
+              <item row="2" column="5">
+               <widget class="QPushButton" name="pushButton_18">
                 <property name="text">
-                 <string>Slot Under Test 3</string>
+                 <string>HV</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <widget class="QPushButton" name="BI_SUT_4">
+              <item row="3" column="5">
+               <widget class="QPushButton" name="pushButton_19">
                 <property name="text">
-                 <string>Slot Under Test 4</string>
+                 <string>HV</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="BI_SUT_6">
+              <item row="4" column="5">
+               <widget class="QPushButton" name="pushButton_20">
                 <property name="text">
-                 <string>Slot Under Test 6</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QPushButton" name="BI_SUT_1">
-                <property name="text">
-                 <string>Slot Under Test 1</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QPushButton" name="BI_SUT_9">
-                <property name="text">
-                 <string>Slot Under Test 9</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QPushButton" name="BI_SUT_10">
-                <property name="text">
-                 <string>Slot Under Test 10</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QPushButton" name="BI_SUT_7">
-                <property name="text">
-                 <string>Slot Under Test 7</string>
+                 <string>HV</string>
                 </property>
                </widget>
               </item>
