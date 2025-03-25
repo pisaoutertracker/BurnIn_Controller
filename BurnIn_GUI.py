@@ -770,11 +770,11 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
             self.ModuleId_lines[0].setFocus()
             self.ModuleId_lines[0].selectAll()
             
-    @pyqtSlot(int,bool)
+    @pyqtSlot(int,int)
     def BI_CheckID_isOK(self,goodslot,success):
-        if success=0: #tested successfully
+        if success==1: #tested successfully
             self.Module_CheckID_isOK[goodslot].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-        elif success=1: #only started testing
+        elif success==0: #only started testing
             self.Module_CheckID_isOK[goodslot].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
         else:
             self.Module_CheckID_isOK[goodslot].setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;  ")
