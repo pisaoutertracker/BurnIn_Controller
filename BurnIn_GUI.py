@@ -189,20 +189,16 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
 
 
         self.Module_CheckID_isOK = []
-        self.Module_CheckID_isOK.append(self.BI_SUT_1)
-        self.Module_CheckID_isOK.append(self.BI_SUT_2)
-        self.Module_CheckID_isOK.append(self.BI_SUT_3)
-        self.Module_CheckID_isOK.append(self.BI_SUT_4)
-        self.Module_CheckID_isOK.append(self.BI_SUT_5)
-        self.Module_CheckID_isOK.append(self.BI_SUT_6)
-        self.Module_CheckID_isOK.append(self.BI_SUT_7)
-        self.Module_CheckID_isOK.append(self.BI_SUT_8)
-        self.Module_CheckID_isOK.append(self.BI_SUT_9)
-        self.Module_CheckID_isOK.append(self.BI_SUT_10)
-
-        for status in self.Module_CheckID_isOK:
-            status.setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-        
+        self.Module_CheckID_isOK.append(self.BI_Mod0_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod1_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod2_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod3_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod4_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod5_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod6_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod7_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod8_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod9_isok)        
         
         # creating interfaces
         self.Julabo = BurnIn_TCP(self.configDict,self.logger,"Julabo")
@@ -619,6 +615,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_fc7Slots"]=[]
         for cb in self.Module_cbs:
             self.SharedDict["BI_ActiveSlots"].append(cb.isChecked())
+            if cb.isChecked():
+                self.Module_CheckID_isOK[goodslot].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
         for Id in self.ModuleId_lines:
             self.SharedDict["BI_ModuleIDs"].append(Id.text())
         for Id in self.fc7IDs:
@@ -775,9 +773,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     @pyqtSlot(int,bool)
     def BI_CheckID_isOK(self,goodslot,success):
         if success: #tested succesfully
-            self.Module_CheckID_isOK[goodslot+1].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+            self.Module_CheckID_isOK[goodslot].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
         else: #only started testing
-            self.Module_CheckID_isOK[goodslot+1].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+            self.Module_CheckID_isOK[goodslot].setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;  ")
         
     @pyqtSlot()                    
     def Ctrl_StartSesh_Cmd(self):

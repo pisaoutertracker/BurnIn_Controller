@@ -895,7 +895,7 @@ class BurnIn_Worker(QObject):
                 self.SharedDict["BI_Status"].setText("Failed CheckIDs")
                 self.SharedDict["BI_Action"].setText("None")
                 self.SharedDict["BI_SUT"].setText("None")
-                self.logger.error("WORKER: Check IDs procedure failed. Error returned while checking slot "+str(slot))
+                self.logger.error("WORKER: Check IDs procedure failed. Error returned while checking slot "+str(slot+1))
                 self.BI_terminated.emit()
                 return
             else:
