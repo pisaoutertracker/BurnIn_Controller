@@ -615,15 +615,16 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_fc7Slots"]=[]
         for cb in self.Module_cbs:
             self.SharedDict["BI_ActiveSlots"].append(cb.isChecked())
-            if cb.isChecked():
-                self.Module_CheckID_isOK[goodslot].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+        for i in range(10):
+            if self.Module_cbs[i].isChecked():
+                self.Module_CheckID_isOK[i].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
         for Id in self.ModuleId_lines:
             self.SharedDict["BI_ModuleIDs"].append(Id.text())
         for Id in self.fc7IDs:
             self.SharedDict["BI_fc7IDs"].append(Id)
         for Slot in self.fc7Slots:
             self.SharedDict["BI_fc7Slots"].append(Slot)
-            
+        print("Active slots are: ",self.SharedDict["BI_ActiveSlots"])
         self.BI_CheckIDs_sig.emit()
     
     def BI_Start_Cmd(self):
