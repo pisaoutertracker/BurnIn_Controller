@@ -64,16 +64,6 @@
                <string>BurnIn Session Settings</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_11">
-               <item row="3" column="1">
-                <widget class="QDoubleSpinBox" name="BI_UnderRampTemp_dsb">
-                 <property name="singleStep">
-                  <double>1.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>10.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
                <item row="4" column="0">
                 <widget class="QLabel" name="label_70">
                  <property name="text">
@@ -104,10 +94,27 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="1">
-                <widget class="QDoubleSpinBox" name="BI_UnderKeepTemp_dsb">
+               <item row="3" column="1">
+                <widget class="QDoubleSpinBox" name="BI_UnderRampTemp_dsb">
+                 <property name="singleStep">
+                  <double>1.000000000000000</double>
+                 </property>
                  <property name="value">
-                  <double>3.000000000000000</double>
+                  <double>10.000000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QLineEdit" name="BI_Operator_line">
+                 <property name="text">
+                  <string>PisaTeam</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="label_81">
+                 <property name="text">
+                  <string>Operator:</string>
                  </property>
                 </widget>
                </item>
@@ -124,17 +131,10 @@
                  </property>
                 </widget>
                </item>
-               <item row="6" column="1">
-                <widget class="QLineEdit" name="BI_Operator_line">
-                 <property name="text">
-                  <string>PisaTeam</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="label_81">
-                 <property name="text">
-                  <string>Operator:</string>
+               <item row="4" column="1">
+                <widget class="QDoubleSpinBox" name="BI_UnderKeepTemp_dsb">
+                 <property name="value">
+                  <double>3.000000000000000</double>
                  </property>
                 </widget>
                </item>
@@ -145,7 +145,14 @@
                  </property>
                 </widget>
                </item>
-               <item row="7" column="1">
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_66">
+                 <property name="text">
+                  <string>Low temp (C°):</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="1">
                 <widget class="QPlainTextEdit" name="BI_Desc_line">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
@@ -158,34 +165,10 @@
                  </property>
                 </widget>
                </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_66">
-                 <property name="text">
-                  <string>Low temp (C°):</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="1">
-                <widget class="QSpinBox" name="BI_NCycles_sb">
-                 <property name="minimum">
-                  <number>1</number>
-                 </property>
-                 <property name="value">
-                  <number>1</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="0">
+               <item row="6" column="0">
                 <widget class="QLabel" name="label_83">
                  <property name="text">
                   <string>Description:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="0">
-                <widget class="QLabel" name="label_68">
-                 <property name="text">
-                  <string>N Cycles:</string>
                  </property>
                 </widget>
                </item>
@@ -315,7 +298,7 @@
                <item>
                 <widget class="QLabel" name="label_92">
                  <property name="text">
-                  <string>  DryTest, QuickTest, CheckID, FullTest</string>
+                  <string>  DryTest, Daq:&quot;TestName&quot;</string>
                  </property>
                 </widget>
                </item>
@@ -795,7 +778,7 @@ addStep(&quot;Heat&quot;)</string>
            <item>
             <widget class="QLabel" name="label_88">
              <property name="text">
-              <string>Cycle #:</string>
+              <string>Thermal cycle #:</string>
              </property>
             </widget>
            </item>

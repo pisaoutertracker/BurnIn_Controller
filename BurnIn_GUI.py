@@ -366,7 +366,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_HighTemp"]= self.BI_HighTemp_dsb.value()
         self.SharedDict["BI_UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
         self.SharedDict["BI_UnderKeep"]=self.BI_UnderKeepTemp_dsb.value()
-        self.SharedDict["BI_NCycles"]=self.BI_NCycles_sb.value()
         self.SharedDict["BI_ActiveSlots"]=[]
         self.SharedDict["BI_ModuleIDs"]=[]
         
@@ -631,7 +630,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.ManualOp_tab.setEnabled(False)
         self.ModuleTest_tab.setEnabled(False)
         
-        
         #sampling test parameters
         self.SharedDict["StepList"]=StepList    
         self.SharedDict["BI_Operator"]=self.BI_Operator_line.text()
@@ -640,7 +638,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_HighTemp"]= self.BI_HighTemp_dsb.value()
         self.SharedDict["BI_UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
         self.SharedDict["BI_UnderKeep"]=self.BI_UnderKeepTemp_dsb.value()
-        self.SharedDict["BI_NCycles"]=self.BI_NCycles_sb.value()
         self.SharedDict["BI_ActiveSlots"]=[]
         self.SharedDict["BI_ModuleIDs"]=[]
         self.SharedDict["BI_fc7IDs"]=[]
@@ -667,7 +664,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.BI_HighTemp_dsb.setValue(session_dict["HighTemp"])
         self.BI_UnderRampTemp_dsb.setValue(session_dict["UnderRamp"])
         self.BI_UnderKeepTemp_dsb.setValue(session_dict["UnderKeep"])
-        self.BI_NCycles_sb.setValue(session_dict["NCycles"])
         for idx,cb in enumerate(self.Module_cbs):
             cb.setChecked(session_dict["ActiveSlots"][idx])
         for idx,ID in enumerate(self.ModuleId_lines):
@@ -775,7 +771,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
                 "low": self.BI_LowTemp_dsb.value(),
                     "high": self.BI_HighTemp_dsb.value(),
                     },                        
-                        "nCycles": self.BI_NCycles_sb.value(),
 #                        "status": "Open" #to be implemented
             "modulesList": [],
                 }
