@@ -772,16 +772,16 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
             self.ModuleId_lines[0].selectAll()
             
     @pyqtSlot(int,int)
-    def BI_CheckID_isOK(self,goodslot,success):
+    def BI_CheckID_isOK(self,slot,success):
         if success==1: #tested successfully
-            self.Module_CheckID_isOK[goodslot].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-            self.Module_CheckID_isOK[goodslot].setText(f"Slot {i+1}: CheckID OK")
+            self.Module_CheckID_isOK[slot].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1}: CheckID OK")
         elif success==0: #only started testing
-            self.Module_CheckID_isOK[goodslot].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-            self.Module_CheckID_isOK[goodslot].setText(f"Slot {i+1}: CheckID...")
+            self.Module_CheckID_isOK[slot].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1}: CheckID...")
         else:
-            self.Module_CheckID_isOK[goodslot].setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-            self.Module_CheckID_isOK[goodslot].setText(f"Slot {i+1}: CheckID FAILED")
+            self.Module_CheckID_isOK[slot].setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1}: CheckID FAILED")
             
     @pyqtSlot()                    
     def Ctrl_StartSesh_Cmd(self):
