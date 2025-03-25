@@ -516,6 +516,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         
         self.Worker.BI_Update_GUI_sig.connect(self.BI_Update_GUI_Cmd)
         self.Worker.BI_Clear_Monitor_sig.connect(self.BI_Clear_Monitor_Cmd)
+        self.Worker.BI_CheckID_isOK_sig.connect(self.BI_CheckID_isOK)
         
         
         self.statusBar().showMessage("System ready")
@@ -771,8 +772,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
             self.ModuleId_lines[0].setFocus()
             self.ModuleId_lines[0].selectAll()
             
-    @pyqtSlot(int)
-    def BI_CheckID_isOK_sig(self,goodslot,success):
+    @pyqtSlot(int,bool)
+    def BI_CheckID_isOK(self,goodslot,success):
         if success: #tested succesfully
             self.Module_CheckID_isOK[goodslot+1].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
         else: #only started testing
