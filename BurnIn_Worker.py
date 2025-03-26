@@ -601,6 +601,7 @@ class BurnIn_Worker(QObject):
                         return
                     Channel_list.append(ch_name)
                     self.BI_Update_PowerStatus_sig.emit(row,True,power)#isLV=True means LV
+                    print("Updating", row, power)
                 
         self.logger.info("WORKER: Setting LV "+power+ " for ch " +str(Channel_list))
         for channel in Channel_list:
