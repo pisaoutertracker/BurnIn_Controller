@@ -186,6 +186,43 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.FNALBoxTestCmd_btn.setEnabled(False)    
         self.CAENControllerTestCmd_btn.setEnabled(False)    
         self.ModuleTestCmd_btn.setEnabled(False)    
+
+
+        self.Module_CheckID_isOK = []
+        self.Module_CheckID_isOK.append(self.BI_Mod0_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod1_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod2_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod3_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod4_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod5_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod6_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod7_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod8_isok)
+        self.Module_CheckID_isOK.append(self.BI_Mod9_isok)
+
+        self.Module_LV_LED = []
+        self.Module_LV_LED.append(self.BI_Mod0_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod1_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod2_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod3_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod4_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod5_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod6_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod7_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod8_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod9_LV_led)
+
+        self.Module_HV_LED = []
+        self.Module_HV_LED.append(self.BI_Mod0_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod1_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod2_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod3_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod4_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod5_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod6_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod7_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod8_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod9_HV_led)
         
         
         # creating interfaces
@@ -500,7 +537,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         
         self.Worker.BI_Update_GUI_sig.connect(self.BI_Update_GUI_Cmd)
         self.Worker.BI_Clear_Monitor_sig.connect(self.BI_Clear_Monitor_Cmd)
-        
+        self.Worker.BI_CheckID_isOK_sig.connect(self.BI_CheckID_isOK)
+        self.Worker.BI_Update_PowerStatus_sig.connect(self.BI_Update_PowerStatus_Cmd)
         
         self.statusBar().showMessage("System ready")
         
@@ -600,15 +638,18 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_ModuleIDs"]=[]
         self.SharedDict["BI_fc7IDs"]=[]
         self.SharedDict["BI_fc7Slots"]=[]
-        for cb in self.Module_cbs:
-            self.SharedDict["BI_ActiveSlots"].append(cb.isChecked())
+        for i in range(10):
+            if self.Module_cbs[i].isChecked():
+                self.Module_CheckID_isOK[i].setStyleSheet("background-color : grey;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+                self.Module_CheckID_isOK[i].setText(f"Slot {i+1} - Selected")
+            self.SharedDict["BI_ActiveSlots"].append(self.Module_cbs[i].isChecked())
+        #
         for Id in self.ModuleId_lines:
             self.SharedDict["BI_ModuleIDs"].append(Id.text())
         for Id in self.fc7IDs:
             self.SharedDict["BI_fc7IDs"].append(Id)
         for Slot in self.fc7Slots:
             self.SharedDict["BI_fc7Slots"].append(Slot)
-            
         self.BI_CheckIDs_sig.emit()
     
     def BI_Start_Cmd(self):
@@ -645,8 +686,13 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_ModuleIDs"]=[]
         self.SharedDict["BI_fc7IDs"]=[]
         self.SharedDict["BI_fc7Slots"]=[]
-        for cb in self.Module_cbs:
-            self.SharedDict["BI_ActiveSlots"].append(cb.isChecked())
+        #
+        for i in range(10):
+            if self.Module_cbs[i].isChecked():
+                self.Module_CheckID_isOK[i].setStyleSheet("background-color : grey;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+                self.Module_CheckID_isOK[i].setText(f"Slot {i+1} - Selected")
+            self.SharedDict["BI_ActiveSlots"].append(self.Module_cbs[i].isChecked())
+        #           
         for Id in self.ModuleId_lines:
             self.SharedDict["BI_ModuleIDs"].append(Id.text())
         for Id in self.fc7IDs:
@@ -678,9 +724,33 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         stepPlainList = delimiter.join(recoStepList)
         self.BI_Cycle_line.setPlainText(stepPlainList)
             
+    @pyqtSlot(int,bool,str)
+    def BI_Update_PowerStatus_Cmd(self,slot,isLV,power):
+        if slot>=0:#this status update comes from manual operation
+            if isLV:
+                self.Module_LV_LED[slot].setStyleSheet("background-color : grey;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+                self.Module_LV_LED[slot].setText(power)
+            else:
+                self.Module_HV_LED[slot].setStyleSheet("background-color : grey;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+                self.Module_HV_LED[slot].setText(power)
+        else:#negative slot means this comes from BI steps and encodes different information
+            for i in range(len(self.SharedDict["BI_ActiveSlots"])):
+                if self.SharedDict["BI_ActiveSlots"][i]:#if that slot is active
+                    column = 1 if isLV else 6
+                    power=self.Ctrl_CAEN_table.item(i,column).text()
+                    color_onoff="blue"
+                    if power=="ON":
+                         color_onoff = "#80c342"
+                    elif power=="OFF":
+                        color_onoff = "rgb(255, 51, 0)"
+                    color = color_onoff if slot ==-1 else "yellow"
+                    if isLV:
+                        self.Module_LV_LED[i].setText(power)
+                        self.Module_LV_LED[i].setStyleSheet(f"background-color : {color};border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+                    else:
+                        self.Module_HV_LED[i].setText(power)
+                        self.Module_HV_LED[i].setStyleSheet(f"background-color : {color};border-radius: 5px;  padding: 3px;border:1px solid black;  ")
             
-    
-    
     def BI_Stop_Cmd(self):
         self.logger.info("Requesting BurnIn stop...")
         if self.SharedDict["BI_Active"]:
@@ -746,8 +816,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.ModuleTest_tab.setEnabled(True)
         
     def BI_SetModuleID(self,slot):
-        
-        
         self.logger.info("New Id for module "+str(slot+1)+": "+self.ModuleId_lines[slot].text())
         self.DB_interface.uploadModuleNameToDB(slot,self.ModuleId_lines[slot].text())
         if slot < 9:
@@ -757,8 +825,18 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
             self.ModuleId_lines[0].setFocus()
             self.ModuleId_lines[0].selectAll()
             
-        
-        
+    @pyqtSlot(int,int)
+    def BI_CheckID_isOK(self,slot,success):
+        if success==1: #tested successfully
+            self.Module_CheckID_isOK[slot].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1} - Passed")
+        elif success==0: #only started testing
+            self.Module_CheckID_isOK[slot].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1} - Testing")
+        else:
+            self.Module_CheckID_isOK[slot].setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1} - FAILURE")
+            
     @pyqtSlot()                    
     def Ctrl_StartSesh_Cmd(self):
         self.logger.info("Starting Test Session")

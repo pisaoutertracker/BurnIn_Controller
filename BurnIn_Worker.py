@@ -22,7 +22,9 @@ class BurnIn_Worker(QObject):
     BI_terminated = pyqtSignal()
     
     BI_Update_GUI_sig = pyqtSignal(dict)
+    BI_CheckID_isOK_sig = pyqtSignal(int,int)
     BI_Clear_Monitor_sig = pyqtSignal()
+    BI_Update_PowerStatus_sig = pyqtSignal(int,bool,str)
 
     ## Init function.
     def __init__(self,configDict,logger, SharedDict, Julabo, FNALBox, CAENController, DB_interface):
@@ -598,6 +600,8 @@ class BurnIn_Worker(QObject):
                         self.last_op_ok= False
                         return
                     Channel_list.append(ch_name)
+                    self.BI_Update_PowerStatus_sig.emit(row,True,power)#isLV=True means LV
+                    print("Updating", row, power)
                 
         self.logger.info("WORKER: Setting LV "+power+ " for ch " +str(Channel_list))
         for channel in Channel_list:
@@ -651,6 +655,7 @@ class BurnIn_Worker(QObject):
                         self.last_op_ok= False
                         return
                     Channel_list.append(ch_name)
+                    self.BI_Update_PowerStatus_sig.emit(row,False,power)#isLV=False means HV
                 
         self.logger.info("WORKER: Setting HV "+power+ " for ch " +str(Channel_list))
         for channel in Channel_list:
@@ -841,6 +846,7 @@ class BurnIn_Worker(QObject):
         
         ##start LV
         self.SharedDict["BI_Action"].setText("Start LVs")
+        self.BI_Update_PowerStatus_sig.emit(-2,True,"ON_dummy")#isLV=True means LV,slot=-2 means all, but command only started
         self.Ctrl_PowerLV_Cmd(True,LV_Channel_list,PopUp)
         if not self.last_op_ok:
             self.logger.error("WORKER: Check IDs procedure failed. Can't start LVs.")
@@ -858,6 +864,7 @@ class BurnIn_Worker(QObject):
                 self.SharedDict["BI_Action"].setText("None")
                 self.BI_terminated.emit()
                 return
+        self.BI_Update_PowerStatus_sig.emit(-1,True,"ON_dummy")#isLV=True means LV,slot=-1 means all, update GUI-side  
         
         ##start HV
         #self.SharedDict["BI_Action"].setText("Start HVs")
@@ -888,15 +895,20 @@ class BurnIn_Worker(QObject):
             session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
             session_dict["Current_ModuleID"]    = self.SharedDict["BI_ModuleIDs"][slot]
             self.logger.info("BI: Checking ID for BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
+            self.BI_CheckID_isOK_sig.emit(slot,0)#0 means we just started testing
             self.BI_StartTest_Cmd(session_dict)
             if not self.last_op_ok:
                 self.SharedDict["BI_Status"].setText("Failed CheckIDs")
-                self.SharedDict["BI_Action"].setText("None")
-                self.SharedDict["BI_SUT"].setText("None")
-                self.logger.error("WORKER: Check IDs procedure failed. Error returned while checking slot "+str(slot))
-                self.BI_terminated.emit()
-                return
-                
+                #let's comment these for now and continue testing even if the label is wrong
+                #self.SharedDict["BI_Action"].setText("None")
+                #self.SharedDict["BI_SUT"].setText("None")
+                self.logger.error("WORKER: Check IDs procedure failed. Error returned while checking slot "+str(slot+1))
+                self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure
+                #self.BI_terminated.emit()
+                #return
+            else:
+                self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success
+
         
         self.SharedDict["BI_SUT"].setText("None")
                             
@@ -924,6 +936,7 @@ class BurnIn_Worker(QObject):
         
         #stop LV
         self.SharedDict["BI_Action"].setText("Stop LVs")
+        self.BI_Update_PowerStatus_sig.emit(-2,True,"OFF_dummy")#isLV=True means LV,slot=-2 means all, but command only started
         self.Ctrl_PowerLV_Cmd(False,LV_Channel_list,PopUp)
         if not self.last_op_ok:
             self.logger.error("WORKER: Check IDs procedure failed. Can't stop LVs.")
@@ -940,7 +953,7 @@ class BurnIn_Worker(QObject):
                 self.SharedDict["BI_Action"].setText("None")
                 self.BI_terminated.emit()
                 return
-                
+        self.BI_Update_PowerStatus_sig.emit(-1,True,"OFF_dummy")#isLV=True means LV,slot=-1 means all, update GUI-side
         
         self.SharedDict["BI_Action"].setText("None")
         self.SharedDict["BI_Status"].setText("Idle")
@@ -1184,11 +1197,16 @@ class BurnIn_Worker(QObject):
                     for slot in Slot_list:
                         session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
                         session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
-                        session_dict["Current_ModuleID"]    = self.SharedDict["BI_ModuleIDs"][slot]
+                        session_dict["Current_ModuleID"]   = self.SharedDict["BI_ModuleIDs"][slot]
                         self.SharedDict["BI_SUT"].setText(str(slot+1)) 
                         self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
+                        self.BI_CheckID_isOK_sig.emit(slot,0)#0 means we just started testing #FT
                         if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
-                                return
+                            return
+                        if self.last_op_ok:
+                            self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success
+                        else:
+                            self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure
                     self.SharedDict["BI_TestActive"]=False
                     session_dict["TestType"]="Undef"
                     
@@ -1211,6 +1229,7 @@ class BurnIn_Worker(QObject):
                     self.logger.info("BI: Starting LVs")
                     self.SharedDict["BI_Action"].setText("Starting LVs")
                     self.SharedDict["BI_SUT"].setText("None") 
+                    self.BI_Update_PowerStatus_sig.emit(-2,True,"ON_dummy")#isLV=True means LV,slot=-2 means all, but command only started
                     if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,True,LV_Channel_list,PopUp):
                         return
                     time.sleep(BI_SLEEP_AFTER_LVSET)
@@ -1219,6 +1238,7 @@ class BurnIn_Worker(QObject):
                         if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="ON"):
                             self.BI_Abort("BI aborted: some LVs was not turned ON")
                             return
+                    self.BI_Update_PowerStatus_sig.emit(-1,True,"ON_dummy")#isLV=True means LV,slot=-1 means all, update GUI-side
                 
                             
                 if (session_dict["Action"].upper()=="LV_OFF"):
@@ -1226,6 +1246,7 @@ class BurnIn_Worker(QObject):
                     self.logger.info("BI: Stopping LVs")
                     self.SharedDict["BI_Action"].setText("Stopping LVs")
                     self.SharedDict["BI_SUT"].setText("None") 
+                    self.BI_Update_PowerStatus_sig.emit(-2,True,"OFF_dummy")#isLV=True means LV,slot=-2 means all, but command only started
                     if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,False,LV_Channel_list,PopUp):
                         return
                     time.sleep(BI_SLEEP_AFTER_LVSET)
@@ -1234,12 +1255,14 @@ class BurnIn_Worker(QObject):
                         if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
                             self.BI_Abort("BI aborted: some LVs was not turned OFF")
                             return
+                    self.BI_Update_PowerStatus_sig.emit(-1,True,"OFF_dummy")#isLV=True means LV,slot=-1 means all, update GUI-side
                             
                 if (session_dict["Action"].upper()=="HV_ON"):
                     self.BI_Update_Status_file(session_dict)
                     self.logger.info("BI: Starting HVs")
                     self.SharedDict["BI_Action"].setText("Starting HVs")
-                    self.SharedDict["BI_SUT"].setText("None") 
+                    self.SharedDict["BI_SUT"].setText("None")
+                    self.BI_Update_PowerStatus_sig.emit(-2,False,"ON_dummy")#isLV=False means HV,slot=-2 means all, but command only started
                     if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,True,HV_Channel_list,PopUp):
                         return
                     time.sleep(BI_SLEEP_AFTER_HVSET)
@@ -1248,13 +1271,14 @@ class BurnIn_Worker(QObject):
                         if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
                             self.BI_Abort("BI aborted: some HVs was not turned ON")
                             return
-                
+                    self.BI_Update_PowerStatus_sig.emit(-1,False,"ON_dummy")#isLV=False means HV,slot=-1 means all, update GUI-side
                             
                 if (session_dict["Action"].upper()=="HV_OFF"):
                     self.BI_Update_Status_file(session_dict)
                     self.logger.info("BI: Stopping HVs")
                     self.SharedDict["BI_Action"].setText("Stopping HVs")
-                    self.SharedDict["BI_SUT"].setText("None") 
+                    self.SharedDict["BI_SUT"].setText("None")
+                    self.BI_Update_PowerStatus_sig.emit(-2,False,"OFF_dummy")#isLV=False means HV,slot=-2 means all, but command only started
                     if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,False,HV_Channel_list,PopUp):
                         return
                     time.sleep(BI_SLEEP_AFTER_HVSET)
@@ -1263,7 +1287,7 @@ class BurnIn_Worker(QObject):
                         if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
                             self.BI_Abort("BI aborted: some LVs was not turned OFF")
                             return
-                
+                    self.BI_Update_PowerStatus_sig.emit(-1,False,"OFF_dummy")#isLV=False means HV,slot=-1 means all, update GUI-side
                     
                 session_dict["CycleStep"]=session_dict["CycleStep"]+1
                 
@@ -1336,7 +1360,7 @@ class BurnIn_Worker(QObject):
         
     
     ## BI Action function. used to execute a defined operation.        
-    def BI_Action(self,Action,abort_if_fail, *args):
+    def BI_Action(self,Action, abort_if_fail, *args):
         retry=BI_ACTION_RETRIES
         while retry:
             Action(*args)
