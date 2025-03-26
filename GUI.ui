@@ -451,7 +451,7 @@ addStep(&quot;Heat&quot;)</string>
                  <item row="1" column="7">
                   <widget class="QLineEdit" name="BI_Mod5ID_line">
                    <property name="text">
-                    <string>Module  ID</string>
+                    <string>PS_26_IBA-10003</string>
                    </property>
                   </widget>
                  </item>
@@ -673,7 +673,7 @@ addStep(&quot;Heat&quot;)</string>
                  <item row="7" column="7">
                   <widget class="QLineEdit" name="BI_Mod9ID_line">
                    <property name="text">
-                    <string>Module  ID</string>
+                    <string>PS_26_IBA-10007</string>
                    </property>
                   </widget>
                  </item>

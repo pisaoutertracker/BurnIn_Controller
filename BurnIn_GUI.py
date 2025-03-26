@@ -731,7 +731,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         else:#negative slot means this comes from BI steps and encodes different information
             for i in range(len(self.SharedDict["BI_ActiveSlots"])):
                 if self.SharedDict["BI_ActiveSlots"][i]:#if that slot is active
-                    column = 2 if isLV else 7
+                    column = 1 if isLV else 6
                     power=self.Ctrl_CAEN_table.item(i,column).text()
                     color_onoff="blue"
                     if power=="ON":
