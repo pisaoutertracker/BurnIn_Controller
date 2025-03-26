@@ -846,6 +846,7 @@ class BurnIn_Worker(QObject):
         
         ##start LV
         self.SharedDict["BI_Action"].setText("Start LVs")
+        self.BI_Update_PowerStatus_sig.emit(-2,True,"ON_dummy")#isLV=True means LV,slot=-2 means all, but command only started
         self.Ctrl_PowerLV_Cmd(True,LV_Channel_list,PopUp)
         if not self.last_op_ok:
             self.logger.error("WORKER: Check IDs procedure failed. Can't start LVs.")
@@ -863,6 +864,7 @@ class BurnIn_Worker(QObject):
                 self.SharedDict["BI_Action"].setText("None")
                 self.BI_terminated.emit()
                 return
+        self.BI_Update_PowerStatus_sig.emit(-1,True,"ON_dummy")#isLV=True means LV,slot=-1 means all, update GUI-side  
         
         ##start HV
         #self.SharedDict["BI_Action"].setText("Start HVs")
@@ -934,6 +936,7 @@ class BurnIn_Worker(QObject):
         
         #stop LV
         self.SharedDict["BI_Action"].setText("Stop LVs")
+        self.BI_Update_PowerStatus_sig.emit(-2,True,"OFF_dummy")#isLV=True means LV,slot=-2 means all, but command only started
         self.Ctrl_PowerLV_Cmd(False,LV_Channel_list,PopUp)
         if not self.last_op_ok:
             self.logger.error("WORKER: Check IDs procedure failed. Can't stop LVs.")
@@ -950,7 +953,7 @@ class BurnIn_Worker(QObject):
                 self.SharedDict["BI_Action"].setText("None")
                 self.BI_terminated.emit()
                 return
-                
+        self.BI_Update_PowerStatus_sig.emit(-1,True,"OFF_dummy")#isLV=True means LV,slot=-1 means all, update GUI-side
         
         self.SharedDict["BI_Action"].setText("None")
         self.SharedDict["BI_Status"].setText("Idle")
@@ -1221,6 +1224,7 @@ class BurnIn_Worker(QObject):
                     self.logger.info("BI: Starting LVs")
                     self.SharedDict["BI_Action"].setText("Starting LVs")
                     self.SharedDict["BI_SUT"].setText("None") 
+                    self.BI_Update_PowerStatus_sig.emit(-2,True,"ON_dummy")#isLV=True means LV,slot=-2 means all, but command only started
                     if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,True,LV_Channel_list,PopUp):
                         return
                     time.sleep(BI_SLEEP_AFTER_LVSET)
@@ -1229,6 +1233,7 @@ class BurnIn_Worker(QObject):
                         if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="ON"):
                             self.BI_Abort("BI aborted: some LVs was not turned ON")
                             return
+                    self.BI_Update_PowerStatus_sig.emit(-1,True,"ON_dummy")#isLV=True means LV,slot=-1 means all, update GUI-side
                 
                             
                 if (session_dict["Action"].upper()=="LV_OFF"):
@@ -1236,6 +1241,7 @@ class BurnIn_Worker(QObject):
                     self.logger.info("BI: Stopping LVs")
                     self.SharedDict["BI_Action"].setText("Stopping LVs")
                     self.SharedDict["BI_SUT"].setText("None") 
+                    self.BI_Update_PowerStatus_sig.emit(-2,True,"OFF_dummy")#isLV=True means LV,slot=-2 means all, but command only started
                     if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,False,LV_Channel_list,PopUp):
                         return
                     time.sleep(BI_SLEEP_AFTER_LVSET)
@@ -1244,12 +1250,14 @@ class BurnIn_Worker(QObject):
                         if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
                             self.BI_Abort("BI aborted: some LVs was not turned OFF")
                             return
+                    self.BI_Update_PowerStatus_sig.emit(-1,True,"OFF_dummy")#isLV=True means LV,slot=-1 means all, update GUI-side
                             
                 if (session_dict["Action"].upper()=="HV_ON"):
                     self.BI_Update_Status_file(session_dict)
                     self.logger.info("BI: Starting HVs")
                     self.SharedDict["BI_Action"].setText("Starting HVs")
-                    self.SharedDict["BI_SUT"].setText("None") 
+                    self.SharedDict["BI_SUT"].setText("None")
+                    self.BI_Update_PowerStatus_sig.emit(-2,False,"ON_dummy")#isLV=False means HV,slot=-2 means all, but command only started
                     if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,True,HV_Channel_list,PopUp):
                         return
                     time.sleep(BI_SLEEP_AFTER_HVSET)
@@ -1258,13 +1266,14 @@ class BurnIn_Worker(QObject):
                         if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
                             self.BI_Abort("BI aborted: some HVs was not turned ON")
                             return
-                
+                    self.BI_Update_PowerStatus_sig.emit(-1,False,"ON_dummy")#isLV=False means HV,slot=-1 means all, update GUI-side
                             
                 if (session_dict["Action"].upper()=="HV_OFF"):
                     self.BI_Update_Status_file(session_dict)
                     self.logger.info("BI: Stopping HVs")
                     self.SharedDict["BI_Action"].setText("Stopping HVs")
-                    self.SharedDict["BI_SUT"].setText("None") 
+                    self.SharedDict["BI_SUT"].setText("None")
+                    self.BI_Update_PowerStatus_sig.emit(-2,False,"OFF_dummy")#isLV=False means HV,slot=-2 means all, but command only started
                     if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,False,HV_Channel_list,PopUp):
                         return
                     time.sleep(BI_SLEEP_AFTER_HVSET)
@@ -1273,7 +1282,7 @@ class BurnIn_Worker(QObject):
                         if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
                             self.BI_Abort("BI aborted: some LVs was not turned OFF")
                             return
-                
+                    self.BI_Update_PowerStatus_sig.emit(-1,False,"OFF_dummy")#isLV=False means HV,slot=-1 means all, update GUI-side
                     
                 session_dict["CycleStep"]=session_dict["CycleStep"]+1
                 
