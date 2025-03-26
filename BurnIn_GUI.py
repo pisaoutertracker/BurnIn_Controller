@@ -686,8 +686,13 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_ModuleIDs"]=[]
         self.SharedDict["BI_fc7IDs"]=[]
         self.SharedDict["BI_fc7Slots"]=[]
-        for cb in self.Module_cbs:
-            self.SharedDict["BI_ActiveSlots"].append(cb.isChecked())
+        #
+        for i in range(10):
+            if self.Module_cbs[i].isChecked():
+                self.Module_CheckID_isOK[i].setStyleSheet("background-color : grey;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+                self.Module_CheckID_isOK[i].setText(f"Slot {i+1} - Selected")
+            self.SharedDict["BI_ActiveSlots"].append(self.Module_cbs[i].isChecked())
+        #           
         for Id in self.ModuleId_lines:
             self.SharedDict["BI_ModuleIDs"].append(Id.text())
         for Id in self.fc7IDs:
@@ -824,7 +829,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     def BI_CheckID_isOK(self,slot,success):
         if success==1: #tested successfully
             self.Module_CheckID_isOK[slot].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1} - OK")
+            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1} - Passed")
         elif success==0: #only started testing
             self.Module_CheckID_isOK[slot].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
             self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1} - Testing")
