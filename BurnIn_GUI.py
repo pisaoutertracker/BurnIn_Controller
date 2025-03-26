@@ -641,7 +641,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         for i in range(10):
             if self.Module_cbs[i].isChecked():
                 self.Module_CheckID_isOK[i].setStyleSheet("background-color : grey;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-                self.Module_CheckID_isOK[i].setText(f"Slot {i+1}: Selected")
+                self.Module_CheckID_isOK[i].setText(f"Slot {i+1} - Selected")
             self.SharedDict["BI_ActiveSlots"].append(self.Module_cbs[i].isChecked())
         #
         for Id in self.ModuleId_lines:
@@ -824,13 +824,13 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     def BI_CheckID_isOK(self,slot,success):
         if success==1: #tested successfully
             self.Module_CheckID_isOK[slot].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1}: CheckID OK")
+            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1} - OK")
         elif success==0: #only started testing
             self.Module_CheckID_isOK[slot].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1}: CheckID...")
+            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1} - Testing")
         else:
             self.Module_CheckID_isOK[slot].setStyleSheet("background-color : rgb(255, 51, 0);border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1}: CheckID FAILED")
+            self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1} - FAILURE")
             
     @pyqtSlot()                    
     def Ctrl_StartSesh_Cmd(self):
