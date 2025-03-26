@@ -24,6 +24,7 @@ class BurnIn_Worker(QObject):
     BI_Update_GUI_sig = pyqtSignal(dict)
     BI_CheckID_isOK_sig = pyqtSignal(int,int)
     BI_Clear_Monitor_sig = pyqtSignal()
+    BI_Update_PowerStatus_sig = pyqtSignal(int,bool,str)
 
     ## Init function.
     def __init__(self,configDict,logger, SharedDict, Julabo, FNALBox, CAENController, DB_interface):
@@ -599,6 +600,7 @@ class BurnIn_Worker(QObject):
                         self.last_op_ok= False
                         return
                     Channel_list.append(ch_name)
+                    self.BI_Update_PowerStatus_sig.emit(row,True,power)#isLV=True means LV
                 
         self.logger.info("WORKER: Setting LV "+power+ " for ch " +str(Channel_list))
         for channel in Channel_list:
@@ -652,6 +654,7 @@ class BurnIn_Worker(QObject):
                         self.last_op_ok= False
                         return
                     Channel_list.append(ch_name)
+                    self.BI_Update_PowerStatus_sig.emit(row,False,power)#isLV=False means HV
                 
         self.logger.info("WORKER: Setting HV "+power+ " for ch " +str(Channel_list))
         for channel in Channel_list:

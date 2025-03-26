@@ -198,7 +198,32 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.Module_CheckID_isOK.append(self.BI_Mod6_isok)
         self.Module_CheckID_isOK.append(self.BI_Mod7_isok)
         self.Module_CheckID_isOK.append(self.BI_Mod8_isok)
-        self.Module_CheckID_isOK.append(self.BI_Mod9_isok)        
+        self.Module_CheckID_isOK.append(self.BI_Mod9_isok)
+
+        self.Module_LV_LED = []
+        self.Module_LV_LED.append(self.BI_Mod0_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod1_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod2_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod3_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod4_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod5_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod6_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod7_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod8_LV_led)
+        self.Module_LV_LED.append(self.BI_Mod9_LV_led)
+
+        self.Module_HV_LED = []
+        self.Module_HV_LED.append(self.BI_Mod0_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod1_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod2_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod3_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod4_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod5_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod6_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod7_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod8_HV_led)
+        self.Module_HV_LED.append(self.BI_Mod9_HV_led)
+        
         
         # creating interfaces
         self.Julabo = BurnIn_TCP(self.configDict,self.logger,"Julabo")
@@ -513,7 +538,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.Worker.BI_Update_GUI_sig.connect(self.BI_Update_GUI_Cmd)
         self.Worker.BI_Clear_Monitor_sig.connect(self.BI_Clear_Monitor_Cmd)
         self.Worker.BI_CheckID_isOK_sig.connect(self.BI_CheckID_isOK)
-        
+        self.Worker.BI_Update_PowerStatus_sig.connect(self.BI_Update_PowerStatus_Cmd)
         
         self.statusBar().showMessage("System ready")
         
@@ -694,9 +719,15 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         stepPlainList = delimiter.join(recoStepList)
         self.BI_Cycle_line.setPlainText(stepPlainList)
             
+    @pyqtSlot(int,bool,str)
+    def BI_Update_PowerStatus_Cmd(self,row,isLV,power):
+        if isLV:
+            self.Module_LV_LED[row].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+            self.Module_LV_LED[row].setText(power)
+        else:
+            self.Module_HV_LED[row].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+            self.Module_HV_LED[row].setText(power)
             
-    
-    
     def BI_Stop_Cmd(self):
         self.logger.info("Requesting BurnIn stop...")
         if self.SharedDict["BI_Active"]:
@@ -776,7 +807,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         if success==1: #tested successfully
             self.Module_CheckID_isOK[slot].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
             self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1}: CheckID OK")
-            print(self.Ctrl_CAEN_table.getItem(slot,2))##stop here FT
         elif success==0: #only started testing
             self.Module_CheckID_isOK[slot].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
             self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1}: CheckID...")
