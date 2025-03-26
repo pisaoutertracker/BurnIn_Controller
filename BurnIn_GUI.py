@@ -729,15 +729,15 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
                 self.Module_HV_LED[slot].setStyleSheet("background-color : grey;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
                 self.Module_HV_LED[slot].setText(power)
         else:#negative slot means this comes from BI steps and encodes different information
-        for i in range(len(self.SharedDict["BI_ActiveSlots"])):
-            if self.SharedDict["BI_ActiveSlots"][i]:
-                color = "#80c342" if slot ==-1 else "yellow"
-                if isLV:
-                    self.Module_LV_LED[i].setStyleSheet(f"background-color : {color};border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-                    self.Module_LV_LED[i].setText(self.Ctrl_CAEN_table.item(slot,2).text())
-                else:
-                    self.Module_HV_LED[i].setStyleSheet(f"background-color : {color};border-radius: 5px;  padding: 3px;border:1px solid black;  ")
-                    self.Module_HV_LED[i].setText(self.Ctrl_CAEN_table.item(slot,7).text())
+            for i in range(len(self.SharedDict["BI_ActiveSlots"])):
+                if self.SharedDict["BI_ActiveSlots"][i]:#if that slot is active
+                    color = "#80c342" if slot ==-1 else "yellow"
+                    if isLV:
+                        self.Module_LV_LED[i].setStyleSheet(f"background-color : {color};border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+                        self.Module_LV_LED[i].setText(self.Ctrl_CAEN_table.item(slot,2).text())
+                    else:
+                        self.Module_HV_LED[i].setStyleSheet(f"background-color : {color};border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+                        self.Module_HV_LED[i].setText(self.Ctrl_CAEN_table.item(slot,7).text())
 
             
     def BI_Stop_Cmd(self):
