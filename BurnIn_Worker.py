@@ -1200,9 +1200,13 @@ class BurnIn_Worker(QObject):
                         session_dict["Current_ModuleID"]   = self.SharedDict["BI_ModuleIDs"][slot]
                         self.SharedDict["BI_SUT"].setText(str(slot+1)) 
                         self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
-                        if not self.BI_Action(self.BI_StartTest_Cmd,slot,False,session_dict):
+                        self.BI_CheckID_isOK_sig.emit(slot,0)#0 means we just started testing #FT
+                        if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
                             return
-                            
+                        if self.last_op_ok:
+                            self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success
+                        else:
+                            self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure
                     self.SharedDict["BI_TestActive"]=False
                     session_dict["TestType"]="Undef"
                     
@@ -1216,7 +1220,7 @@ class BurnIn_Worker(QObject):
                         session_dict["Current_ModuleHV"]    = HV_Channel_list[slot]
                         self.SharedDict["BI_SUT"].setText(str(slot+1)) 
                         self.logger.info("BI: IV scan for slot "+str(slot)+": module name "+session_dict["Current_ModuleID"])
-                        if not self.BI_Action(self.BI_StartIV_Cmd,slot,False,session_dict):
+                        if not self.BI_Action(self.BI_StartIV_Cmd,False,session_dict):
                                 return
                     self.SharedDict["BI_TestActive"]=False
                             
@@ -1356,9 +1360,8 @@ class BurnIn_Worker(QObject):
         
     
     ## BI Action function. used to execute a defined operation.        
-    def BI_Action(self,Action, slot, abort_if_fail, *args):
+    def BI_Action(self,Action, abort_if_fail, *args):
         retry=BI_ACTION_RETRIES
-#        self.BI_CheckID_isOK_sig.emit(slot,0)#0 means we just started testing
         while retry:
             Action(*args)
             if self.SharedDict["BI_StopRequest"]:
@@ -1369,9 +1372,7 @@ class BurnIn_Worker(QObject):
                 time.sleep(BI_ACTION_RETRY_SLEEP)
                 retry=retry-1
             else:
- #               self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success
                 return True
- #       self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure
         if abort_if_fail:
             self.BI_Abort("BI: failed to do action ("+str(BI_ACTION_RETRIES)+" times)...aborting")
             return False
