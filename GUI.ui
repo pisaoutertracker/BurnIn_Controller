@@ -714,7 +714,7 @@ addStep(&quot;Heat&quot;)</string>
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QPushButton" name="BI_Mod1_HV_led">
+               <widget class="QPushButton" name="BI_Mod1_LV_led">
                 <property name="maximumSize">
                  <size>
                   <width>40</width>
@@ -727,7 +727,7 @@ addStep(&quot;Heat&quot;)</string>
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QPushButton" name="BI_Mod0_LV_led">
+               <widget class="QPushButton" name="BI_Mod0_HV_led">
                 <property name="maximumSize">
                  <size>
                   <width>40</width>
@@ -814,7 +814,7 @@ addStep(&quot;Heat&quot;)</string>
                </widget>
               </item>
               <item row="2" column="0">
-               <widget class="QPushButton" name="BI_Mod1_LV_led">
+               <widget class="QPushButton" name="BI_Mod1_HV_led">
                 <property name="maximumSize">
                  <size>
                   <width>40</width>
@@ -853,7 +853,7 @@ addStep(&quot;Heat&quot;)</string>
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QPushButton" name="BI_Mod0_HV_led">
+               <widget class="QPushButton" name="BI_Mod0_LV_led">
                 <property name="maximumSize">
                  <size>
                   <width>40</width>
@@ -866,7 +866,7 @@ addStep(&quot;Heat&quot;)</string>
                </widget>
               </item>
               <item row="4" column="0">
-               <widget class="QPushButton" name="BI_Mod3_LV_led">
+               <widget class="QPushButton" name="BI_Mod3_HV_led">
                 <property name="maximumSize">
                  <size>
                   <width>40</width>
@@ -933,7 +933,7 @@ addStep(&quot;Heat&quot;)</string>
                </widget>
               </item>
               <item row="3" column="1">
-               <widget class="QPushButton" name="BI_Mod2_HV_led">
+               <widget class="QPushButton" name="BI_Mod2_LV_led">
                 <property name="maximumSize">
                  <size>
                   <width>40</width>
@@ -962,7 +962,7 @@ addStep(&quot;Heat&quot;)</string>
                </widget>
               </item>
               <item row="3" column="0">
-               <widget class="QPushButton" name="BI_Mod2_LV_led">
+               <widget class="QPushButton" name="BI_Mod2_HV_led">
                 <property name="maximumSize">
                  <size>
                   <width>40</width>
@@ -1036,7 +1036,7 @@ addStep(&quot;Heat&quot;)</string>
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QPushButton" name="BI_Mod3_HV_led">
+               <widget class="QPushButton" name="BI_Mod3_LV_led">
                 <property name="maximumSize">
                  <size>
                   <width>40</width>
@@ -1062,7 +1062,7 @@ addStep(&quot;Heat&quot;)</string>
                </widget>
               </item>
               <item row="5" column="0">
-               <widget class="QPushButton" name="BI_Mod4_LV_led">
+               <widget class="QPushButton" name="BI_Mod4_HV_led">
                 <property name="maximumSize">
                  <size>
                   <width>40</width>
@@ -1088,7 +1088,7 @@ addStep(&quot;Heat&quot;)</string>
                </widget>
               </item>
               <item row="5" column="1">
-               <widget class="QPushButton" name="BI_Mod4_HV_led">
+               <widget class="QPushButton" name="BI_Mod4_LV_led">
                 <property name="maximumSize">
                  <size>
                   <width>40</width>
@@ -1119,7 +1119,7 @@ addStep(&quot;Heat&quot;)</string>
               <item row="0" column="0">
                <widget class="QLabel" name="label_95">
                 <property name="text">
-                 <string>LV</string>
+                 <string>HV</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1129,7 +1129,7 @@ addStep(&quot;Heat&quot;)</string>
               <item row="0" column="1">
                <widget class="QLabel" name="label_96">
                 <property name="text">
-                 <string>HV</string>
+                 <string>LV</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
