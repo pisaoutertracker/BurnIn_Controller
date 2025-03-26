@@ -776,6 +776,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         if success==1: #tested successfully
             self.Module_CheckID_isOK[slot].setStyleSheet("background-color : #80c342;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
             self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1}: CheckID OK")
+            print(self.Ctrl_CAEN_table.getItem(slot,2))##stop here FT
         elif success==0: #only started testing
             self.Module_CheckID_isOK[slot].setStyleSheet("background-color : yellow;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
             self.Module_CheckID_isOK[slot].setText(f"Slot {slot+1}: CheckID...")

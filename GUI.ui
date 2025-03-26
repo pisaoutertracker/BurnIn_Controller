@@ -686,20 +686,41 @@ addStep(&quot;Heat&quot;)</string>
              <layout class="QGridLayout" name="gridLayout_14">
               <item row="2" column="2">
                <widget class="QPushButton" name="BI_Mod2_isok">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>--- --- --- ---</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item row="3" column="1">
-               <widget class="QPushButton" name="pushButton_3">
+               <widget class="QPushButton" name="BI_Mod3_HV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>HV</string>
                 </property>
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QPushButton" name="pushButton_5">
+               <widget class="QPushButton" name="BI_Mod4_HV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>HV</string>
                 </property>
@@ -707,41 +728,80 @@ addStep(&quot;Heat&quot;)</string>
               </item>
               <item row="3" column="2">
                <widget class="QPushButton" name="BI_Mod3_isok">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>--- --- --- ---</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item row="2" column="0">
-               <widget class="QPushButton" name="pushButton_8">
+               <widget class="QPushButton" name="BI_Mod2_LV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>LV</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="5">
-               <widget class="QPushButton" name="pushButton_12">
+               <widget class="QPushButton" name="BI_Mod5_HV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>HV</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QPushButton" name="pushButton_2">
+               <widget class="QPushButton" name="BI_Mod1_HV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>HV</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="4">
-               <widget class="QPushButton" name="pushButton_15">
+               <widget class="QPushButton" name="BI_Mod6_LV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>LV</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="BI_Mod0_HV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>HV</string>
                 </property>
@@ -755,20 +815,41 @@ addStep(&quot;Heat&quot;)</string>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>--- --- --- ---</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item row="0" column="0">
-               <widget class="QPushButton" name="pushButton_6">
+               <widget class="QPushButton" name="BI_Mod0_LV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>LV</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="4">
-               <widget class="QPushButton" name="pushButton_10">
+               <widget class="QPushButton" name="BI_Mod5_LV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>LV</string>
                 </property>
@@ -779,34 +860,70 @@ addStep(&quot;Heat&quot;)</string>
                 <property name="enabled">
                  <bool>true</bool>
                 </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>--- --- --- ---</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item row="1" column="2">
                <widget class="QPushButton" name="BI_Mod1_isok">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>--- --- --- ---</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item row="3" column="4">
-               <widget class="QPushButton" name="pushButton_14">
+               <widget class="QPushButton" name="BI_Mod8_LV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>LV</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QPushButton" name="pushButton_4">
+               <widget class="QPushButton" name="BI_Mod2_HV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>HV</string>
                 </property>
                </widget>
               </item>
               <item row="4" column="0">
-               <widget class="QPushButton" name="pushButton_11">
+               <widget class="QPushButton" name="BI_Mod4_LV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>LV</string>
                 </property>
@@ -814,34 +931,70 @@ addStep(&quot;Heat&quot;)</string>
               </item>
               <item row="3" column="3">
                <widget class="QPushButton" name="BI_Mod8_isok">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>--- --- --- ---</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item row="4" column="3">
                <widget class="QPushButton" name="BI_Mod9_isok">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>--- --- --- ---</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item row="3" column="0">
-               <widget class="QPushButton" name="pushButton_9">
+               <widget class="QPushButton" name="BI_Mod3_LV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>LV</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="4">
-               <widget class="QPushButton" name="pushButton_13">
+               <widget class="QPushButton" name="BI_Mod7_LV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>LV</string>
                 </property>
                </widget>
               </item>
               <item row="4" column="4">
-               <widget class="QPushButton" name="pushButton_16">
+               <widget class="QPushButton" name="BI_Mod9_LV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>LV</string>
                 </property>
@@ -849,55 +1002,115 @@ addStep(&quot;Heat&quot;)</string>
               </item>
               <item row="4" column="2">
                <widget class="QPushButton" name="BI_Mod4_isok">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>--- --- --- ---</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item row="1" column="3">
                <widget class="QPushButton" name="BI_Mod6_isok">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>--- --- --- ---</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item row="2" column="3">
                <widget class="QPushButton" name="BI_Mod7_isok">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>--- --- --- ---</string>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QPushButton" name="pushButton_7">
+               <widget class="QPushButton" name="BI_Mod1_LV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>LV</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="5">
-               <widget class="QPushButton" name="pushButton_17">
+               <widget class="QPushButton" name="BI_Mod6_HV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>HV</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="5">
-               <widget class="QPushButton" name="pushButton_18">
+               <widget class="QPushButton" name="BI_Mod7_HV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>HV</string>
                 </property>
                </widget>
               </item>
               <item row="3" column="5">
-               <widget class="QPushButton" name="pushButton_19">
+               <widget class="QPushButton" name="BI_Mod8_HV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>HV</string>
                 </property>
                </widget>
               </item>
               <item row="4" column="5">
-               <widget class="QPushButton" name="pushButton_20">
+               <widget class="QPushButton" name="BI_Mod9_HV_led">
+                <property name="maximumSize">
+                 <size>
+                  <width>25</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="text">
                  <string>HV</string>
                 </property>
