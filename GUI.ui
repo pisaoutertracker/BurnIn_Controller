@@ -1139,7 +1139,7 @@ addStep(&quot;Heat&quot;)</string>
               <item row="0" column="2">
                <widget class="QLabel" name="label_97">
                 <property name="text">
-                 <string>Module CheckID</string>
+                 <string>Module Test Status</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -1149,7 +1149,7 @@ addStep(&quot;Heat&quot;)</string>
               <item row="0" column="3">
                <widget class="QLabel" name="label_98">
                 <property name="text">
-                 <string>Module CheckID</string>
+                 <string>Module Test Status</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
