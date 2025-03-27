@@ -983,7 +983,7 @@ class BurnIn_Worker(QObject):
         session_dict["NominalTemp"]		    = 25
         
 		
-        session_dict["NCycles"]=[item.upper() for item in StepList].count("COOL")
+        session_dict["NCycles"]=[item.upper() for item in session_dict["StepList"]].count("COOL")
         
         
         #check if file session already exists (aka a session was stopped or crashed)
@@ -1012,7 +1012,7 @@ class BurnIn_Worker(QObject):
                             self.BI_Abort("Empty cycle description")
                             return    
                         for step in self.SharedDict["StepList"]:
-                            if not (step.upper() in stepAllowed) and step[0:3].upper!="DAQ":
+                            if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ"):
                                 self.BI_Abort("Undefined step in cycle description")
                                 return
                         
@@ -1027,7 +1027,7 @@ class BurnIn_Worker(QObject):
                     self.BI_Abort("Empty cycle description")
                     return
                 for step in self.SharedDict["StepList"]:
-                    if not (step.upper() in stepAllowed) and step[0:3].upper!="DAQ":
+                    if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ"):
                         self.BI_Abort("Undefined step in cycle description")
                         return
                 self.DB_interface.StartSesh(session_dict)
@@ -1040,7 +1040,7 @@ class BurnIn_Worker(QObject):
                 self.BI_Abort("Empty cycle description")
                 return    
             for step in self.SharedDict["StepList"]:
-                if not (step.upper() in stepAllowed) and step[0:3].upper!="DAQ":
+                if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ"):
                     self.BI_Abort("Undefined step in cycle description")
                     return
             self.DB_interface.StartSesh(session_dict)
@@ -1184,7 +1184,7 @@ class BurnIn_Worker(QObject):
                 self.logger.info("BI: testing...")
                 self.SharedDict["BI_Action"].setText(session_dict["Action"]+"  Module test")
                 self.SharedDict["BI_TestActive"]=True
-                session_dict["TestType"]=session_dict["Action"][4:-1]
+                session_dict["TestType"]=session_dict["Action"][4:]
                 for slot in Slot_list:
                     session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
                     session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
@@ -1519,11 +1519,11 @@ class BurnIn_Worker(QObject):
         self.logger.info("Starting module "+module+" test...")
         session=self.SharedDict["TestSession"]
         
-        if session_dict["TestType"].upper("DRYTEST")=="DryTest":
+        if session_dict["TestType"].upper()=="DryTest":
             self.logger.info("Dry run. Just waiting 60 s.")
             time.sleep(60)
             return True 
-        test_type = self.SharedDict["TestSession"]
+        test_type = session_dict["TestType"]
         #test_type = "readOnlyID"    
         #if session_dict["TestType"]=="FullTest":
         #    test_type = "PSfullTest"
