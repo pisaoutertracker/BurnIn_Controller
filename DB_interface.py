@@ -78,6 +78,25 @@ class DB_interface():
             else:
                 self.logger.error("Slot "+ str(slot+1)+ " connections pull failed. Status code:%d", response.status_code)
         return
+
+    def getModuleNameFromDB(self,slot):
+        self.logger.info(f"Pulling Module {slot+1} name from DB")
+        slotName = "B"+str(slot+1)
+        moduleName="???"
+        snapshot_data = { "cable": slotName, "side": "detSide"}
+        api_url = "http://%s:%d/snapshot"%(self.Addr, int(self.Port))
+        response = requests.post(api_url, json=snapshot_data)
+        if response.status_code == 200:
+            self.logger.info("Slot "+ slotName+ " connections successfully pulled.")
+            jsonResponse=response.json()
+            self.logger.debug (jsonResponse)
+            connections = jsonResponse["1"]["connections"]
+            if len(connections):
+                connID=connections[0]["cable"]
+                self.logger.info("Slot "+ slotName+ " is connected to module "+moduleName)
+        else:
+            self.logger.error("Slot "+ str(slot+1)+ " status check failed. Status code:%d", response.status_code)
+        return moduleName
         
     def uploadModuleNameToDB(self,slot,ID):
         self.logger.info("Loading new module connections to DB")

@@ -64,7 +64,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
             self.DB_interface.getConnectionsFromDB(self.LVNames,self.HVNames,self.fc7IDs,self.fc7Slots)
         except Exception as e:
             self.logger.warning(e)
-        
+        print(self.DB_interface.getModuleNameFromDB(self,9))#FT
+            
         self.initUI()
         
         
