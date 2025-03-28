@@ -263,6 +263,9 @@
                  </item>
                  <item>
                   <widget class="QPushButton" name="BI_Stop_btn">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="minimumSize">
                     <size>
                      <width>140</width>

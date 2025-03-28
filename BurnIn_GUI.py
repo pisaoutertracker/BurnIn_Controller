@@ -634,7 +634,11 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         
     
     def BI_CheckIDs_Cmd(self):
-    
+
+        self.BI_CheckIDs_btn.setEnabled(False)
+        self.BI_Start_btn.setEnabled(False)
+        self.BI_Stop_btn.setEnabled(True)
+        
         self.ManualOp_tab.setEnabled(False)
         self.ModuleTest_tab.setEnabled(False)        
         
@@ -659,6 +663,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.BI_CheckIDs_sig.emit()
     
     def BI_Start_Cmd(self):
+        self.BI_CheckIDs_btn.setEnabled(False)
+        self.BI_Start_btn.setEnabled(False)
+        self.BI_Stop_btn.setEnabled(True)
+
         if self.SharedDict["BI_Active"]:
             self.logger.info("Burn In test already ongoing. Request cancelled")
             return
@@ -818,6 +826,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     
     @pyqtSlot()
     def BI_terminated(self):
+        self.BI_CheckIDs_btn.setEnabled(True)
+        self.BI_Start_btn.setEnabled(True)
+        self.BI_Stop_btn.setEnabled(False)
+        #
         self.ManualOp_tab.setEnabled(True) 
         self.ModuleTest_tab.setEnabled(True)
         
