@@ -92,8 +92,8 @@ class DB_interface():
                 self.logger.debug (jsonResponse)
                 connections = jsonResponse["1"]["connections"]
                 if len(connections):
-                    moduleName=connections[0]["cable"]
-                    self.logger.info("Slot "+ slotName+ " is connected to module "+moduleName)
+                    moduleNames[slot]=connections[0]["cable"]
+                    self.logger.info("Slot "+ slotName+ " is connected to module "+moduleNames[slot])
             else:
                 self.logger.error("Slot "+ str(slot+1)+ " status check failed. Status code:%d", response.status_code)
         return
