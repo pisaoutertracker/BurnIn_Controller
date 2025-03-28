@@ -79,22 +79,23 @@ class DB_interface():
                 self.logger.error("Slot "+ str(slot+1)+ " connections pull failed. Status code:%d", response.status_code)
         return
 
-    def getModuleNameFromDB(self,slot,moduleName):
-        self.logger.info(f"Pulling Module {slot+1} name from DB")
-        slotName = "B"+str(slot+1)
-        snapshot_data = { "cable": slotName, "side": "detSide"}
+    def getModuleNamesFromDB(self,moduleNames):
+        self.logger.info(f"Pulling Module names from DB")
         api_url = "http://%s:%d/snapshot"%(self.Addr, int(self.Port))
-        response = requests.post(api_url, json=snapshot_data)
-        if response.status_code == 200:
-            self.logger.info("Slot "+ slotName+ " connections successfully pulled.")
-            jsonResponse=response.json()
-            self.logger.debug (jsonResponse)
-            connections = jsonResponse["1"]["connections"]
-            if len(connections):
-                moduleName=connections[0]["cable"]
-                self.logger.info("Slot "+ slotName+ " is connected to module "+moduleName)
-        else:
-            self.logger.error("Slot "+ str(slot+1)+ " status check failed. Status code:%d", response.status_code)
+        for slot in range(0,10):
+            slotName = "B"+str(slot+1)
+            snapshot_data = { "cable": slotName, "side": "detSide"}
+            response = requests.post(api_url, json=snapshot_data)
+            if response.status_code == 200:
+                self.logger.info("Slot "+ slotName+ " connections successfully pulled.")
+                jsonResponse=response.json()
+                self.logger.debug (jsonResponse)
+                connections = jsonResponse["1"]["connections"]
+                if len(connections):
+                    moduleName=connections[0]["cable"]
+                    self.logger.info("Slot "+ slotName+ " is connected to module "+moduleName)
+            else:
+                self.logger.error("Slot "+ str(slot+1)+ " status check failed. Status code:%d", response.status_code)
         return
         
     def uploadModuleNameToDB(self,slot,ID):

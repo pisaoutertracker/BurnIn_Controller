@@ -57,7 +57,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.HVNames=["?"] * 10
         self.fc7IDs=["?"] * 10
         self.fc7Slots=["?"] * 10
-        self.ModuleNames=["?"]
+        self.ModuleNames=["???"] * 10
         
         #cooncting to DB for connection
         self.DB_interface = DB_interface(self.configDict,self.logger)
@@ -65,7 +65,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
             self.DB_interface.getConnectionsFromDB(self.LVNames,self.HVNames,self.fc7IDs,self.fc7Slots)
         except Exception as e:
             self.logger.warning(e)
-        self.DB_interface.getModuleNameFromDB(9,self.ModuleNames)
+            self.DB_interface.getModuleNameFromDB(self.ModuleNames)
         print(self.ModuleNames)
             
         self.initUI()
