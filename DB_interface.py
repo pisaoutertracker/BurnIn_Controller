@@ -98,7 +98,7 @@ class DB_interface():
                 self.logger.error("Slot "+ str(slot+1)+ " status check failed. Status code:%d", response.status_code)
         return
         
-    def uploadModuleNameToDB(self,slot,ID):
+    def uploadModuleNameToDB(self,slot,ID):#this is unused
         self.logger.info("Loading new module connections to DB")
         reqSlotName = "B"+str(slot+1)
         
