@@ -79,8 +79,7 @@ class DB_interface():
             if response.status_code == 200:
                 self.logger.info(f"Slot {slot+1} detector-side connections successfully pulled.")
                 self.logger.debug (response.json())
-                #if something is weird for empty slots, uncomment below
-                moduleNames[slot]=response.json()["1"]["connections"][0]["cable"] #if len(response.json()["1"]["connections"]) else "no connection"
+                moduleNames[slot]=response.json()["1"]["connections"][0]["cable"] if len(response.json()["1"]["connections"]) else "no connection"
             else:
                 self.logger.error(f"Slot {slot+1} detector-side status check failed. Status code: {response.status_code}")
         return
@@ -137,7 +136,6 @@ class DB_interface():
 
         self.connectModuleSlot(ID,reqSlotName)    
         return
-
 
     def disconnectModuleSlot(self,ID,connSlot):
         self.logger.info("Disconnecting module "+ID+" from slot "+connSlot)
