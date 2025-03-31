@@ -62,14 +62,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         #connecting to DB
         self.DB_interface = DB_interface(self.configDict,self.logger)
         try:
-            self.DB_interface.getConnectionsFromDB(self.LVNames,self.HVNames,self.fc7IDs,self.fc7Slots)
+            self.DB_interface.getConnectionsFromDB(self.LVNames,self.HVNames,self.fc7IDs,self.fc7Slots,self.moduleNamesDB)
         except Exception as e:
             self.logger.warning(e)
-        try:
-            self.DB_interface.getModuleNamesFromDB(self.moduleNamesDB)
-        except Exception as e:
-            self.logger.warning(e)
-            
+
         self.initUI()
         
         
@@ -469,16 +465,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.Ctrl_SelSp1_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(0))
         self.Ctrl_SelSp2_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(1))
         self.Ctrl_SelSp3_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(2))
-        self.ModuleId_lines[0].returnPressed.connect(lambda : self.BI_SetModuleID(0))
-        self.ModuleId_lines[1].returnPressed.connect(lambda : self.BI_SetModuleID(1))
-        self.ModuleId_lines[2].returnPressed.connect(lambda : self.BI_SetModuleID(2))
-        self.ModuleId_lines[3].returnPressed.connect(lambda : self.BI_SetModuleID(3))
-        self.ModuleId_lines[4].returnPressed.connect(lambda : self.BI_SetModuleID(4))
-        self.ModuleId_lines[5].returnPressed.connect(lambda : self.BI_SetModuleID(5))
-        self.ModuleId_lines[6].returnPressed.connect(lambda : self.BI_SetModuleID(6))
-        self.ModuleId_lines[7].returnPressed.connect(lambda : self.BI_SetModuleID(7))
-        self.ModuleId_lines[8].returnPressed.connect(lambda : self.BI_SetModuleID(8))
-        self.ModuleId_lines[9].returnPressed.connect(lambda : self.BI_SetModuleID(9))
         self.Ctrl_SetLowFlow_btn.clicked.connect(lambda : self.Ctrl_SetHighFlow_Cmd(False))
         self.Ctrl_SetHighFlow_btn.clicked.connect(lambda : self.Ctrl_SetHighFlow_Cmd(True))
         self.Ctrl_SetLock_btn.clicked.connect    (lambda : self.Ctrl_SetLock_Cmd(True))
@@ -832,17 +818,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         #
         self.ManualOp_tab.setEnabled(True) 
         self.ModuleTest_tab.setEnabled(True)
-        
-    def BI_SetModuleID(self,slot):
-        self.logger.info("New Id for module "+str(slot+1)+": "+self.ModuleId_lines[slot].text())
-        self.DB_interface.uploadModuleNameToDB(slot,self.ModuleId_lines[slot].text())
-        if slot < 9:
-            self.ModuleId_lines[slot+1].setFocus()
-            self.ModuleId_lines[slot+1].selectAll()
-        else:
-            self.ModuleId_lines[0].setFocus()
-            self.ModuleId_lines[0].selectAll()
-            
+                    
     @pyqtSlot(int,int)
     def BI_CheckID_isOK(self,slot,success):
         if success==1: #tested successfully
