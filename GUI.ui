@@ -287,7 +287,7 @@
             <item>
              <widget class="QGroupBox" name="groupBox_20">
               <property name="title">
-               <string>Cycle configuration</string>
+               <string>Cycle Configuration</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_24">
                <item>
@@ -374,7 +374,7 @@ addStep(&quot;Heat&quot;)</string>
             <item>
              <widget class="QGroupBox" name="groupBox_14">
               <property name="title">
-               <string>Architecture (Press to edit ID)</string>
+               <string>BurnIn Box Architecture</string>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
                <item>
