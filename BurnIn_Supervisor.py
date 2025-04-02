@@ -147,6 +147,7 @@ class BurnIn_Supervisor(QObject):
         
             if self.SharedDict["BI_Completed_Send_Signal"]:
                 self.send_alert("BurnIn completed.")
+                self.SharedDict["BI_Completed_Send_Signal"]=False
             self.logger.debug("SUPERVISOR: SUPERVISOR cycle done")
             time.sleep(SUPERVISOR_SLEEP)
         
