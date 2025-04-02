@@ -26,8 +26,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     SendCAENControllerCmd_sig = pyqtSignal(str)
     SendModuleTestCmd_sig = pyqtSignal(str)
     
-    
-    
     Ctrl_SetSp_sig = pyqtSignal(int,float)
     Ctrl_SelSp_sig = pyqtSignal(int)
     Ctrl_PowerJulabo_sig = pyqtSignal(bool)
@@ -43,7 +41,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     
     BI_Start_sig = pyqtSignal()
     BI_CheckIDs_sig = pyqtSignal()
-
 
     def __init__(self,configDict,logger):
         super(BurnIn_GUI,self).__init__()
@@ -62,14 +59,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         #connecting to DB
         self.DB_interface = DB_interface(self.configDict,self.logger)
         try:
-            self.DB_interface.getConnectionsFromDB(self.LVNames,self.HVNames,self.fc7IDs,self.fc7Slots)
+            self.DB_interface.getConnectionsFromDB(self.LVNames,self.HVNames,self.fc7IDs,self.fc7Slots,self.moduleNamesDB)
         except Exception as e:
             self.logger.warning(e)
-        try:
-            self.DB_interface.getModuleNamesFromDB(self.moduleNamesDB)
-        except Exception as e:
-            self.logger.warning(e)
-            
+
         self.initUI()
         
         
@@ -376,8 +369,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         
         self.SharedDict["Ctrl_StatusFlow"]=self.Ctrl_StatusFlow_tag
         self.SharedDict["Ctrl_StatusLock"]=self.Ctrl_StatusLock_tag
-        self.SharedDict["Ctrl_StatusDoor"]=self.Ctrl_StatusDoor_tag
-        
+        self.SharedDict["Ctrl_StatusDoor"]=self.Ctrl_StatusDoor_tag        
         self.SharedDict["CAEN_table"]=self.Ctrl_CAEN_table
         
         # PYQT tags in BI tab
@@ -409,10 +401,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_HighTemp"]= self.BI_HighTemp_dsb.value()
         self.SharedDict["BI_UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
         self.SharedDict["BI_UnderKeep"]=self.BI_UnderKeepTemp_dsb.value()
-        self.SharedDict["BI_NCycles"]=self.BI_NCycles_sb.value()
         self.SharedDict["BI_ActiveSlots"]=[]
         self.SharedDict["BI_ModuleIDs"]=[]
-        
+        self.SharedDict["BI_Completed_Send_Signal"]=False        
         
         self.SharedDict["TestSession"]=self.TestSession
         
@@ -605,10 +596,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.DB_interface.getConnectionsFromDB(self.LVNames,self.HVNames,self.fc7IDs,self.fc7Slots)
         for row in range(10):
                         
-            self.Ctrl_CAEN_table.setItem(row,0,QtWidgets.QTableWidgetItem(self.LVNames[row]))
-            self.Ctrl_CAEN_table.setItem(row,5,QtWidgets.QTableWidgetItem(self.HVNames[row]))
-            self.Ctrl_CAEN_table.setItem(row,10,QtWidgets.QTableWidgetItem(self.fc7IDs[row]))
-            self.Ctrl_CAEN_table.setItem(row,11,QtWidgets.QTableWidgetItem(self.fc7Slots[row]))
+            self.Ctrl_CAEN_table.setItem(row,CTRLTABLE_LV_NAME_COL,QtWidgets.QTableWidgetItem(self.LVNames[row]))
+            self.Ctrl_CAEN_table.setItem(row,CTRLTABLE_HV_NAME_COL,QtWidgets.QTableWidgetItem(self.HVNames[row]))
+            self.Ctrl_CAEN_table.setItem(row,CTRLTABLE_FC7ID_COL,QtWidgets.QTableWidgetItem(self.fc7IDs[row]))
+            self.Ctrl_CAEN_table.setItem(row,CTRLTABLE_FC7SLOT_COL,QtWidgets.QTableWidgetItem(self.fc7Slots[row]))
             
     def BI_LoadCycle_Cmd(self):
     
@@ -634,7 +625,11 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         
     
     def BI_CheckIDs_Cmd(self):
-    
+
+        self.BI_CheckIDs_btn.setEnabled(False)
+        self.BI_Start_btn.setEnabled(False)
+        self.BI_Stop_btn.setEnabled(True)
+        
         self.ManualOp_tab.setEnabled(False)
         self.ModuleTest_tab.setEnabled(False)        
         
@@ -659,6 +654,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.BI_CheckIDs_sig.emit()
     
     def BI_Start_Cmd(self):
+        self.BI_CheckIDs_btn.setEnabled(False)
+        self.BI_Start_btn.setEnabled(False)
+        self.BI_Stop_btn.setEnabled(True)
+
         if self.SharedDict["BI_Active"]:
             self.logger.info("Burn In test already ongoing. Request cancelled")
             return
@@ -678,7 +677,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.ManualOp_tab.setEnabled(False)
         self.ModuleTest_tab.setEnabled(False)
         
-        
         #sampling test parameters
         self.SharedDict["StepList"]=StepList    
         self.SharedDict["BI_Operator"]=self.BI_Operator_line.text()
@@ -687,7 +685,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_HighTemp"]= self.BI_HighTemp_dsb.value()
         self.SharedDict["BI_UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
         self.SharedDict["BI_UnderKeep"]=self.BI_UnderKeepTemp_dsb.value()
-        self.SharedDict["BI_NCycles"]=self.BI_NCycles_sb.value()
         self.SharedDict["BI_ActiveSlots"]=[]
         self.SharedDict["BI_ModuleIDs"]=[]
         self.SharedDict["BI_fc7IDs"]=[]
@@ -719,7 +716,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.BI_HighTemp_dsb.setValue(session_dict["HighTemp"])
         self.BI_UnderRampTemp_dsb.setValue(session_dict["UnderRamp"])
         self.BI_UnderKeepTemp_dsb.setValue(session_dict["UnderKeep"])
-        self.BI_NCycles_sb.setValue(session_dict["NCycles"])
         for idx,cb in enumerate(self.Module_cbs):
             cb.setChecked(session_dict["ActiveSlots"][idx])
         for idx,ID in enumerate(self.ModuleId_lines):
@@ -818,8 +814,15 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     
     @pyqtSlot()
     def BI_terminated(self):
+        self.BI_CheckIDs_btn.setEnabled(True)
+        self.BI_Start_btn.setEnabled(True)
+        self.BI_Stop_btn.setEnabled(False)
+        #
         self.ManualOp_tab.setEnabled(True) 
         self.ModuleTest_tab.setEnabled(True)
+        if self.BI_Done_Alert.isChecked():
+            self.SharedDict["BI_Completed_Send_Signal"]=True
+
         
     def BI_SetModuleID(self,slot):
         self.logger.info("New Id for module "+str(slot+1)+": "+self.ModuleId_lines[slot].text())
@@ -859,7 +862,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
                 "low": self.BI_LowTemp_dsb.value(),
                     "high": self.BI_HighTemp_dsb.value(),
                     },                        
-                        "nCycles": self.BI_NCycles_sb.value(),
 #                        "status": "Open" #to be implemented
             "modulesList": [],
                 }

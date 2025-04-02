@@ -40,6 +40,30 @@ class DB_interface():
             self.logger.error("Failed to update the session. Status code:", response.status_code)
         return response.json()["sessionName"]
         
+        ### read the test result from DB  
+		
+    def uploadCycleToDB(self,cycleDescription = {}):
+    
+        self.logger.info(cycleDescription)
+        # URL of the API endpoint
+        api_url = "http://%s:%d/burnin_cycles"%(self.Addr, int(self.Port))
+        
+        # Send a PUT request
+        try:
+            response = requests.post(api_url, json=cycleDescription,timeout=5)
+        except requests.exceptions.Timeout:
+            return "timeout"
+        except requests.exceptions.RequestException as e:
+            raise SystemExit(e)
+    
+        # Check the response
+        if response.status_code == 201:
+            self.logger.info("Cycle uploaded successfully")
+            self.logger.info(response.text)
+        else:
+            self.logger.error("Failed to upload the cycle. Status code:", response.status_code)
+        return response.text
+        
         ### read the test result from DB
 
     def getSessionFromDB(self,sessionName):
@@ -52,52 +76,38 @@ class DB_interface():
             self.logger.error("Failed to pull the session. Status code:%d", response.status_code)
         return eval(response.content.decode())
         
-    def getConnectionsFromDB(self,LVNames,HVNames,fc7IDs,fc7Slots):
+    def getConnectionsFromDB(self,LVNames,HVNames,fc7IDs,fc7Slots,moduleNames):
         self.logger.info("Getting connection from DB")
         api_url = "http://%s:%d/snapshot"%(self.Addr, int(self.Port))
-        for slot in range(0,10):
-            slotName = "B"+str(slot+1)
-            snapshot_data = { "cable": slotName, "side": "crateSide"}
-            response = requests.post(api_url, json=snapshot_data)
+        for slot in range(10):
+            #crate-side
+            response = requests.post(api_url, json={"cable": f"B{slot+1}", "side": "crateSide"})
             if response.status_code == 200:
-                self.logger.info("Slot "+ str(slot+1)+ " connections successfully pulled.")
-                jsonResponse=response.json()
-                self.logger.debug (jsonResponse)
+                self.logger.info(f"Slot {slot+1} crate-side connections successfully pulled.")
+                self.logger.debug(response.json())
                 #
-                for val in jsonResponse["4"]["connections"]:
+                for val in response.json()["4"]["connections"]:
                     if val["cable"][0:5]=="XSLOT":
                             LVNames[slot] = "LV%s.%d"%(str.lower(val["cable"][5:]),int(val["line"]))
-                for val in jsonResponse["3"]["connections"]:
+                for val in response.json()["3"]["connections"]:
                     if val["cable"][0:5]=="ASLOT":
                             HVNames[slot] = "HV%s.%d"%(str.lower(val["cable"][5:]),int(val["line"]))
-                for val in jsonResponse["1"]["connections"]:
+                for val in response.json()["1"]["connections"]:
                     if val["cable"][0:3]=="FC7":
                         fc7IDs[slot] = str.lower(val["cable"])
                         fc7Slots[slot] = str.lower(val["det_port"][0][2:])
-                            #
             else:
-                self.logger.error("Slot "+ str(slot+1)+ " connections pull failed. Status code:%d", response.status_code)
+                self.logger.error(f"Slot {slot+1} crate-side connections pull failed. Status code: {response.status_code}")
+            #detector-side
+            response = requests.post(api_url, json={"cable": f"B{slot+1}", "side": "detSide"})
+            if response.status_code == 200:
+                self.logger.info(f"Slot {slot+1} detector-side connections successfully pulled.")
+                self.logger.debug (response.json())
+                moduleNames[slot]=response.json()["1"]["connections"][0]["cable"] if len(response.json()["1"]["connections"]) else "no connection"
+            else:
+                self.logger.error(f"Slot {slot+1} detector-side status check failed. Status code: {response.status_code}")
         return
 
-    def getModuleNamesFromDB(self,moduleNames):
-        self.logger.info(f"Pulling Module names from DB")
-        api_url = "http://%s:%d/snapshot"%(self.Addr, int(self.Port))
-        for slot in range(0,10):
-            slotName = "B"+str(slot+1)
-            snapshot_data = { "cable": slotName, "side": "detSide"}
-            response = requests.post(api_url, json=snapshot_data)
-            if response.status_code == 200:
-                self.logger.info("Slot "+ slotName+ " connections successfully pulled.")
-                jsonResponse=response.json()
-                self.logger.debug (jsonResponse)
-                connections = jsonResponse["1"]["connections"]
-                if len(connections):
-                    moduleNames[slot]=connections[0]["cable"]
-                    self.logger.info("Slot "+ slotName+ " is connected to module "+moduleNames[slot])
-            else:
-                self.logger.error("Slot "+ str(slot+1)+ " status check failed. Status code:%d", response.status_code)
-        return
-        
     def uploadModuleNameToDB(self,slot,ID):
         self.logger.info("Loading new module connections to DB")
         reqSlotName = "B"+str(slot+1)
@@ -150,7 +160,6 @@ class DB_interface():
 
         self.connectModuleSlot(ID,reqSlotName)    
         return
-
 
     def disconnectModuleSlot(self,ID,connSlot):
         self.logger.info("Disconnecting module "+ID+" from slot "+connSlot)
@@ -258,3 +267,27 @@ class DB_interface():
             self.logger.info("DATABASE: Session loaded!")
             with open('./lastSession.txt', 'w') as f:
                 f.write(str(self.TestSession))
+				
+    def StartCycle(self,session_dict):
+        self.logger.info("Database thermal cycle uploading. Please wait...")
+                
+        #define test session for DB
+        BurninCycleName = "BurnIn_gui_" + session_dict["Timestamp"]
+        cycle = {
+            "BurninCycleName": BurninCycleName,
+            "BurninCycleDate": session_dict["Timestamp"],
+            "BurninCycleModules": session_dict["ModuleIDs"],
+            "BurninCycleTemperatures": {
+                "low": session_dict["LowTemp"],
+                "high": session_dict["HighTemp"],
+                }
+        }
+        
+		
+        uploadResponse=self.uploadCycleToDB(cycle)
+		
+        if uploadResponse=="timeout": #if it times out, display a dummy status
+            self.logger.error("DATABASE    : Cycle loading timed out!")
+        else:
+            self.logger.info("DATABASE: Cycle loaded! Response: "+uploadResponse)
+

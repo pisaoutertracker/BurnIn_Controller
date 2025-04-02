@@ -145,7 +145,9 @@ class BurnIn_Supervisor(QObject):
                         self.send_alert("WARNING: Door open and Julabo on, but no external temperature/dew point info")
                         self.JULABO_safeTemp()
         
-    
+            if self.SharedDict["BI_Completed_Send_Signal"]:
+                self.send_alert("BurnIn completed.")
+                self.SharedDict["BI_Completed_Send_Signal"]=False
             self.logger.debug("SUPERVISOR: SUPERVISOR cycle done")
             time.sleep(SUPERVISOR_SLEEP)
         
@@ -264,12 +266,8 @@ class BurnIn_Supervisor(QObject):
                     self.logger.error(e)                
             
         self.Julabo.lock.release()
-            
-            
-            
-            
-            
-            
+
+
     def BI_Abort(self):
         self.logger.info("SUPERVISOR: Requesting BI to be aborted")
         self.BI_Abort_sig.emit()

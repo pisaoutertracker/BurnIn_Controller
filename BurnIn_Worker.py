@@ -762,7 +762,7 @@ class BurnIn_Worker(QObject):
         session_dict["fc7ID"]                = "fc7ot2"
         session_dict["Current_ModuleID"]    = "unknown"
         session_dict["fc7Slot"]                = "0"
-        session_dict["TestType"]            = "CheckID"
+        session_dict["TestType"]            = "readOnlyID"
         
         #checking sub-system information
             
@@ -967,22 +967,21 @@ class BurnIn_Worker(QObject):
     @pyqtSlot()            
     def BI_Start_Cmd(self):
     
-        stepAllowed = ["COOL","HEAT","FULLTEST","QUICKTEST","CHECKID","DRYTEST","LV_ON","LV_OFF","HV_ON","HV_OFF","SCANIV"]
+        stepAllowed = ["COOL","HEAT","DAQ","LV_ON","LV_OFF","HV_ON","HV_OFF","SCANIV"]
         self.SharedDict["BI_Active"]=True
         self.logger.info("Starting BurnIN...")
         
         #creating parameter dictionary for the current session
         session_dict={}
-        session_dict["CycleStep"]            = 1
+        session_dict["Step"]            = 1
         session_dict["StepList"]            = self.SharedDict["StepList"]
         session_dict["Action"]                = "Undef"
-        session_dict["Cycle"]                = 1
+        session_dict["Cycle"]                = 0
         session_dict["Status"]                = "Setup"
         session_dict["LowTemp"]                = self.SharedDict["BI_LowTemp"]
         session_dict["UnderRamp"]            = self.SharedDict["BI_UnderRamp"]
         session_dict["UnderKeep"]            = self.SharedDict["BI_UnderKeep"]
         session_dict["HighTemp"]            = self.SharedDict["BI_HighTemp"]
-        session_dict["NCycles"]                = self.SharedDict["BI_NCycles"]
         session_dict["Operator"]            = self.SharedDict["BI_Operator"]
         session_dict["Description"]            = self.SharedDict["BI_Description"]
         session_dict["Session"]                = "-1"
@@ -994,7 +993,10 @@ class BurnIn_Worker(QObject):
         session_dict["Current_ModuleID"]    = "Undef"
         session_dict["fc7Slot"]                = "Undef"
         session_dict["Current_ModuleHV"]    = "Undef"
+        session_dict["NominalTemp"]		    = 25
         
+		
+        session_dict["NCycles"]=[item.upper() for item in session_dict["StepList"]].count("COOL")
         
         
         #check if file session already exists (aka a session was stopped or crashed)
@@ -1014,8 +1016,8 @@ class BurnIn_Worker(QObject):
                         self.BI_Update_GUI_sig.emit(session_dict)
                         self.logger.info("BI :Previous session parameters loaded")
                         self.logger.info("Current Session: "+session_dict["Session"])
-                        self.logger.info("Current Cycle: "+str(session_dict["Cycle"]))
-                        self.logger.info("Current Step: "+str(session_dict["CycleStep"]))
+                        self.logger.info("Current Thermal Cycle: "+str(session_dict["Cycle"]))
+                        self.logger.info("Current Step: "+str(session_dict["Step"]))
                         self.logger.info("Current Action: "+session_dict["Action"])
                         session_dict["Status"]    = "Recovery"
                         
@@ -1023,7 +1025,7 @@ class BurnIn_Worker(QObject):
                             self.BI_Abort("Empty cycle description")
                             return    
                         for step in self.SharedDict["StepList"]:
-                            if not (step.upper() in stepAllowed):
+                            if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ"):
                                 self.BI_Abort("Undefined step in cycle description")
                                 return
                         
@@ -1038,7 +1040,7 @@ class BurnIn_Worker(QObject):
                     self.BI_Abort("Empty cycle description")
                     return
                 for step in self.SharedDict["StepList"]:
-                    if not (step.upper() in stepAllowed):
+                    if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ"):
                         self.BI_Abort("Undefined step in cycle description")
                         return
                 self.DB_interface.StartSesh(session_dict)
@@ -1051,7 +1053,7 @@ class BurnIn_Worker(QObject):
                 self.BI_Abort("Empty cycle description")
                 return    
             for step in self.SharedDict["StepList"]:
-                if not (step.upper() in stepAllowed):
+                if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ"):
                     self.BI_Abort("Undefined step in cycle description")
                     return
             self.DB_interface.StartSesh(session_dict)
@@ -1153,147 +1155,142 @@ class BurnIn_Worker(QObject):
         NCycles    = session_dict["NCycles"]
         ######cycle start
         if (session_dict["Status"]=="Recovery"):
-            self.logger.info("BI: recovered from cycle "+str(session_dict["Cycle"]) + " of "+str(NCycles)+" @ step "+session_dict["CycleStep"])
+            self.logger.info("BI: recovered from step "+session_dict["Step"]+", thermal cycle "+str(session_dict["Cycle"]) + " of "+str(NCycles))
         
-        while(session_dict["Cycle"]-1 < NCycles):
-            while session_dict["CycleStep"]-1 < len(session_dict["StepList"]):
+        while session_dict["Step"]-1 < len(session_dict["StepList"]):
+        
+            session_dict["Action"]=session_dict["StepList"][session_dict["Step"]-1]
+            self.SharedDict["BI_Step"].setText(str(session_dict["Step"])+" of "+str(len(session_dict["StepList"])))
             
-                session_dict["Action"]=session_dict["StepList"][session_dict["CycleStep"]-1]
-                self.logger.info("BI: cycle "+str(session_dict["Cycle"]) + " of "+str(NCycles))
-                self.SharedDict["BI_Step"].setText(str(session_dict["CycleStep"])+" of "+str(len(session_dict["StepList"])))
+            if (session_dict["Action"].upper()=="COOL"):
+                session_dict["Cycle"]=session_dict["Cycle"]+1
+                self.logger.info("BI: thermal cycle "+str(session_dict["Cycle"]-1) + " of "+str(NCycles))
+                self.SharedDict["BI_Cycle"].setText(str(session_dict["Cycle"]-1)+" of "+str(session_dict["NCycles"]))
+                session_dict["NominalTemp"]=session_dict["LowTemp"]
+                self.BI_Update_Status_file(session_dict)
+                self.logger.info("BI: ramping down...")
+                self.SharedDict["BI_Action"].setText("Cooling")
+                self.SharedDict["BI_SUT"].setText("None") 
+                self.DB_interface.StartCycle(session_dict)				
+                if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
+                    if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["LowTemp"]):
+                        self.logger.info("BI: cooling")
+                        return
+                else:
+                    if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["LowTemp"]):
+                        return
                 
-                if (session_dict["Action"].upper()=="COOL"):
-                    self.BI_Update_Status_file(session_dict)
-                    self.logger.info("BI: ramping down...")
-                    self.SharedDict["BI_Action"].setText("Cooling")
-                    self.SharedDict["BI_SUT"].setText("None") 
-                    if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
-                        if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["LowTemp"]):
-                            self.logger.info("BI: cooling")
-                            return
-                    else:
-                        if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["LowTemp"]):
-                            return
-                    
-                if (session_dict["Action"].upper()=="HEAT"):
-                    self.BI_Update_Status_file(session_dict)
-                    self.logger.info("BI: going to high temp")
-                    self.SharedDict["BI_Action"].setText("Heating")
-                    self.SharedDict["BI_SUT"].setText("None") 
-                    if float(self.SharedDict["LastFNALBoxTemp0"].text()) < session_dict["HighTemp"]:  #expected
-                        self.logger.info("BI: heating")
-                        if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["HighTemp"]):
-                            return
-                    else:
-                        if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["HighTemp"]):
-                            return
-                    
-                if (session_dict["Action"].upper()=="FULLTEST" or session_dict["Action"].upper()=="CHECKID" or session_dict["Action"].upper()=="QUICKTEST" or session_dict["Action"].upper()=="DRYTEST"):
-                    self.BI_Update_Status_file(session_dict)
-                    self.logger.info("BI: testing...")
-                    self.SharedDict["BI_Action"].setText(session_dict["Action"]+"  Module test")
-                    self.SharedDict["BI_TestActive"]=True
-                    session_dict["TestType"]=session_dict["Action"]
-                    for slot in Slot_list:
-                        session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
-                        session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
-                        session_dict["Current_ModuleID"]   = self.SharedDict["BI_ModuleIDs"][slot]
-                        self.SharedDict["BI_SUT"].setText(str(slot+1)) 
-                        self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
-                        self.BI_CheckID_isOK_sig.emit(slot,0)#0 means we just started testing #FT
-                        if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
-                            return
-                        if self.last_op_ok:
-                            self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success
-                        else:
-                            self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure
-                    self.SharedDict["BI_TestActive"]=False
-                    session_dict["TestType"]="Undef"
-                    
-                if (session_dict["Action"].upper()=="SCANIV"):
-                    self.BI_Update_Status_file(session_dict)
-                    self.logger.info("BI: IV scan...")
-                    self.SharedDict["BI_Action"].setText("IV scan")
-                    self.SharedDict["BI_TestActive"]=True
-                    for slot in Slot_list:
-                        session_dict["Current_ModuleID"]    = self.SharedDict["BI_ModuleIDs"][slot]
-                        session_dict["Current_ModuleHV"]    = HV_Channel_list[slot]
-                        self.SharedDict["BI_SUT"].setText(str(slot+1)) 
-                        self.logger.info("BI: IV scan for slot "+str(slot)+": module name "+session_dict["Current_ModuleID"])
-                        if not self.BI_Action(self.BI_StartIV_Cmd,False,session_dict):
-                                return
-                    self.SharedDict["BI_TestActive"]=False
-                            
-                if (session_dict["Action"].upper()=="LV_ON"):
-                    self.BI_Update_Status_file(session_dict)
-                    self.logger.info("BI: Starting LVs")
-                    self.SharedDict["BI_Action"].setText("Starting LVs")
-                    self.SharedDict["BI_SUT"].setText("None") 
-                    self.BI_Update_PowerStatus_sig.emit(-2,True,"ON_dummy")#isLV=True means LV,slot=-2 means all, but command only started
-                    if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,True,LV_Channel_list,PopUp):
+            if (session_dict["Action"].upper()=="HEAT"):
+                self.logger.info("BI: going to high temp")
+                self.SharedDict["BI_Action"].setText("Heating")
+                self.SharedDict["BI_SUT"].setText("None") 
+                session_dict["NominalTemp"]=session_dict["HighTemp"]
+                self.BI_Update_Status_file(session_dict)
+                if float(self.SharedDict["LastFNALBoxTemp0"].text()) < session_dict["HighTemp"]:  #expected
+                    self.logger.info("BI: heating")
+                    if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["HighTemp"]):
                         return
-                    time.sleep(BI_SLEEP_AFTER_LVSET)
-                    #check all LVs are ON
-                    for row in Slot_list:
-                        if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="ON"):
-                            self.BI_Abort("BI aborted: some LVs was not turned ON")
-                            return
-                    self.BI_Update_PowerStatus_sig.emit(-1,True,"ON_dummy")#isLV=True means LV,slot=-1 means all, update GUI-side
+                else:
+                    if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["HighTemp"]):
+                        return
                 
-                            
-                if (session_dict["Action"].upper()=="LV_OFF"):
+            if (session_dict["Action"].upper()[0:3]=="DAQ"):
+                self.logger.info("BI: testing...")
+                self.SharedDict["BI_Action"].setText(session_dict["Action"]+"  Module test")
+                self.SharedDict["BI_TestActive"]=True
+                session_dict["TestType"]=session_dict["Action"][4:]
+                for slot in Slot_list:
+                    session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
+                    session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
+                    session_dict["Current_ModuleID"]    = self.SharedDict["BI_ModuleIDs"][slot]
                     self.BI_Update_Status_file(session_dict)
-                    self.logger.info("BI: Stopping LVs")
-                    self.SharedDict["BI_Action"].setText("Stopping LVs")
-                    self.SharedDict["BI_SUT"].setText("None") 
-                    self.BI_Update_PowerStatus_sig.emit(-2,True,"OFF_dummy")#isLV=True means LV,slot=-2 means all, but command only started
-                    if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,False,LV_Channel_list,PopUp):
-                        return
-                    time.sleep(BI_SLEEP_AFTER_LVSET)
-                    #check all LVs are OFF
-                    for row in Slot_list:
-                        if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
-                            self.BI_Abort("BI aborted: some LVs was not turned OFF")
+                    self.SharedDict["BI_SUT"].setText(str(slot+1)) 
+                    self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
+                    if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
                             return
-                    self.BI_Update_PowerStatus_sig.emit(-1,True,"OFF_dummy")#isLV=True means LV,slot=-1 means all, update GUI-side
-                            
-                if (session_dict["Action"].upper()=="HV_ON"):
-                    self.BI_Update_Status_file(session_dict)
-                    self.logger.info("BI: Starting HVs")
-                    self.SharedDict["BI_Action"].setText("Starting HVs")
-                    self.SharedDict["BI_SUT"].setText("None")
-                    self.BI_Update_PowerStatus_sig.emit(-2,False,"ON_dummy")#isLV=False means HV,slot=-2 means all, but command only started
-                    if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,True,HV_Channel_list,PopUp):
-                        return
-                    time.sleep(BI_SLEEP_AFTER_HVSET)
-                    #check all HVs are ON
-                    for row in Slot_list:
-                        if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
-                            self.BI_Abort("BI aborted: some HVs was not turned ON")
-                            return
-                    self.BI_Update_PowerStatus_sig.emit(-1,False,"ON_dummy")#isLV=False means HV,slot=-1 means all, update GUI-side
-                            
-                if (session_dict["Action"].upper()=="HV_OFF"):
-                    self.BI_Update_Status_file(session_dict)
-                    self.logger.info("BI: Stopping HVs")
-                    self.SharedDict["BI_Action"].setText("Stopping HVs")
-                    self.SharedDict["BI_SUT"].setText("None")
-                    self.BI_Update_PowerStatus_sig.emit(-2,False,"OFF_dummy")#isLV=False means HV,slot=-2 means all, but command only started
-                    if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,False,HV_Channel_list,PopUp):
-                        return
-                    time.sleep(BI_SLEEP_AFTER_HVSET)
-                    #check all HVs are OFF
-                    for row in Slot_list:
-                        if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
-                            self.BI_Abort("BI aborted: some LVs was not turned OFF")
-                            return
-                    self.BI_Update_PowerStatus_sig.emit(-1,False,"OFF_dummy")#isLV=False means HV,slot=-1 means all, update GUI-side
-                    
-                session_dict["CycleStep"]=session_dict["CycleStep"]+1
+                self.SharedDict["BI_TestActive"]=False
+                session_dict["TestType"]="Undef"
                 
-            session_dict["CycleStep"]=1
-            self.logger.info("BI: ended cycle "+str(session_dict["Cycle"]) + " of "+str(NCycles))
-            session_dict["Cycle"]=session_dict["Cycle"]+1
+            if (session_dict["Action"].upper()=="SCANIV"):
+                self.logger.info("BI: IV scan...")
+                self.SharedDict["BI_Action"].setText("IV scan")
+                self.SharedDict["BI_TestActive"]=True
+                self.BI_Update_Status_file(session_dict)
+                for slot in Slot_list:
+                    session_dict["Current_ModuleID"]    = self.SharedDict["BI_ModuleIDs"][slot]
+                    session_dict["Current_ModuleHV"]    = self.SharedDict["CAEN_table"].item(slot,CTRLTABLE_HV_NAME_COL).text()
+                    self.SharedDict["BI_SUT"].setText(str(slot+1)) 
+                    self.logger.info("BI: IV scan for slot "+str(slot)+": module name "+session_dict["Current_ModuleID"])
+                    if not self.BI_Action(self.BI_StartIV_Cmd,False,session_dict):
+                            return
+                self.SharedDict["BI_TestActive"]=False
+                        
+            if (session_dict["Action"].upper()=="LV_ON"):
+                self.logger.info("BI: Starting LVs")
+                self.SharedDict["BI_Action"].setText("Starting LVs")
+                self.SharedDict["BI_SUT"].setText("None") 
+                self.BI_Update_Status_file(session_dict)
+                self.BI_Update_PowerStatus_sig.emit(-2,True,"ON_dummy")#isLV=True means LV,slot=-2 means all, but command only started
+                if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,True,LV_Channel_list,PopUp):
+                    return
+                time.sleep(BI_SLEEP_AFTER_LVSET)
+                #check all LVs are ON
+                for row in Slot_list:
+                    if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="ON"):
+                        self.BI_Abort("BI aborted: some LVs was not turned ON")
+                        return
+                self.BI_Update_PowerStatus_sig.emit(-1,True,"ON_dummy")#isLV=True means LV,slot=-1 means all, update GUI-side
+            
+                        
+            if (session_dict["Action"].upper()=="LV_OFF"):
+                self.logger.info("BI: Stopping LVs")
+                self.SharedDict["BI_Action"].setText("Stopping LVs")
+                self.SharedDict["BI_SUT"].setText("None") 
+                self.BI_Update_Status_file(session_dict)
+                self.BI_Update_PowerStatus_sig.emit(-2,True,"OFF_dummy")#isLV=True means LV,slot=-2 means all, but command only started
+                if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,False,LV_Channel_list,PopUp):
+                    return
+                time.sleep(BI_SLEEP_AFTER_LVSET)
+                #check all LVs are OFF
+                for row in Slot_list:
+                    if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
+                        self.BI_Abort("BI aborted: some LVs was not turned OFF")
+                        return
+                self.BI_Update_PowerStatus_sig.emit(-1,True,"OFF_dummy")#isLV=True means LV,slot=-1 means all, update GUI-side
+                        
+            if (session_dict["Action"].upper()=="HV_ON"):
+                self.logger.info("BI: Starting HVs")
+                self.SharedDict["BI_Action"].setText("Starting HVs")
+                self.SharedDict["BI_SUT"].setText("None") 
+                self.BI_Update_Status_file(session_dict)
+                self.BI_Update_PowerStatus_sig.emit(-2,False,"ON_dummy")#isLV=False means HV,slot=-2 means all, but command only started
+                if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,True,HV_Channel_list,PopUp):
+                    return
+                time.sleep(BI_SLEEP_AFTER_HVSET)
+                #check all HVs are ON
+                for row in Slot_list:
+                    if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
+                        self.BI_Abort("BI aborted: some HVs was not turned ON")
+                        return
+                self.BI_Update_PowerStatus_sig.emit(-1,False,"ON_dummy")#isLV=False means HV,slot=-1 means all, update GUI-side
+                        
+            if (session_dict["Action"].upper()=="HV_OFF"):
+                self.logger.info("BI: Stopping HVs")
+                self.SharedDict["BI_Action"].setText("Stopping HVs")
+                self.SharedDict["BI_SUT"].setText("None") 
+                self.BI_Update_Status_file(session_dict)
+                self.BI_Update_PowerStatus_sig.emit(-2,False,"OFF_dummy")#isLV=False means HV,slot=-2 means all, but command only started
+                if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,False,HV_Channel_list,PopUp):
+                    return
+                time.sleep(BI_SLEEP_AFTER_HVSET)
+                #check all HVs are OFF
+                for row in Slot_list:
+                    if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
+                        self.BI_Abort("BI aborted: some LVs was not turned OFF")
+                        return
+                self.BI_Update_PowerStatus_sig.emit(-1,False,"OFF_dummy")#isLV=False means HV,slot=-1 means all, update GUI-side
+            
+            session_dict["Step"]=session_dict["Step"]+1
         
         if (os.path.exists("Session.json")):        
             os.remove("Session.json")
@@ -1304,32 +1301,42 @@ class BurnIn_Worker(QObject):
         self.SharedDict["BI_Status"].setText("Stopping")
         self.SharedDict["BI_SUT"].setText("None") 
         
-        #stop HV
+		#stop HV
         self.SharedDict["BI_Action"].setText("Stop HVs")
-        if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,False,HV_Channel_list,PopUp):
-            return
-        time.sleep(BI_SLEEP_AFTER_HVSET)
-        #check HV stop
+        HV_mod=False
         for row in Slot_list:
             if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
-                self.BI_Abort("BI aborted: some LVs was not turned OFF")
-                return
+                HV_mod=True
+                if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,False,HV_Channel_list,PopUp):
+                    return
+        if HV_mod:
+            time.sleep(BI_SLEEP_AFTER_HVSET)
+            #check HV stop
+            for row in Slot_list:
+            	if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
+            		self.BI_Abort("BI aborted: some LVs was not turned OFF")
+            		return
             
         
         #stop LV
         self.SharedDict["BI_Action"].setText("Stop LVs")
-        if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,False,LV_Channel_list,PopUp):
-            return
-        time.sleep(BI_SLEEP_AFTER_LVSET)
-        #check LV stop    
+        LV_mod=False
         for row in Slot_list:
             if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
-                self.BI_Abort("BI aborted: some HVs was not turned OFF")
-                return
+                LV_mod=True
+                if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,False,LV_Channel_list,PopUp):
+                    return
+        if LV_mod:
+            time.sleep(BI_SLEEP_AFTER_LVSET)
+            #check LV stop    
+            for row in Slot_list:
+                if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
+                    self.BI_Abort("BI aborted: some HVs was not turned OFF")
+                    return
                 
         #put JULABO to 20 degree    
         self.SharedDict["BI_Action"].setText("Closing")
-        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,20.0,PopUp):
+        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,20.0,PopUp): #FT this shouldn't be hardcoded to 20 but be contextual
             return    
         
         #lower dry air flow
@@ -1497,7 +1504,7 @@ class BurnIn_Worker(QObject):
         self.logger.info("Starting IV scan on module "+module+" on HV channel "+HV_ch+" ...")
         self.last_op_ok= True
         
-        cmd = "python3 measure_iv_curve.py --channel "+HV_ch+ " --scan-type "+ self.IV_scanType+ " --delay "+ self.IV_delay +" --settling-time "+ self.IV_settlingTime+  " -–module_name "+ module 
+        cmd = "python3 measure_iv_curve.py --channel "+HV_ch+ " --scan-type "+ self.IV_scanType+ " --delay "+ self.IV_delay +" --settling-time "+ self.IV_settlingTime+  " --module_name "+ module 
         self.logger.info("Executing command: " + cmd)
         
         try:
@@ -1542,21 +1549,21 @@ class BurnIn_Worker(QObject):
         self.logger.info("Starting module "+module+" test...")
         session=self.SharedDict["TestSession"]
         
-        if session_dict["TestType"]=="DryTest":
+        if session_dict["TestType"].upper()=="DRYTEST":
             self.logger.info("Dry run. Just waiting 60 s.")
             time.sleep(60)
             return True 
-        
-        test_type = "readOnlyID"    
-        if session_dict["TestType"]=="FullTest":
-            test_type = "PSfullTest"
-        elif session_dict["TestType"]=="QuickTest":
-            test_type = "PSquickTest"
-        elif session_dict["TestType"]=="CheckID":
-            test_type = "readOnlyID"
-        else :
-            self.logger.warning("Unrecognized test type: "+test_type+". Checking ID")
-        
+        test_type = session_dict["TestType"]
+        #test_type = "readOnlyID"    
+        #if session_dict["TestType"]=="FullTest":
+        #    test_type = "PSfullTest"
+        #elif session_dict["TestType"]=="QuickTest":
+        #    test_type = "PSquickTest"
+        #elif session_dict["TestType"]=="CheckID":
+        #    test_type = "readOnlyID"
+        #else :
+        #    self.logger.warning("Unrecognized test type: "+test_type+". Checking ID")
+        #
         self.logger.info("Test type: "+test_type)
         
         fc7Slot = session_dict["fc7Slot"]
