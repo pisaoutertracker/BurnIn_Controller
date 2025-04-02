@@ -369,8 +369,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         
         self.SharedDict["Ctrl_StatusFlow"]=self.Ctrl_StatusFlow_tag
         self.SharedDict["Ctrl_StatusLock"]=self.Ctrl_StatusLock_tag
-        self.SharedDict["Ctrl_StatusDoor"]=self.Ctrl_StatusDoor_tag
-h        
+        self.SharedDict["Ctrl_StatusDoor"]=self.Ctrl_StatusDoor_tag        
         self.SharedDict["CAEN_table"]=self.Ctrl_CAEN_table
         
         # PYQT tags in BI tab
