@@ -41,7 +41,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     
     BI_Start_sig = pyqtSignal()
     BI_CheckIDs_sig = pyqtSignal()
-    BI_Completion_sig = pyqtSignal()
 
     def __init__(self,configDict,logger):
         super(BurnIn_GUI,self).__init__()
@@ -405,7 +404,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_UnderKeep"]=self.BI_UnderKeepTemp_dsb.value()
         self.SharedDict["BI_ActiveSlots"]=[]
         self.SharedDict["BI_ModuleIDs"]=[]
-        
+	self.SharedDict["BI_Completed_Send_Signal"]=False        
         
         self.SharedDict["TestSession"]=self.TestSession
         
@@ -512,11 +511,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         
         self.BI_Start_sig.connect(self.Worker.BI_Start_Cmd)
         self.BI_CheckIDs_sig.connect(self.Worker.BI_CheckIDs_Cmd)
-
-        ##############################################                                                                                                                                                                                                                                                                                                                   
-        #connecting local signals to monitor slots
-        #############################################        
-        self.BI_Completion_sig.connect(self.Supervisor.BI_Completion_Alert)
         
         #################################################
         #connecting worker/monitor signals to local slots
@@ -818,7 +812,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.ManualOp_tab.setEnabled(True) 
         self.ModuleTest_tab.setEnabled(True)
         if self.BI_Done_Alert.isChecked():
-            self.BI_Completion_sig.emit()
+	    self.SharedDict["BI_Completed_Send_Signal"]=True
                     
     @pyqtSlot(int,int)
     def BI_CheckID_isOK(self,slot,success):
