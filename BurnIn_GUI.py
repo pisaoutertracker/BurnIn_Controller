@@ -26,8 +26,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     SendCAENControllerCmd_sig = pyqtSignal(str)
     SendModuleTestCmd_sig = pyqtSignal(str)
     
-    
-    
     Ctrl_SetSp_sig = pyqtSignal(int,float)
     Ctrl_SelSp_sig = pyqtSignal(int)
     Ctrl_PowerJulabo_sig = pyqtSignal(bool)
@@ -43,7 +41,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     
     BI_Start_sig = pyqtSignal()
     BI_CheckIDs_sig = pyqtSignal()
-
+    BI_Completion_sig = pyqtSignal()
 
     def __init__(self,configDict,logger):
         super(BurnIn_GUI,self).__init__()
@@ -514,6 +512,11 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         
         self.BI_Start_sig.connect(self.Worker.BI_Start_Cmd)
         self.BI_CheckIDs_sig.connect(self.Worker.BI_CheckIDs_Cmd)
+
+        ##############################################                                                                                                                                                                                                                                                                                                                   
+        #connecting local signals to monitor slots
+        #############################################        
+        self.BI_Completion_sig.connect(self.Supervisor.BI_Completion_Alert)
         
         #################################################
         #connecting worker/monitor signals to local slots
@@ -814,6 +817,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         #
         self.ManualOp_tab.setEnabled(True) 
         self.ModuleTest_tab.setEnabled(True)
+        if self.BI_Done_Alert.isChecked():
+            self.BI_Completion_sig.emit()
                     
     @pyqtSlot(int,int)
     def BI_CheckID_isOK(self,slot,success):
