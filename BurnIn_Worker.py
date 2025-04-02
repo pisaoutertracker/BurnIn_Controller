@@ -1218,7 +1218,7 @@ class BurnIn_Worker(QObject):
                 self.BI_Update_Status_file(session_dict)
                 for slot in Slot_list:
                     session_dict["Current_ModuleID"]    = self.SharedDict["BI_ModuleIDs"][slot]
-                    session_dict["Current_ModuleHV"]    = HV_Channel_list[slot]
+                    session_dict["Current_ModuleHV"]    = self.SharedDict["CAEN_table"].item(slot,CTRLTABLE_HV_NAME_COL).text()
                     self.SharedDict["BI_SUT"].setText(str(slot+1)) 
                     self.logger.info("BI: IV scan for slot "+str(slot)+": module name "+session_dict["Current_ModuleID"])
                     if not self.BI_Action(self.BI_StartIV_Cmd,False,session_dict):

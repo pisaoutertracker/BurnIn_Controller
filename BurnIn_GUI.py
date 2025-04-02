@@ -370,7 +370,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["Ctrl_StatusFlow"]=self.Ctrl_StatusFlow_tag
         self.SharedDict["Ctrl_StatusLock"]=self.Ctrl_StatusLock_tag
         self.SharedDict["Ctrl_StatusDoor"]=self.Ctrl_StatusDoor_tag
-        
+h        
         self.SharedDict["CAEN_table"]=self.Ctrl_CAEN_table
         
         # PYQT tags in BI tab
@@ -597,10 +597,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.DB_interface.getConnectionsFromDB(self.LVNames,self.HVNames,self.fc7IDs,self.fc7Slots)
         for row in range(10):
                         
-            self.Ctrl_CAEN_table.setItem(row,0,QtWidgets.QTableWidgetItem(self.LVNames[row]))
-            self.Ctrl_CAEN_table.setItem(row,5,QtWidgets.QTableWidgetItem(self.HVNames[row]))
-            self.Ctrl_CAEN_table.setItem(row,10,QtWidgets.QTableWidgetItem(self.fc7IDs[row]))
-            self.Ctrl_CAEN_table.setItem(row,11,QtWidgets.QTableWidgetItem(self.fc7Slots[row]))
+            self.Ctrl_CAEN_table.setItem(row,CTRLTABLE_LV_NAME_COL,QtWidgets.QTableWidgetItem(self.LVNames[row]))
+            self.Ctrl_CAEN_table.setItem(row,CTRLTABLE_HV_NAME_COL,QtWidgets.QTableWidgetItem(self.HVNames[row]))
+            self.Ctrl_CAEN_table.setItem(row,CTRLTABLE_FC7ID_COL,QtWidgets.QTableWidgetItem(self.fc7IDs[row]))
+            self.Ctrl_CAEN_table.setItem(row,CTRLTABLE_FC7SLOT_COL,QtWidgets.QTableWidgetItem(self.fc7Slots[row]))
             
     def BI_LoadCycle_Cmd(self):
     
