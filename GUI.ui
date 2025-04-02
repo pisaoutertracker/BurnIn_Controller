@@ -176,6 +176,16 @@
              </widget>
             </item>
             <item>
+             <widget class="QCheckBox" name="BI_Done_Alert">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>Send Telegram Alert upon test completion</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <spacer name="verticalSpacer_10">
               <property name="orientation">
                <enum>Qt::Vertical</enum>

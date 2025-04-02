@@ -1325,7 +1325,7 @@ class BurnIn_Worker(QObject):
                 
         #put JULABO to 20 degree    
         self.SharedDict["BI_Action"].setText("Closing")
-        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,20.0,PopUp):
+        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,20.0,PopUp): #FT this shouldn't be hardcoded to 20 but be contextual
             return    
         
         #lower dry air flow

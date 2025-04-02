@@ -267,7 +267,8 @@ class BurnIn_Supervisor(QObject):
             
             
             
-            
+    def BI_Completion_Alert(self):
+        self.send_alert("BurnIn completed.")
             
             
     def BI_Abort(self):
