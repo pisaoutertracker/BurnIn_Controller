@@ -1301,28 +1301,38 @@ class BurnIn_Worker(QObject):
         self.SharedDict["BI_Status"].setText("Stopping")
         self.SharedDict["BI_SUT"].setText("None") 
         
-        #stop HV
+		#stop HV
         self.SharedDict["BI_Action"].setText("Stop HVs")
-        if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,False,HV_Channel_list,PopUp):
-            return
-        time.sleep(BI_SLEEP_AFTER_HVSET)
-        #check HV stop
+        HV_mod=False
         for row in Slot_list:
             if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
-                self.BI_Abort("BI aborted: some LVs was not turned OFF")
-                return
+                HV_mod=True
+                if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,False,HV_Channel_list,PopUp):
+                    return
+        if HV_mod:
+            time.sleep(BI_SLEEP_AFTER_HVSET)
+            #check HV stop
+            for row in Slot_list:
+            	if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
+            		self.BI_Abort("BI aborted: some LVs was not turned OFF")
+            		return
             
         
         #stop LV
         self.SharedDict["BI_Action"].setText("Stop LVs")
-        if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,False,LV_Channel_list,PopUp):
-            return
-        time.sleep(BI_SLEEP_AFTER_LVSET)
-        #check LV stop    
+        LV_mod=False
         for row in Slot_list:
             if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
-                self.BI_Abort("BI aborted: some HVs was not turned OFF")
-                return
+                LV_mod=True
+                if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,False,LV_Channel_list,PopUp):
+                    return
+        if LV_mod:
+            time.sleep(BI_SLEEP_AFTER_LVSET)
+            #check LV stop    
+            for row in Slot_list:
+                if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
+                    self.BI_Abort("BI aborted: some HVs was not turned OFF")
+                    return
                 
         #put JULABO to 20 degree    
         self.SharedDict["BI_Action"].setText("Closing")
