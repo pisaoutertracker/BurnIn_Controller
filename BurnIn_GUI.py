@@ -26,8 +26,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     SendCAENControllerCmd_sig = pyqtSignal(str)
     SendModuleTestCmd_sig = pyqtSignal(str)
     
-    
-    
     Ctrl_SetSp_sig = pyqtSignal(int,float)
     Ctrl_SelSp_sig = pyqtSignal(int)
     Ctrl_PowerJulabo_sig = pyqtSignal(bool)
@@ -43,7 +41,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     
     BI_Start_sig = pyqtSignal()
     BI_CheckIDs_sig = pyqtSignal()
-
 
     def __init__(self,configDict,logger):
         super(BurnIn_GUI,self).__init__()
@@ -407,7 +404,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_UnderKeep"]=self.BI_UnderKeepTemp_dsb.value()
         self.SharedDict["BI_ActiveSlots"]=[]
         self.SharedDict["BI_ModuleIDs"]=[]
-        
+        self.SharedDict["BI_Completed_Send_Signal"]=False        
         
         self.SharedDict["TestSession"]=self.TestSession
         
@@ -824,6 +821,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         #
         self.ManualOp_tab.setEnabled(True) 
         self.ModuleTest_tab.setEnabled(True)
+        if self.BI_Done_Alert.isChecked():
+            self.SharedDict["BI_Completed_Send_Signal"]=True
+
         
     def BI_SetModuleID(self,slot):
         self.logger.info("New Id for module "+str(slot+1)+": "+self.ModuleId_lines[slot].text())

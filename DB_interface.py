@@ -40,6 +40,30 @@ class DB_interface():
             self.logger.error("Failed to update the session. Status code:", response.status_code)
         return response.json()["sessionName"]
         
+        ### read the test result from DB  
+		
+    def uploadCycleToDB(self,cycleDescription = {}):
+    
+        self.logger.info(cycleDescription)
+        # URL of the API endpoint
+        api_url = "http://%s:%d/burnin_cycles"%(self.Addr, int(self.Port))
+        
+        # Send a PUT request
+        try:
+            response = requests.post(api_url, json=cycleDescription,timeout=5)
+        except requests.exceptions.Timeout:
+            return "timeout"
+        except requests.exceptions.RequestException as e:
+            raise SystemExit(e)
+    
+        # Check the response
+        if response.status_code == 201:
+            self.logger.info("Cycle uploaded successfully")
+            self.logger.info(response.text)
+        else:
+            self.logger.error("Failed to upload the cycle. Status code:", response.status_code)
+        return response.text
+        
         ### read the test result from DB
 
     def getSessionFromDB(self,sessionName):
@@ -243,3 +267,27 @@ class DB_interface():
             self.logger.info("DATABASE: Session loaded!")
             with open('./lastSession.txt', 'w') as f:
                 f.write(str(self.TestSession))
+				
+    def StartCycle(self,session_dict):
+        self.logger.info("Database thermal cycle uploading. Please wait...")
+                
+        #define test session for DB
+        BurninCycleName = "BurnIn_gui_" + session_dict["Timestamp"]
+        cycle = {
+            "BurninCycleName": BurninCycleName,
+            "BurninCycleDate": session_dict["Timestamp"],
+            "BurninCycleModules": session_dict["ModuleIDs"],
+            "BurninCycleTemperatures": {
+                "low": session_dict["LowTemp"],
+                "high": session_dict["HighTemp"],
+                }
+        }
+        
+		
+        uploadResponse=self.uploadCycleToDB(cycle)
+		
+        if uploadResponse=="timeout": #if it times out, display a dummy status
+            self.logger.error("DATABASE    : Cycle loading timed out!")
+        else:
+            self.logger.info("DATABASE: Cycle loaded! Response: "+uploadResponse)
+

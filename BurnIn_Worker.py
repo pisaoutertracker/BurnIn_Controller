@@ -976,7 +976,7 @@ class BurnIn_Worker(QObject):
         session_dict["Step"]            = 1
         session_dict["StepList"]            = self.SharedDict["StepList"]
         session_dict["Action"]                = "Undef"
-        session_dict["Cycle"]                = 1
+        session_dict["Cycle"]                = 0
         session_dict["Status"]                = "Setup"
         session_dict["LowTemp"]                = self.SharedDict["BI_LowTemp"]
         session_dict["UnderRamp"]            = self.SharedDict["BI_UnderRamp"]
@@ -1171,6 +1171,7 @@ class BurnIn_Worker(QObject):
                 self.logger.info("BI: ramping down...")
                 self.SharedDict["BI_Action"].setText("Cooling")
                 self.SharedDict["BI_SUT"].setText("None") 
+                self.DB_interface.StartCycle(session_dict)				
                 if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
                     if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["LowTemp"]):
                         self.logger.info("BI: cooling")
@@ -1325,7 +1326,7 @@ class BurnIn_Worker(QObject):
                 
         #put JULABO to 20 degree    
         self.SharedDict["BI_Action"].setText("Closing")
-        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,20.0,PopUp):
+        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,20.0,PopUp): #FT this shouldn't be hardcoded to 20 but be contextual
             return    
         
         #lower dry air flow
@@ -1538,7 +1539,7 @@ class BurnIn_Worker(QObject):
         self.logger.info("Starting module "+module+" test...")
         session=self.SharedDict["TestSession"]
         
-        if session_dict["TestType"].upper()=="DryTest":
+        if session_dict["TestType"].upper()=="DRYTEST":
             self.logger.info("Dry run. Just waiting 60 s.")
             time.sleep(60)
             return True 
