@@ -404,7 +404,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_UnderKeep"]=self.BI_UnderKeepTemp_dsb.value()
         self.SharedDict["BI_ActiveSlots"]=[]
         self.SharedDict["BI_ModuleIDs"]=[]
-	self.SharedDict["BI_Completed_Send_Signal"]=False        
+        self.SharedDict["BI_Completed_Send_Signal"]=False        
         
         self.SharedDict["TestSession"]=self.TestSession
         
@@ -812,7 +812,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.ManualOp_tab.setEnabled(True) 
         self.ModuleTest_tab.setEnabled(True)
         if self.BI_Done_Alert.isChecked():
-	    self.SharedDict["BI_Completed_Send_Signal"]=True
+            self.SharedDict["BI_Completed_Send_Signal"]=True
                     
     @pyqtSlot(int,int)
     def BI_CheckID_isOK(self,slot,success):
