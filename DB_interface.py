@@ -84,7 +84,7 @@ class DB_interface():
                 self.logger.error(f"Slot {slot+1} detector-side status check failed. Status code: {response.status_code}")
         return
 
-    def uploadModuleNameToDB(self,slot,ID):#this is unused
+    def uploadModuleNameToDB(self,slot,ID):
         self.logger.info("Loading new module connections to DB")
         reqSlotName = "B"+str(slot+1)
         
