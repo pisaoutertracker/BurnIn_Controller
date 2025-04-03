@@ -269,6 +269,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["LastFNALBoxOW8"]=self.LastFNALBoxOW8_tag
         self.SharedDict["LastFNALBoxOW9"]=self.LastFNALBoxOW9_tag
         self.SharedDict["LastFNALBoxDoor"]=self.LastFNALBoxDoor_tag
+        self.SharedDict["LastFNALBoxAirTemp"]=self.LastFNALBoxAirTemp_tag
+        self.SharedDict["LastFNALBoxHumi"]=self.LastFNALBoxHumi_tag
         
         
         self.SharedDict["LastLV00Current"]=self.LastLV00Current_tag
