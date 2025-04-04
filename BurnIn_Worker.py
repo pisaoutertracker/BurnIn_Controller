@@ -3,6 +3,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
 import time
+from tqdm import tqdm
 from datetime import datetime
 import subprocess
 from __Constant import *
@@ -967,7 +968,7 @@ class BurnIn_Worker(QObject):
     @pyqtSlot()            
     def BI_Start_Cmd(self):
     
-        stepAllowed = ["COOL","HEAT","DAQ","LV_ON","LV_OFF","HV_ON","HV_OFF","SCANIV"]
+        stepAllowed = ["COOL","HEAT","LV_ON","LV_OFF","HV_ON","HV_OFF","SCANIV"]#WAIT and DAQ are treated separately
         self.SharedDict["BI_Active"]=True
         self.logger.info("Starting BurnIN...")
         
@@ -1025,7 +1026,7 @@ class BurnIn_Worker(QObject):
                             self.BI_Abort("Empty cycle description")
                             return    
                         for step in self.SharedDict["StepList"]:
-                            if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ"):
+                            if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ") and (step[0:4].upper()!="WAIT"):
                                 self.BI_Abort("Undefined step in cycle description")
                                 return
                         
@@ -1040,7 +1041,7 @@ class BurnIn_Worker(QObject):
                     self.BI_Abort("Empty cycle description")
                     return
                 for step in self.SharedDict["StepList"]:
-                    if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ"):
+                    if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ") and (step[0:4].upper()!="WAIT"):
                         self.BI_Abort("Undefined step in cycle description")
                         return
                 self.DB_interface.StartSesh(session_dict)
@@ -1053,7 +1054,7 @@ class BurnIn_Worker(QObject):
                 self.BI_Abort("Empty cycle description")
                 return    
             for step in self.SharedDict["StepList"]:
-                if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ"):
+                if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ") and (step[0:4].upper()!="WAIT"):
                     self.BI_Abort("Undefined step in cycle description")
                     return
             self.DB_interface.StartSesh(session_dict)
@@ -1196,7 +1197,7 @@ class BurnIn_Worker(QObject):
                 
             if (session_dict["Action"].upper()[0:3]=="DAQ"):
                 self.logger.info("BI: testing...")
-                self.SharedDict["BI_Action"].setText(session_dict["Action"]+"  Module test")
+                self.SharedDict["BI_Action"].setText(session_dict["Action"][4:]+"  Module test")
                 self.SharedDict["BI_TestActive"]=True
                 session_dict["TestType"]=session_dict["Action"][4:]
                 for slot in Slot_list:
@@ -1210,6 +1211,21 @@ class BurnIn_Worker(QObject):
                             return
                 self.SharedDict["BI_TestActive"]=False
                 session_dict["TestType"]="Undef"
+
+            if (session_dict["Action"].upper()[0:4]=="WAIT"):
+                try:
+                    #acquire wait time (check if the syntax is bad and cast to int)
+                    wait_time = int(session_dict["Action"][5:])
+                except Exception as e:
+                    self.logger.error(e)
+                    self.last_op_ok= False
+                    return
+                self.logger.info(f"BI: waiting {wait_time} seconds.") #FT:add a a progress bar
+                self.SharedDict["BI_Action"].setText(session_dict["Action"])
+                self.SharedDict["BI_TestActive"]=True
+                for i in tqdm(range(wait_time)):#FT: progress bar loop, change to time.sleep(wait_time) if broken
+                    time.sleep(1)
+                self.SharedDict["BI_TestActive"]=False
                 
             if (session_dict["Action"].upper()=="SCANIV"):
                 self.logger.info("BI: IV scan...")
@@ -1504,7 +1520,7 @@ class BurnIn_Worker(QObject):
         self.logger.info("Starting IV scan on module "+module+" on HV channel "+HV_ch+" ...")
         self.last_op_ok= True
         
-        cmd = "python3 measure_iv_curve.py --channel "+HV_ch+ " --scan-type "+ self.IV_scanType+ " --delay "+ self.IV_delay +" --settling-time "+ self.IV_settlingTime+  " --module_name "+ module 
+        cmd = "python3 measure_iv_curve.py --channel "+HV_ch+ " --scan-type "+ self.IV_scanType+ " --delay "+ self.IV_delay +" --settling-time "+ self.IV_settlingTime+  " --module-name "+ module 
         self.logger.info("Executing command: " + cmd)
         
         try:
