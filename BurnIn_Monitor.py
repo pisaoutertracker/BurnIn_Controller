@@ -318,8 +318,9 @@ class BurnIn_Monitor(QObject):
                             self.MQTT_FNALBox_dict["Temp0"]=float(reply_list[FNAL_T0_OFFSET])
                             self.SharedDict["LastFNALBoxTemp1"].setText(reply_list[FNAL_T1_OFFSET][1:])
                             self.MQTT_FNALBox_dict["Temp1"]=float(reply_list[FNAL_T1_OFFSET][1:])
-                            self.SharedDict["LastFNALBoxAirTemp"].setText(reply_list[FNAL_PT_OFFSET][1:])
-                            self.MQTT_FNALBox_dict["AirTemp"]=float(reply_list[FNAL_PT_OFFSET][1:])
+                            AirTemp=float(reply_list[FNAL_PT_OFFSET][1:])-1
+                            self.SharedDict["LastFNALBoxAirTemp"].setText(str(AirTemp))
+                            self.MQTT_FNALBox_dict["AirTemp"]=AirTemp
                             self.SharedDict["LastFNALBoxDoor"].setText(reply_list[FNAL_RS_OFFSET][1:])
                             self.MQTT_FNALBox_dict["Door"]=float(reply_list[FNAL_RS_OFFSET][1:])
                             if float(reply_list[FNAL_RS_OFFSET][1:]) > FNAL_RS_THR:
@@ -334,7 +335,7 @@ class BurnIn_Monitor(QObject):
                             self.SharedDict["LastFNALBoxDP"].setText(reply_list[FNAL_DP_OFFSET][1:])
                             self.SharedDict["Ctrl_IntDewPoint"].setText(reply_list[FNAL_DP_OFFSET][1:])
 							
-                            Sat_vapour_pressure= math.exp(math.log (611.2) + (17.62* self.MQTT_FNALBox_dict["AirTemp"])/(243.12+ self.MQTT_FNALBox_dict["AirTemp"]) )
+                            Sat_vapour_pressure= math.exp(math.log (611.2) + (17.62* AirTemp)/(243.12+ AirTemp) )
                             Act_vapour_pressure = math.exp(math.log (611.2) + (17.62*self.MQTT_FNALBox_dict["DewPoint"])/(243.12+self.MQTT_FNALBox_dict["DewPoint"])  )
                             self.MQTT_FNALBox_dict["Humidity"]=Act_vapour_pressure/Sat_vapour_pressure*100
                             self.SharedDict["LastFNALBoxHumi"].setText("{:.2f}".format(self.MQTT_FNALBox_dict["Humidity"]))
