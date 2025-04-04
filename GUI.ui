@@ -41,7 +41,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -57,7 +57,6 @@
               <property name="font">
                <font>
                 <pointsize>9</pointsize>
-                <weight>50</weight>
                 <bold>false</bold>
                </font>
               </property>
@@ -212,7 +211,6 @@
                    <property name="font">
                     <font>
                      <pointsize>9</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -232,7 +230,6 @@
                    <property name="font">
                     <font>
                      <pointsize>9</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                      <kerning>false</kerning>
                     </font>
@@ -271,7 +268,6 @@
                    <property name="font">
                     <font>
                      <pointsize>9</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -307,7 +303,7 @@
                <item>
                 <widget class="QLabel" name="label_90">
                  <property name="text">
-                  <string>Valid steps (case insensitive):</string>
+                  <string>Valid steps (case-insensitive):</string>
                  </property>
                 </widget>
                </item>
@@ -321,7 +317,7 @@
                <item>
                 <widget class="QLabel" name="label_92">
                  <property name="text">
-                  <string>  DryTest, Daq:&quot;TestName&quot;</string>
+                  <string>  DryTest, Daq:&lt;TestName&gt;</string>
                  </property>
                 </widget>
                </item>
@@ -1643,7 +1639,6 @@ addStep(&quot;Heat&quot;)</string>
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
-                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -2046,7 +2041,6 @@ addStep(&quot;Heat&quot;)</string>
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
-                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -3222,7 +3216,6 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -3239,7 +3232,6 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -3786,7 +3778,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3797,7 +3788,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3808,7 +3798,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3819,7 +3808,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3830,7 +3818,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3841,7 +3828,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3852,7 +3838,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3863,7 +3848,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3874,7 +3858,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3885,7 +3868,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3896,7 +3878,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3907,7 +3888,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3958,7 +3938,6 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -3975,7 +3954,6 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -4020,7 +3998,6 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -4034,7 +4011,6 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -4228,7 +4204,7 @@ addStep(&quot;Heat&quot;)</string>
      <x>0</x>
      <y>0</y>
      <width>1316</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
