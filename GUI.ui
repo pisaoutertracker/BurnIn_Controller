@@ -310,14 +310,14 @@
                <item>
                 <widget class="QLabel" name="label_91">
                  <property name="text">
-                  <string>  Cool, Heat, ScanIV</string>
+                  <string>  Cool, Heat, DryTest</string>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLabel" name="label_92">
                  <property name="text">
-                  <string>  DryTest, Daq:&lt;TestName&gt;</string>
+                  <string>  ScanIV, DAQ:&lt;TestName&gt;, Wait:&lt;seconds&gt;</string>
                  </property>
                 </widget>
                </item>
