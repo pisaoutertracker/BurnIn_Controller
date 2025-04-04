@@ -3,7 +3,6 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
 import time
-from tqdm import tqdm
 from datetime import datetime
 import subprocess
 from __Constant import *
@@ -1223,8 +1222,7 @@ class BurnIn_Worker(QObject):
                 self.logger.info(f"BI: waiting {wait_time} seconds.") #FT:add a a progress bar
                 self.SharedDict["BI_Action"].setText(session_dict["Action"])
                 self.SharedDict["BI_TestActive"]=True
-                for i in tqdm(range(wait_time)):#FT: progress bar loop, change to time.sleep(wait_time) if broken
-                    time.sleep(1)
+                time.sleep(wait_time)
                 self.SharedDict["BI_TestActive"]=False
                 
             if (session_dict["Action"].upper()=="SCANIV"):
