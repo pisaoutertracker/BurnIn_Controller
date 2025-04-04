@@ -1487,7 +1487,7 @@ class BurnIn_Worker(QObject):
             return
         # set target temperature mantain
         self.logger.info("BI: keep temperature ....")
-        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,SelectedTemp-TempMantainOffset,PopUp):
+        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,SelectedTemp-TempMantainOffset if isCooling else SelectedTemp,PopUp):
             self.last_op_ok= False
             return
                
