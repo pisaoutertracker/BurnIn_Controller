@@ -193,10 +193,6 @@ class BurnIn_Worker(QObject):
             targetT = -100.0
             if Sp_id == 0 :
                 targetT = float(self.SharedDict["Ctrl_Sp1"].text())
-            elif Sp_id == 1 :
-                targetT = float(self.SharedDict["Ctrl_Sp2"].text())
-            elif Sp_id == 2 :
-                targetT = float(self.SharedDict["Ctrl_Sp3"].text())
 
             if targetT  < float(self.SharedDict["Ctrl_IntDewPoint"].text()):
                 Warning_str = "Operation can't be performed"
@@ -220,10 +216,7 @@ class BurnIn_Worker(QObject):
                     self.SharedDict["Ctrl_TSp"].setText(Sp)
                 if self.SharedDict["Ctrl_TSp"].text()[:1]=="1":
                     self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp1"].text())
-                elif self.SharedDict["Ctrl_TSp"].text()[:1]=="2":
-                    self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp2"].text())
-                elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
-                    self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
+
             except Exception as e:
                 self.logger.error(e)
                 self.last_op_ok= False
@@ -279,10 +272,7 @@ class BurnIn_Worker(QObject):
                     self.SharedDict["Ctrl_Sp"+str(Sp_id+1)].setText(reply.replace(" ", ""))
                 if self.SharedDict["Ctrl_TSp"].text()[:1]=="1":
                     self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp1"].text())
-                elif self.SharedDict["Ctrl_TSp"].text()[:1]=="2":
-                    self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp2"].text())
-                elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
-                    self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
+
             except Exception as e:
                 self.logger.error(e)
                 self.last_op_ok= False    

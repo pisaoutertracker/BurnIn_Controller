@@ -236,10 +236,6 @@ class BurnIn_Supervisor(QObject):
                         self.SharedDict["Ctrl_Sp"+str(Sp_id+1)].setText(reply.replace(" ", ""))
                     if self.SharedDict["Ctrl_TSp"].text()[:1]=="1":
                         self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp1"].text())
-                    elif self.SharedDict["Ctrl_TSp"].text()[:1]=="2":
-                        self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp2"].text())
-                    elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
-                        self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
                 except Exception as e:
                     self.logger.error(e)
                 
@@ -258,10 +254,6 @@ class BurnIn_Supervisor(QObject):
                         self.SharedDict["Ctrl_TSp"].setText(Sp)
                     if self.SharedDict["Ctrl_TSp"].text()[:1]=="1":
                         self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp1"].text())
-                    elif self.SharedDict["Ctrl_TSp"].text()[:1]=="2":
-                        self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp2"].text())
-                    elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
-                        self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
                 except Exception as e:
                     self.logger.error(e)                
             
