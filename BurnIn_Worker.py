@@ -1242,14 +1242,14 @@ class BurnIn_Worker(QObject):
                     self.SharedDict["BI_SUT"].setText(str(slot+1)) 
                     self.logger.info("BI: IV scan for slot "+str(slot)+": module name "+session_dict["Current_ModuleID"])
                     self.BI_CheckID_isOK_sig.emit(slot,0)#0 means we just started testing 
-                    self.BI_Update_PowerStatus_sig.emit(slot,False,"ON_dummy")#isLV=False means HV
+                    self.BI_Update_PowerStatus_sig.emit(slot,False,"scan")#isLV=False means HV
                     if not self.BI_Action(self.BI_StartIV_Cmd,False,session_dict):
                         return
                     if self.last_op_ok:
                         self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success
-                        self.BI_Update_PowerStatus_sig.emit(slot,False,"ON_dummy")#isLV=False means HV, ScanIV ends on HV on
                     else:
                         self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure
+                    self.BI_Update_PowerStatus_sig.emit(-1,False,"scan")#isLV=False means HV, slot=-1 means all, update GUI-side
                 self.SharedDict["BI_TestActive"]=False
                         
             if (session_dict["Action"].upper()=="LV_ON"):
