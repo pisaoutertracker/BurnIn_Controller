@@ -1228,7 +1228,12 @@ class BurnIn_Worker(QObject):
                 self.SharedDict["BI_Action"].setText(session_dict["Action"])
                 self.SharedDict["BI_TestActive"]=True
                 for i in range(wait_time):#We do it like this so it is possible to interrupt the process
-                    time.sleep(1)
+                    if self.SharedDict["BI_StopRequest"]:
+                        self.logger.error(f"WORKER: Aborting {wait_time} seconds wait on external request")
+                        self.last_op_ok= False
+                        return
+                    else:
+                        time.sleep(1)
                 self.SharedDict["BI_TestActive"]=False
                 
             if (session_dict["Action"].upper()=="SCANIV"):
