@@ -187,18 +187,11 @@
             </item>
             <item>
              <widget class="QCheckBox" name="checkBox">
-              <property name="text">
-               <string>Run POTATOConverter on FullTest [Work in Progess]</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="checkBox_2">
               <property name="enabled">
                <bool>false</bool>
               </property>
               <property name="text">
-               <string>... and upload the results.</string>
+               <string>Run POTATOConverter on FullTest and upload the results [DISABLED]</string>
               </property>
              </widget>
             </item>
