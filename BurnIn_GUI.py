@@ -724,17 +724,17 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     def BI_Update_PowerStatus_Cmd(self,slot,isLV,power):
         if slot>=0:#this status update comes from manual operation
             if isLV:
-                self.Module_LV_LED[slot].setStyleSheet("background-color : grey;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+                self.Module_LV_LED[slot].setStyleSheet("background-color : #add8e6;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
                 self.Module_LV_LED[slot].setText(power)
             else:
-                self.Module_HV_LED[slot].setStyleSheet("background-color : grey;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+                self.Module_HV_LED[slot].setStyleSheet("background-color : #add8e6;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
                 self.Module_HV_LED[slot].setText(power)
         else:#negative slot means this comes from BI steps and encodes different information
             for i in range(len(self.SharedDict["BI_ActiveSlots"])):
                 if self.SharedDict["BI_ActiveSlots"][i]:#if that slot is active
                     column = 1 if isLV else 6
                     power=self.Ctrl_CAEN_table.item(i,column).text()
-                    color_onoff="blue"
+                    color_onoff="grey"
                     if power=="ON":
                          color_onoff = "#80c342"
                     elif power=="OFF":
