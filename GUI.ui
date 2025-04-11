@@ -41,7 +41,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -2728,31 +2728,10 @@ addStep(&quot;Heat&quot;)</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_15">
-                 <property name="text">
-                  <string>Status</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_16">
-                 <property name="text">
-                  <string>Setpoint 1  (C°)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QLabel" name="LastJulaboStatus_tag">
+               <item row="3" column="1">
+                <widget class="QLabel" name="LastJulaboHP_tag">
                  <property name="text">
                   <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QLabel" name="LastJulaboMsgTS_tag">
-                 <property name="text">
-                  <string>NEVER</string>
                  </property>
                 </widget>
                </item>
@@ -2763,73 +2742,66 @@ addStep(&quot;Heat&quot;)</string>
                  </property>
                 </widget>
                </item>
-               <item row="5" column="0">
-                <widget class="QLabel" name="label_20">
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_16">
                  <property name="text">
-                  <string>Heating Power (%)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_13">
-                 <property name="text">
-                  <string>Setpoint 2  (C°)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_14">
-                 <property name="text">
-                  <string>Setpoint 3  (C°)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="label_21">
-                 <property name="text">
-                  <string>Bath Temp (C°)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="0">
-                <widget class="QLabel" name="label_26">
-                 <property name="text">
-                  <string>Target Setpoint</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QLabel" name="LastJulaboSP2_tag">
-                 <property name="text">
-                  <string>?</string>
+                  <string>Setpoint (C°)</string>
                  </property>
                 </widget>
                </item>
                <item row="4" column="1">
-                <widget class="QLabel" name="LastJulaboSP3_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="1">
-                <widget class="QLabel" name="LastJulaboHP_tag">
-                 <property name="text">
-                  <string>?</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="1">
                 <widget class="QLabel" name="LastJulaboBT_tag">
                  <property name="text">
                   <string>?</string>
                  </property>
                 </widget>
                </item>
-               <item row="7" column="1">
+               <item row="1" column="1">
+                <widget class="QLabel" name="LastJulaboStatus_tag">
+                 <property name="text">
+                  <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_15">
+                 <property name="text">
+                  <string>Status</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLabel" name="LastJulaboMsgTS_tag">
+                 <property name="text">
+                  <string>NEVER</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="label_26">
+                 <property name="text">
+                  <string>Target Setpoint</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
                 <widget class="QLabel" name="LastJulaboTSP_tag">
                  <property name="text">
                   <string>?</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_20">
+                 <property name="text">
+                  <string>Heating Power (%)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_21">
+                 <property name="text">
+                  <string>Bath Temp (C°)</string>
                  </property>
                 </widget>
                </item>
@@ -3261,31 +3233,24 @@ addStep(&quot;Heat&quot;)</string>
            </item>
            <item>
             <layout class="QGridLayout" name="gridLayout_7">
-             <item row="1" column="1">
-              <widget class="QLabel" name="Ctrl_Sp2_tag">
+             <item row="0" column="5">
+              <widget class="QPushButton" name="Ctrl_SetSp1_btn">
                <property name="text">
-                <string>?</string>
+                <string>Set value</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="1">
-              <widget class="QLabel" name="Ctrl_Sp3_tag">
-               <property name="text">
-                <string>?</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="6">
-              <widget class="QPushButton" name="Ctrl_SelSp2_btn">
+             <item row="0" column="6">
+              <widget class="QPushButton" name="Ctrl_SelSp1_btn">
                <property name="text">
                 <string>Set as target T</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="6">
-              <widget class="QPushButton" name="Ctrl_SelSp3_btn">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_32">
                <property name="text">
-                <string>Set as target T</string>
+                <string>Setpoint (C°): </string>
                </property>
               </widget>
              </item>
@@ -3300,108 +3265,6 @@ addStep(&quot;Heat&quot;)</string>
               <widget class="QLabel" name="Ctrl_Sp1_tag">
                <property name="text">
                 <string>?</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="3">
-              <widget class="QLabel" name="label_39">
-               <property name="text">
-                <string>New value:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="3">
-              <widget class="QLabel" name="label_40">
-               <property name="text">
-                <string>New value:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_34">
-               <property name="text">
-                <string>Setpoint 3 (C°): </string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="4">
-              <widget class="QDoubleSpinBox" name="Ctrl_ValSp1_dsb">
-               <property name="minimum">
-                <double>-50.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>30.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_33">
-               <property name="text">
-                <string>Setpoint 2 (C°): </string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="6">
-              <widget class="QPushButton" name="Ctrl_SelSp1_btn">
-               <property name="text">
-                <string>Set as target T</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="5">
-              <widget class="QPushButton" name="Ctrl_SetSp1_btn">
-               <property name="text">
-                <string>Set value</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="5">
-              <widget class="QPushButton" name="Ctrl_SetSp2_btn">
-               <property name="text">
-                <string>Set value</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="4">
-              <widget class="QDoubleSpinBox" name="Ctrl_ValSp3_dsb">
-               <property name="minimum">
-                <double>-50.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>30.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="4">
-              <widget class="QDoubleSpinBox" name="Ctrl_ValSp2_dsb">
-               <property name="minimum">
-                <double>-50.000000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>30.000000000000000</double>
-               </property>
-               <property name="singleStep">
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="5">
-              <widget class="QPushButton" name="Ctrl_SetSp3_btn">
-               <property name="text">
-                <string>Set value</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_32">
-               <property name="text">
-                <string>Setpoint 1 (C°): </string>
                </property>
               </widget>
              </item>
@@ -3430,6 +3293,19 @@ addStep(&quot;Heat&quot;)</string>
                 </size>
                </property>
               </spacer>
+             </item>
+             <item row="0" column="4">
+              <widget class="QDoubleSpinBox" name="Ctrl_ValSp1_dsb">
+               <property name="minimum">
+                <double>-50.000000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>30.000000000000000</double>
+               </property>
+               <property name="singleStep">
+                <double>0.100000000000000</double>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -3687,6 +3563,19 @@ addStep(&quot;Heat&quot;)</string>
            </item>
           </layout>
          </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_9">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
          <widget class="QGroupBox" name="groupBox_12">

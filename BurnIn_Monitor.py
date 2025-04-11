@@ -222,25 +222,7 @@ class BurnIn_Monitor(QObject):
                         self.MQTT_JULABO_dict["Temp_SP1"]=float(reply.replace(" ", ""))
                     else:
                         self.JulaboCycleOK = False
-                        
-                    self.Julabo.sendTCP("in_sp_01")
-                    reply = self.Julabo.receive()
-                    if (reply != "None" and reply != "TCP error"):
-                        self.SharedDict["LastJulaboSP2"].setText(reply.replace(" ", ""))
-                        self.SharedDict["Ctrl_Sp2"].setText(self.SharedDict["LastJulaboSP2"].text())
-                        self.MQTT_JULABO_dict["Temp_SP2"]=float(reply.replace(" ", ""))
-                    else:
-                        self.JulaboCycleOK = False
-                        
-                    self.Julabo.sendTCP("in_sp_02")
-                    reply = self.Julabo.receive()
-                    if (reply != "None" and reply != "TCP error"):
-                        self.SharedDict["LastJulaboSP3"].setText(reply.replace(" ", ""))
-                        self.SharedDict["Ctrl_Sp3"].setText(self.SharedDict["LastJulaboSP3"].text())
-                        self.MQTT_JULABO_dict["Temp_SP3"]=float(reply.replace(" ", ""))
-                    else:
-                        self.JulaboCycleOK = False
-                        
+                                                
                     self.Julabo.sendTCP("in_pv_00")
                     reply = self.Julabo.receive()
                     if (reply != "None" and reply != "TCP error"):
@@ -269,11 +251,6 @@ class BurnIn_Monitor(QObject):
                         
                     if self.SharedDict["LastJulaboTSP"].text()[:1]=="1":
                         self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["LastJulaboSP1"].text())
-                    elif self.SharedDict["LastJulaboTSP"].text()[:1]=="2":
-                        self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["LastJulaboSP2"].text())
-                    elif self.SharedDict["LastJulaboTSP"].text()[:1]=="3":
-                        self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["LastJulaboSP3"].text())
-                            
                         
                 else:
                     self.SharedDict["JULABOConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");

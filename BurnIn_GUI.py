@@ -249,8 +249,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["LastJulaboMsgTS"]=self.LastJulaboMsgTS_tag
         self.SharedDict["LastJulaboStatus"]=self.LastJulaboStatus_tag
         self.SharedDict["LastJulaboSP1"]=self.LastJulaboSP1_tag
-        self.SharedDict["LastJulaboSP2"]=self.LastJulaboSP2_tag
-        self.SharedDict["LastJulaboSP3"]=self.LastJulaboSP3_tag
         self.SharedDict["LastJulaboBT"]=self.LastJulaboBT_tag
         self.SharedDict["LastJulaboHP"]=self.LastJulaboHP_tag
         self.SharedDict["LastJulaboTSP"]=self.LastJulaboTSP_tag
@@ -361,8 +359,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         # PYQT tags in Control tab
         
         self.SharedDict["Ctrl_Sp1"]=self.Ctrl_Sp1_tag
-        self.SharedDict["Ctrl_Sp2"]=self.Ctrl_Sp2_tag
-        self.SharedDict["Ctrl_Sp3"]=self.Ctrl_Sp3_tag
         self.SharedDict["Ctrl_TSp"]=self.Ctrl_TSp_tag
         self.SharedDict["Ctrl_StatusJulabo"]=self.Ctrl_StatusJulabo_tag
         self.SharedDict["Ctrl_TargetTemp"]=self.Ctrl_TargetTemp_tag
@@ -457,11 +453,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         
         # manual operation tab
         self.Ctrl_SetSp1_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(0,self.Ctrl_ValSp1_dsb.value()))
-        self.Ctrl_SetSp2_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(1,self.Ctrl_ValSp2_dsb.value()))
-        self.Ctrl_SetSp3_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(2,self.Ctrl_ValSp3_dsb.value()))
         self.Ctrl_SelSp1_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(0))
-        self.Ctrl_SelSp2_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(1))
-        self.Ctrl_SelSp3_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(2))
         self.ModuleId_lines[0].returnPressed.connect(lambda : self.BI_SetModuleID(0))
         self.ModuleId_lines[1].returnPressed.connect(lambda : self.BI_SetModuleID(1))
         self.ModuleId_lines[2].returnPressed.connect(lambda : self.BI_SetModuleID(2))
