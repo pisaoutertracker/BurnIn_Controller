@@ -1206,8 +1206,13 @@ class BurnIn_Worker(QObject):
                     self.BI_Update_Status_file(session_dict)
                     self.SharedDict["BI_SUT"].setText(str(slot+1)) 
                     self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
+                    self.BI_CheckID_isOK_sig.emit(slot,0)#0 means we just started testing
                     if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
-                            return
+                        return
+                    if self.last_op_ok:
+                        self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success
+                    else:
+                        self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure
                 self.SharedDict["BI_TestActive"]=False
                 session_dict["TestType"]="Undef"
 
@@ -1222,7 +1227,8 @@ class BurnIn_Worker(QObject):
                 self.logger.info(f"BI: waiting {wait_time} seconds.") #FT:add a a progress bar
                 self.SharedDict["BI_Action"].setText(session_dict["Action"])
                 self.SharedDict["BI_TestActive"]=True
-                time.sleep(wait_time)
+                for i in range(wait_time):#We do it like this so it is possible to interrupt the process
+                    time.sleep(1)
                 self.SharedDict["BI_TestActive"]=False
                 
             if (session_dict["Action"].upper()=="SCANIV"):
@@ -1235,8 +1241,13 @@ class BurnIn_Worker(QObject):
                     session_dict["Current_ModuleHV"]    = self.SharedDict["CAEN_table"].item(slot,CTRLTABLE_HV_NAME_COL).text()
                     self.SharedDict["BI_SUT"].setText(str(slot+1)) 
                     self.logger.info("BI: IV scan for slot "+str(slot)+": module name "+session_dict["Current_ModuleID"])
+                    self.BI_CheckID_isOK_sig.emit(slot,0)#0 means we just started testing 
                     if not self.BI_Action(self.BI_StartIV_Cmd,False,session_dict):
-                            return
+                        return
+                    if self.last_op_ok:
+                        self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success                                                                                                                                     
+                    else:
+                        self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure   
                 self.SharedDict["BI_TestActive"]=False
                         
             if (session_dict["Action"].upper()=="LV_ON"):
