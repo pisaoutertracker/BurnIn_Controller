@@ -1526,7 +1526,7 @@ class BurnIn_Worker(QObject):
         self.logger.info("Starting IV scan on module "+module+" on HV channel "+HV_ch+" ...")
         self.last_op_ok= True
         
-        cmd = "python3 measure_iv_curve.py --channel "+HV_ch+ " --scan-type "+ self.IV_scanType+ " --delay "+ self.IV_delay +" --settling-time "+ self.IV_settlingTime+  " --module-name "+ module 
+        cmd = "python3 measure_iv_curve.py --channel "+HV_ch+ " --scan-type "+ self.IV_scanType+ " --delay "+ self.IV_delay +" --settling-time "+ self.IV_settlingTime+  " --module-name "+ module +" --store-locally --upload"
         self.logger.info("Executing command: " + cmd)
         
         try:
