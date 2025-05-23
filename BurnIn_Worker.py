@@ -1429,8 +1429,8 @@ class BurnIn_Worker(QObject):
         
         nextTemp = 0.0
         #initialise and keep if heating
-        TargetTemp = SelectedTemp+TempMantainOffset #aim slightly above target
-        TempMargin = - TempMantainOffset
+        TargetTemp = SelectedTemp+ TempRampOffset #TempMantainOffset #aim slightly above target
+        TempMargin = - TempRampOffset
         verb="heating"
         if isCooling:
             TargetTemp = SelectedTemp-TempRampOffset #aim below target
