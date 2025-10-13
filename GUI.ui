@@ -41,7 +41,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="BurnIn_tab">
        <attribute name="title">
@@ -57,6 +57,7 @@
               <property name="font">
                <font>
                 <pointsize>9</pointsize>
+                <weight>50</weight>
                 <bold>false</bold>
                </font>
               </property>
@@ -221,6 +222,7 @@
                    <property name="font">
                     <font>
                      <pointsize>9</pointsize>
+                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -240,6 +242,7 @@
                    <property name="font">
                     <font>
                      <pointsize>9</pointsize>
+                     <weight>75</weight>
                      <bold>true</bold>
                      <kerning>false</kerning>
                     </font>
@@ -278,6 +281,7 @@
                    <property name="font">
                     <font>
                      <pointsize>9</pointsize>
+                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -636,7 +640,7 @@ addStep(&quot;Heat&quot;)</string>
                     </font>
                    </property>
                    <property name="focusPolicy">
-                    <enum>Qt::ClickFocus</enum>
+                    <enum>Qt::StrongFocus</enum>
                    </property>
                    <property name="layoutDirection">
                     <enum>Qt::LeftToRight</enum>
@@ -1649,6 +1653,7 @@ addStep(&quot;Heat&quot;)</string>
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
+                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -2051,6 +2056,7 @@ addStep(&quot;Heat&quot;)</string>
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
+                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -3198,6 +3204,7 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
+                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -3214,6 +3221,7 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
+                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -3677,6 +3685,7 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3687,6 +3696,7 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3697,6 +3707,7 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3707,6 +3718,7 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3717,6 +3729,7 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3727,6 +3740,7 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3737,6 +3751,7 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3747,6 +3762,7 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3757,6 +3773,7 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3767,6 +3784,7 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3777,6 +3795,7 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3787,6 +3806,7 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
+                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3837,6 +3857,7 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
+                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -3853,6 +3874,7 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
+                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -3897,6 +3919,7 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
+                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -3910,6 +3933,7 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
+                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -4103,7 +4127,7 @@ addStep(&quot;Heat&quot;)</string>
      <x>0</x>
      <y>0</y>
      <width>1316</width>
-     <height>24</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
@@ -4159,6 +4183,104 @@ addStep(&quot;Heat&quot;)</string>
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>BI_LowTemp_dsb</tabstop>
+  <tabstop>BI_HighTemp_dsb</tabstop>
+  <tabstop>BI_UnderRampTemp_dsb</tabstop>
+  <tabstop>BI_UnderKeepTemp_dsb</tabstop>
+  <tabstop>BI_Operator_line</tabstop>
+  <tabstop>BI_Desc_line</tabstop>
+  <tabstop>BI_Mod0_cb</tabstop>
+  <tabstop>BI_Mod1_cb</tabstop>
+  <tabstop>BI_Mod2_cb</tabstop>
+  <tabstop>BI_Mod3_cb</tabstop>
+  <tabstop>BI_Mod4_cb</tabstop>
+  <tabstop>BI_Mod5_cb</tabstop>
+  <tabstop>BI_Mod6_cb</tabstop>
+  <tabstop>BI_Mod7_cb</tabstop>
+  <tabstop>BI_Mod8_cb</tabstop>
+  <tabstop>BI_Mod9_cb</tabstop>
+  <tabstop>BI_Mod1ID_line</tabstop>
+  <tabstop>BI_Mod2ID_line</tabstop>
+  <tabstop>BI_Mod3ID_line</tabstop>
+  <tabstop>BI_Mod4ID_line</tabstop>
+  <tabstop>BI_Mod5ID_line</tabstop>
+  <tabstop>BI_Mod6ID_line</tabstop>
+  <tabstop>BI_Mod7ID_line</tabstop>
+  <tabstop>BI_Mod8ID_line</tabstop>
+  <tabstop>BI_Mod9ID_line</tabstop>
+  <tabstop>BI_Cycle_line</tabstop>
+  <tabstop>BI_Stop_btn</tabstop>
+  <tabstop>checkBox</tabstop>
+  <tabstop>BI_Done_Alert</tabstop>
+  <tabstop>BI_LoadCycle_btn</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>BI_Start_btn</tabstop>
+  <tabstop>BI_SaveCycle_btn</tabstop>
+  <tabstop>BI_CheckIDs_btn</tabstop>
+  <tabstop>BI_Mod6_LV_led</tabstop>
+  <tabstop>BI_Mod8_isok</tabstop>
+  <tabstop>BI_Mod1_LV_led</tabstop>
+  <tabstop>BI_Mod0_HV_led</tabstop>
+  <tabstop>BI_Mod8_HV_led</tabstop>
+  <tabstop>BI_Mod9_isok</tabstop>
+  <tabstop>BI_Mod7_LV_led</tabstop>
+  <tabstop>BI_Mod3_isok</tabstop>
+  <tabstop>BI_Mod4_isok</tabstop>
+  <tabstop>BI_Mod1_HV_led</tabstop>
+  <tabstop>BI_Mod9_LV_led</tabstop>
+  <tabstop>BI_Mod6_HV_led</tabstop>
+  <tabstop>BI_Mod0_LV_led</tabstop>
+  <tabstop>BI_Mod3_HV_led</tabstop>
+  <tabstop>BI_Mod5_isok</tabstop>
+  <tabstop>BI_Mod6_isok</tabstop>
+  <tabstop>BI_Mod1_isok</tabstop>
+  <tabstop>BI_Mod2_LV_led</tabstop>
+  <tabstop>BI_Mod2_isok</tabstop>
+  <tabstop>BI_Mod2_HV_led</tabstop>
+  <tabstop>BI_Mod5_HV_led</tabstop>
+  <tabstop>BI_Mod8_LV_led</tabstop>
+  <tabstop>BI_Mod7_HV_led</tabstop>
+  <tabstop>BI_Mod0_isok</tabstop>
+  <tabstop>BI_Mod3_LV_led</tabstop>
+  <tabstop>BI_Mod9_HV_led</tabstop>
+  <tabstop>BI_Mod4_HV_led</tabstop>
+  <tabstop>BI_Mod5_LV_led</tabstop>
+  <tabstop>BI_Mod4_LV_led</tabstop>
+  <tabstop>BI_Mod7_isok</tabstop>
+  <tabstop>BI_LoadSesh_btn</tabstop>
+  <tabstop>BI_TargetSesh_line</tabstop>
+  <tabstop>BI_LoadLast_btn</tabstop>
+  <tabstop>BI_ReloadConn_btn</tabstop>
+  <tabstop>SeshDescription_db</tabstop>
+  <tabstop>Ctrl_StartSesh_btn</tabstop>
+  <tabstop>Ctrl_DryRun_cb</tabstop>
+  <tabstop>Ctrl_StartTest_btn</tabstop>
+  <tabstop>Ctrl_StartJulabo_btn</tabstop>
+  <tabstop>Ctrl_StopJulabo_btn</tabstop>
+  <tabstop>Ctrl_SetSp1_btn</tabstop>
+  <tabstop>Ctrl_SelSp1_btn</tabstop>
+  <tabstop>Ctrl_ValSp1_dsb</tabstop>
+  <tabstop>Ctrl_SetLock_btn</tabstop>
+  <tabstop>Ctrl_SetUnlock_btn</tabstop>
+  <tabstop>Ctrl_SetHighFlow_btn</tabstop>
+  <tabstop>Ctrl_SetLowFlow_btn</tabstop>
+  <tabstop>Ctrl_CAEN_table</tabstop>
+  <tabstop>Ctrl_LVOn_btn</tabstop>
+  <tabstop>Ctrl_LVOff_btn</tabstop>
+  <tabstop>Ctrl_LVSet_btn</tabstop>
+  <tabstop>Ctrl_HVOn_btn</tabstop>
+  <tabstop>Ctrl_HVOff_btn</tabstop>
+  <tabstop>Ctrl_HVSet_btn</tabstop>
+  <tabstop>JulaboTestCmd_line</tabstop>
+  <tabstop>JulaboTestCmd_btn</tabstop>
+  <tabstop>FNALBoxTestCmd_line</tabstop>
+  <tabstop>FNALBoxTestCmd_btn</tabstop>
+  <tabstop>CAENControllerTestCmd_line</tabstop>
+  <tabstop>CAENControllerTestCmd_btn</tabstop>
+  <tabstop>ModuleTestCmd_line</tabstop>
+  <tabstop>ModuleTestCmd_btn</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

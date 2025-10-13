@@ -454,6 +454,9 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         # manual operation tab
         self.Ctrl_SetSp1_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(0,self.Ctrl_ValSp1_dsb.value()))
         self.Ctrl_SelSp1_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(0))
+        
+   
+        # module ID lines
         self.ModuleId_lines[0].returnPressed.connect(lambda : self.BI_SetModuleID(0))
         self.ModuleId_lines[1].returnPressed.connect(lambda : self.BI_SetModuleID(1))
         self.ModuleId_lines[2].returnPressed.connect(lambda : self.BI_SetModuleID(2))

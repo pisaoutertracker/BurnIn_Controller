@@ -1520,13 +1520,13 @@ class BurnIn_Worker(QObject):
 
 
     def BI_StartIV_Cmd(self, session_dict):
-    
+        session=self.SharedDict["TestSession"]
         module = session_dict["Current_ModuleID"]
         HV_ch = session_dict["Current_ModuleHV"]
         self.logger.info("Starting IV scan on module "+module+" on HV channel "+HV_ch+" ...")
         self.last_op_ok= True
         
-        cmd = "python3 measure_iv_curve.py --channel "+HV_ch+ " --scan-type "+ self.IV_scanType+ " --delay "+ self.IV_delay +" --settling-time "+ self.IV_settlingTime+  " --module-name "+ module +" --store-locally --upload"
+        cmd = "python3 measure_iv_curve.py --channel "+HV_ch+ " --scan-type "+ self.IV_scanType+ " --delay "+ self.IV_delay +" --settling-time "+ self.IV_settlingTime+  " --module-name "+ module +" --store-locally --upload --session " + session
         self.logger.info("Executing command: " + cmd)
         
         try:

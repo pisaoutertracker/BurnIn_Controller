@@ -111,7 +111,17 @@ class DB_interface():
     def uploadModuleNameToDB(self,slot,ID):
         self.logger.info("Loading new module connections to DB")
         reqSlotName = "B"+str(slot+1)
-        
+        #update the position attribute of the module using PUT query on /modules/<moduleID> with json {"position": "B1"}
+        api_url = "http://%s:%d/modules/%s"%(self.Addr, int(self.Port), ID)
+        data = { "position": "Burnin"+str(slot+1) }
+        response = requests.put(api_url, json=data)
+        if response.status_code == 200:
+            self.logger.info("Module "+ ID+ " position successfully updated to "+reqSlotName)
+            jsonResponse=response.json()
+            self.logger.debug (jsonResponse)
+        else:
+            self.logger.error("Module "+ ID+ " position update failed. Status code:%d", response.status_code)
+            
         #check if module exists and if it is connected to something
         self.logger.info("Checking module status in DB")
         snapshot_data = { "cable": ID, "side": "crateSide"}
