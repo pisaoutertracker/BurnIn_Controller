@@ -2,6 +2,7 @@ import sys, os
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject, pyqtSignal
 import time
+import math
 from datetime import datetime
 import json
 from __Constant import *
@@ -221,25 +222,7 @@ class BurnIn_Monitor(QObject):
                         self.MQTT_JULABO_dict["Temp_SP1"]=float(reply.replace(" ", ""))
                     else:
                         self.JulaboCycleOK = False
-                        
-                    self.Julabo.sendTCP("in_sp_01")
-                    reply = self.Julabo.receive()
-                    if (reply != "None" and reply != "TCP error"):
-                        self.SharedDict["LastJulaboSP2"].setText(reply.replace(" ", ""))
-                        self.SharedDict["Ctrl_Sp2"].setText(self.SharedDict["LastJulaboSP2"].text())
-                        self.MQTT_JULABO_dict["Temp_SP2"]=float(reply.replace(" ", ""))
-                    else:
-                        self.JulaboCycleOK = False
-                        
-                    self.Julabo.sendTCP("in_sp_02")
-                    reply = self.Julabo.receive()
-                    if (reply != "None" and reply != "TCP error"):
-                        self.SharedDict["LastJulaboSP3"].setText(reply.replace(" ", ""))
-                        self.SharedDict["Ctrl_Sp3"].setText(self.SharedDict["LastJulaboSP3"].text())
-                        self.MQTT_JULABO_dict["Temp_SP3"]=float(reply.replace(" ", ""))
-                    else:
-                        self.JulaboCycleOK = False
-                        
+                                                
                     self.Julabo.sendTCP("in_pv_00")
                     reply = self.Julabo.receive()
                     if (reply != "None" and reply != "TCP error"):
@@ -268,11 +251,6 @@ class BurnIn_Monitor(QObject):
                         
                     if self.SharedDict["LastJulaboTSP"].text()[:1]=="1":
                         self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["LastJulaboSP1"].text())
-                    elif self.SharedDict["LastJulaboTSP"].text()[:1]=="2":
-                        self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["LastJulaboSP2"].text())
-                    elif self.SharedDict["LastJulaboTSP"].text()[:1]=="3":
-                        self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["LastJulaboSP3"].text())
-                            
                         
                 else:
                     self.SharedDict["JULABOConn"].setStyleSheet("color: rgb(255, 0, 0);font: 9pt ");
@@ -317,7 +295,9 @@ class BurnIn_Monitor(QObject):
                             self.MQTT_FNALBox_dict["Temp0"]=float(reply_list[FNAL_T0_OFFSET])
                             self.SharedDict["LastFNALBoxTemp1"].setText(reply_list[FNAL_T1_OFFSET][1:])
                             self.MQTT_FNALBox_dict["Temp1"]=float(reply_list[FNAL_T1_OFFSET][1:])
-                            
+                            AirTemp=float(reply_list[FNAL_PT_OFFSET][1:])-1
+                            self.SharedDict["LastFNALBoxAirTemp"].setText(str(AirTemp))
+                            self.MQTT_FNALBox_dict["AirTemp"]=AirTemp
                             self.SharedDict["LastFNALBoxDoor"].setText(reply_list[FNAL_RS_OFFSET][1:])
                             self.MQTT_FNALBox_dict["Door"]=float(reply_list[FNAL_RS_OFFSET][1:])
                             if float(reply_list[FNAL_RS_OFFSET][1:]) > FNAL_RS_THR:
@@ -331,6 +311,11 @@ class BurnIn_Monitor(QObject):
                             self.MQTT_FNALBox_dict["DewPoint"]=float(reply_list[FNAL_DP_OFFSET][1:])
                             self.SharedDict["LastFNALBoxDP"].setText(reply_list[FNAL_DP_OFFSET][1:])
                             self.SharedDict["Ctrl_IntDewPoint"].setText(reply_list[FNAL_DP_OFFSET][1:])
+							
+                            Sat_vapour_pressure= math.exp(math.log (611.2) + (17.62* AirTemp)/(243.12+ AirTemp) )
+                            Act_vapour_pressure = math.exp(math.log (611.2) + (17.62*self.MQTT_FNALBox_dict["DewPoint"])/(243.12+self.MQTT_FNALBox_dict["DewPoint"])  )
+                            self.MQTT_FNALBox_dict["Humidity"]=Act_vapour_pressure/Sat_vapour_pressure*100
+                            self.SharedDict["LastFNALBoxHumi"].setText("{:.2f}".format(self.MQTT_FNALBox_dict["Humidity"]))
                             
                             IntTemp_arr = [float(self.SharedDict["LastFNALBoxTemp1"].text()),float(self.SharedDict["LastFNALBoxTemp0"].text())]
                             for i in range (NUM_BI_SLOTS):
@@ -338,6 +323,7 @@ class BurnIn_Monitor(QObject):
                             self.SharedDict["Ctrl_LowerTemp"] = min(IntTemp_arr)
                             self.SharedDict["Ctrl_HigherTemp"] = max(list(filter(MAX_VALID_TEMP.__gt__,IntTemp_arr)))
                         except Exception as e:
+                            self.logger.warning(e)
                             self.logger.warning("MONITOR: error splitting FNAL reply "+reply)
                             self.FNALBoxCycleOK = False
                     self.SharedDict["LastFNALBoxMsgTS"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))

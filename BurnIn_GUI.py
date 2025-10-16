@@ -249,8 +249,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["LastJulaboMsgTS"]=self.LastJulaboMsgTS_tag
         self.SharedDict["LastJulaboStatus"]=self.LastJulaboStatus_tag
         self.SharedDict["LastJulaboSP1"]=self.LastJulaboSP1_tag
-        self.SharedDict["LastJulaboSP2"]=self.LastJulaboSP2_tag
-        self.SharedDict["LastJulaboSP3"]=self.LastJulaboSP3_tag
         self.SharedDict["LastJulaboBT"]=self.LastJulaboBT_tag
         self.SharedDict["LastJulaboHP"]=self.LastJulaboHP_tag
         self.SharedDict["LastJulaboTSP"]=self.LastJulaboTSP_tag
@@ -269,6 +267,8 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["LastFNALBoxOW8"]=self.LastFNALBoxOW8_tag
         self.SharedDict["LastFNALBoxOW9"]=self.LastFNALBoxOW9_tag
         self.SharedDict["LastFNALBoxDoor"]=self.LastFNALBoxDoor_tag
+        self.SharedDict["LastFNALBoxAirTemp"]=self.LastFNALBoxAirTemp_tag
+        self.SharedDict["LastFNALBoxHumi"]=self.LastFNALBoxHumi_tag
         
         
         self.SharedDict["LastLV00Current"]=self.LastLV00Current_tag
@@ -359,8 +359,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         # PYQT tags in Control tab
         
         self.SharedDict["Ctrl_Sp1"]=self.Ctrl_Sp1_tag
-        self.SharedDict["Ctrl_Sp2"]=self.Ctrl_Sp2_tag
-        self.SharedDict["Ctrl_Sp3"]=self.Ctrl_Sp3_tag
         self.SharedDict["Ctrl_TSp"]=self.Ctrl_TSp_tag
         self.SharedDict["Ctrl_StatusJulabo"]=self.Ctrl_StatusJulabo_tag
         self.SharedDict["Ctrl_TargetTemp"]=self.Ctrl_TargetTemp_tag
@@ -455,11 +453,10 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         
         # manual operation tab
         self.Ctrl_SetSp1_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(0,self.Ctrl_ValSp1_dsb.value()))
-        self.Ctrl_SetSp2_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(1,self.Ctrl_ValSp2_dsb.value()))
-        self.Ctrl_SetSp3_btn.clicked.connect(lambda : self.Ctrl_SetSp_Cmd(2,self.Ctrl_ValSp3_dsb.value()))
         self.Ctrl_SelSp1_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(0))
-        self.Ctrl_SelSp2_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(1))
-        self.Ctrl_SelSp3_btn.clicked.connect(lambda : self.Ctrl_SelSp_Cmd(2))
+        
+   
+        # module ID lines
         self.ModuleId_lines[0].returnPressed.connect(lambda : self.BI_SetModuleID(0))
         self.ModuleId_lines[1].returnPressed.connect(lambda : self.BI_SetModuleID(1))
         self.ModuleId_lines[2].returnPressed.connect(lambda : self.BI_SetModuleID(2))
@@ -730,17 +727,17 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
     def BI_Update_PowerStatus_Cmd(self,slot,isLV,power):
         if slot>=0:#this status update comes from manual operation
             if isLV:
-                self.Module_LV_LED[slot].setStyleSheet("background-color : grey;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+                self.Module_LV_LED[slot].setStyleSheet("background-color : #add8e6;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
                 self.Module_LV_LED[slot].setText(power)
             else:
-                self.Module_HV_LED[slot].setStyleSheet("background-color : grey;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
+                self.Module_HV_LED[slot].setStyleSheet("background-color : #add8e6;border-radius: 5px;  padding: 3px;border:1px solid black;  ")
                 self.Module_HV_LED[slot].setText(power)
         else:#negative slot means this comes from BI steps and encodes different information
             for i in range(len(self.SharedDict["BI_ActiveSlots"])):
                 if self.SharedDict["BI_ActiveSlots"][i]:#if that slot is active
                     column = 1 if isLV else 6
                     power=self.Ctrl_CAEN_table.item(i,column).text()
-                    color_onoff="blue"
+                    color_onoff="grey"
                     if power=="ON":
                          color_onoff = "#80c342"
                     elif power=="OFF":

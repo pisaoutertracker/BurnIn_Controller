@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
 import time
-from datetime import datetime
+from datetime import datetime,timedelta
 import subprocess
 from __Constant import *
 import json
@@ -193,10 +193,6 @@ class BurnIn_Worker(QObject):
             targetT = -100.0
             if Sp_id == 0 :
                 targetT = float(self.SharedDict["Ctrl_Sp1"].text())
-            elif Sp_id == 1 :
-                targetT = float(self.SharedDict["Ctrl_Sp2"].text())
-            elif Sp_id == 2 :
-                targetT = float(self.SharedDict["Ctrl_Sp3"].text())
 
             if targetT  < float(self.SharedDict["Ctrl_IntDewPoint"].text()):
                 Warning_str = "Operation can't be performed"
@@ -220,10 +216,7 @@ class BurnIn_Worker(QObject):
                     self.SharedDict["Ctrl_TSp"].setText(Sp)
                 if self.SharedDict["Ctrl_TSp"].text()[:1]=="1":
                     self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp1"].text())
-                elif self.SharedDict["Ctrl_TSp"].text()[:1]=="2":
-                    self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp2"].text())
-                elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
-                    self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
+
             except Exception as e:
                 self.logger.error(e)
                 self.last_op_ok= False
@@ -279,10 +272,7 @@ class BurnIn_Worker(QObject):
                     self.SharedDict["Ctrl_Sp"+str(Sp_id+1)].setText(reply.replace(" ", ""))
                 if self.SharedDict["Ctrl_TSp"].text()[:1]=="1":
                     self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp1"].text())
-                elif self.SharedDict["Ctrl_TSp"].text()[:1]=="2":
-                    self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp2"].text())
-                elif self.SharedDict["Ctrl_TSp"].text()[:1]=="3":
-                    self.SharedDict["Ctrl_TargetTemp"].setText(self.SharedDict["Ctrl_Sp3"].text())
+
             except Exception as e:
                 self.logger.error(e)
                 self.last_op_ok= False    
@@ -967,7 +957,7 @@ class BurnIn_Worker(QObject):
     @pyqtSlot()            
     def BI_Start_Cmd(self):
     
-        stepAllowed = ["COOL","HEAT","DAQ","LV_ON","LV_OFF","HV_ON","HV_OFF","SCANIV"]
+        stepAllowed = ["COOL","HEAT","LV_ON","LV_OFF","HV_ON","HV_OFF","SCANIV"]#WAIT and DAQ are treated separately
         self.SharedDict["BI_Active"]=True
         self.logger.info("Starting BurnIN...")
         
@@ -1025,7 +1015,7 @@ class BurnIn_Worker(QObject):
                             self.BI_Abort("Empty cycle description")
                             return    
                         for step in self.SharedDict["StepList"]:
-                            if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ"):
+                            if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ") and (step[0:4].upper()!="WAIT"):
                                 self.BI_Abort("Undefined step in cycle description")
                                 return
                         
@@ -1040,7 +1030,7 @@ class BurnIn_Worker(QObject):
                     self.BI_Abort("Empty cycle description")
                     return
                 for step in self.SharedDict["StepList"]:
-                    if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ"):
+                    if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ") and (step[0:4].upper()!="WAIT"):
                         self.BI_Abort("Undefined step in cycle description")
                         return
                 self.DB_interface.StartSesh(session_dict)
@@ -1053,7 +1043,7 @@ class BurnIn_Worker(QObject):
                 self.BI_Abort("Empty cycle description")
                 return    
             for step in self.SharedDict["StepList"]:
-                if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ"):
+                if not ((step.upper() in stepAllowed)) and (step[0:3].upper()!="DAQ") and (step[0:4].upper()!="WAIT"):
                     self.BI_Abort("Undefined step in cycle description")
                     return
             self.DB_interface.StartSesh(session_dict)
@@ -1196,7 +1186,7 @@ class BurnIn_Worker(QObject):
                 
             if (session_dict["Action"].upper()[0:3]=="DAQ"):
                 self.logger.info("BI: testing...")
-                self.SharedDict["BI_Action"].setText(session_dict["Action"]+"  Module test")
+                self.SharedDict["BI_Action"].setText(session_dict["Action"][4:]+"  Module test")
                 self.SharedDict["BI_TestActive"]=True
                 session_dict["TestType"]=session_dict["Action"][4:]
                 for slot in Slot_list:
@@ -1206,10 +1196,35 @@ class BurnIn_Worker(QObject):
                     self.BI_Update_Status_file(session_dict)
                     self.SharedDict["BI_SUT"].setText(str(slot+1)) 
                     self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
+                    self.BI_CheckID_isOK_sig.emit(slot,0)#0 means we just started testing
                     if not self.BI_Action(self.BI_StartTest_Cmd,False,session_dict):
-                            return
+                        return
+                    if self.last_op_ok:
+                        self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success
+                    else:
+                        self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure
                 self.SharedDict["BI_TestActive"]=False
                 session_dict["TestType"]="Undef"
+
+            if (session_dict["Action"].upper()[0:4]=="WAIT"):
+                try:
+                    #acquire wait time (check if the syntax is bad and cast to int)
+                    wait_time = int(session_dict["Action"][5:])
+                except Exception as e:
+                    self.logger.error(e)
+                    self.last_op_ok= False
+                    return
+                self.logger.info(f"BI: waiting {wait_time} seconds.") #FT:add a a progress bar
+                self.SharedDict["BI_Action"].setText(session_dict["Action"])
+                self.SharedDict["BI_TestActive"]=True
+                for i in range(wait_time):#We do it like this so it is possible to interrupt the process
+                    if self.SharedDict["BI_StopRequest"]:
+                        self.logger.error(f"WORKER: Aborting {wait_time} seconds wait on external request")
+                        self.last_op_ok= False
+                        break
+                    else:
+                        time.sleep(1)
+                self.SharedDict["BI_TestActive"]=False
                 
             if (session_dict["Action"].upper()=="SCANIV"):
                 self.logger.info("BI: IV scan...")
@@ -1221,8 +1236,15 @@ class BurnIn_Worker(QObject):
                     session_dict["Current_ModuleHV"]    = self.SharedDict["CAEN_table"].item(slot,CTRLTABLE_HV_NAME_COL).text()
                     self.SharedDict["BI_SUT"].setText(str(slot+1)) 
                     self.logger.info("BI: IV scan for slot "+str(slot)+": module name "+session_dict["Current_ModuleID"])
+                    self.BI_CheckID_isOK_sig.emit(slot,0)#0 means we just started testing 
+                    self.BI_Update_PowerStatus_sig.emit(slot,False,"SCAN")#isLV=False means HV
                     if not self.BI_Action(self.BI_StartIV_Cmd,False,session_dict):
-                            return
+                        return
+                    if self.last_op_ok:
+                        self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success
+                    else:
+                        self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure
+                    self.BI_Update_PowerStatus_sig.emit(-1,False,"scan")#isLV=False means HV, slot=-1 means all, update GUI-side
                 self.SharedDict["BI_TestActive"]=False
                         
             if (session_dict["Action"].upper()=="LV_ON"):
@@ -1368,23 +1390,39 @@ class BurnIn_Worker(QObject):
     
     ## BI Action function. used to execute a defined operation.        
     def BI_Action(self,Action, abort_if_fail, *args):
+        abort_if_fail = False #FT: hardcoded hack (16/10/2025), move this to __Constant.py
         retry=BI_ACTION_RETRIES
-        while retry:
-            Action(*args)
+        BI_action_start_time=datetime.now()
+        BI_action_timedelta=timedelta(seconds = 0)
+#        self.logger.info("WORKER: BI action started at "+ str(BI_action_start_time))
+#        self.logger.info("WORKER: timedelta set to "+ str(BI_action_timedelta))
+        while (retry and (BI_action_timedelta.total_seconds()< BI_ACTION_RETRY_MAX_TIME)):
+            if(True):
+                Action(*args)
+            else:#for testing
+                self.logger.info("WORKER: Executing dummy (failed) action for 5 seconds")
+                time.sleep(5)
+                self.last_op_ok=False
+            #
+            BI_action_timedelta=datetime.now()-BI_action_start_time
+#            self.logger.info("WORKER: BI action took "+ str(BI_action_timedelta.total_seconds()) +" seconds to execute so far, including retries and pauses")
             if self.SharedDict["BI_StopRequest"]:
                 self.BI_Abort("BI: aborted for user or Supervisor request")
                 return False
             if not (self.last_op_ok):
-                self.logger.warning("BI: failed to do action...new try in 10 sec")
-                time.sleep(BI_ACTION_RETRY_SLEEP)
+                if (BI_action_timedelta.total_seconds()> BI_ACTION_RETRY_MAX_TIME):
+                    self.logger.warning("BI: continuously failed to do action for longer than " +str(BI_ACTION_RETRY_MAX_TIME) + " seconds")
+                else:
+                    self.logger.warning("BI: failed to do action... new try in "+str(BI_ACTION_RETRY_SLEEP)+" seconds")
+                    time.sleep(BI_ACTION_RETRY_SLEEP)
                 retry=retry-1
             else:
                 return True
         if abort_if_fail:
-            self.BI_Abort("BI: failed to do action ("+str(BI_ACTION_RETRIES)+" times)...aborting")
+            self.BI_Abort("BI: Failed to do action "+str(BI_ACTION_RETRIES-retry)+" time(s) over " + str(BI_action_timedelta.total_seconds()) + " seconds... aborting")
             return False
         else:
-            self.logger.warning("BI: failed to do action ("+str(BI_ACTION_RETRIES)+" times)...but going ahead with test")
+            self.logger.warning("BI: Failed to do action "+str(BI_ACTION_RETRIES-retry)+" time(s) over " + str(BI_action_timedelta.total_seconds()) + " seconds... but going ahead with test")
             return True
 
     ## BI function to ramp down in temp
@@ -1407,8 +1445,8 @@ class BurnIn_Worker(QObject):
         
         nextTemp = 0.0
         #initialise and keep if heating
-        TargetTemp = SelectedTemp+TempMantainOffset #aim slightly above target
-        TempMargin = - TempMantainOffset
+        TargetTemp = SelectedTemp+ TempRampOffset #TempMantainOffset #aim slightly above target
+        TempMargin = - TempRampOffset
         verb="heating"
         if isCooling:
             TargetTemp = SelectedTemp-TempRampOffset #aim below target
@@ -1487,7 +1525,7 @@ class BurnIn_Worker(QObject):
             return
         # set target temperature mantain
         self.logger.info("BI: keep temperature ....")
-        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,SelectedTemp-TempMantainOffset,PopUp):
+        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,SelectedTemp-TempMantainOffset if isCooling else SelectedTemp,PopUp):
             self.last_op_ok= False
             return
                
@@ -1498,13 +1536,13 @@ class BurnIn_Worker(QObject):
 
 
     def BI_StartIV_Cmd(self, session_dict):
-    
+        session=self.SharedDict["TestSession"]
         module = session_dict["Current_ModuleID"]
         HV_ch = session_dict["Current_ModuleHV"]
         self.logger.info("Starting IV scan on module "+module+" on HV channel "+HV_ch+" ...")
         self.last_op_ok= True
         
-        cmd = "python3 measure_iv_curve.py --channel "+HV_ch+ " --scan-type "+ self.IV_scanType+ " --delay "+ self.IV_delay +" --settling-time "+ self.IV_settlingTime+  " --module_name "+ module 
+        cmd = "python3 measure_iv_curve.py --channel "+HV_ch+ " --scan-type "+ self.IV_scanType+ " --delay "+ self.IV_delay +" --settling-time "+ self.IV_settlingTime+  " --module-name "+ module +" --store-locally --upload --session " + session
         self.logger.info("Executing command: " + cmd)
         
         try:
