@@ -22,7 +22,7 @@ Supervisor:
  Enabled: "True"
 BITest:
  cwd: "/home/thermal/BurnIn_moduleTest"
- version: "local"
+ version: "ph2_acf_v6-18"
 IVScan:
  cwd: "/home/thermal/BurnIn_moduleTest"
  scanType: "after_encapsulation"

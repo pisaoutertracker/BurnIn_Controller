@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
 import time
-from datetime import datetime
+from datetime import datetime,timedelta
 import subprocess
 from __Constant import *
 import json
@@ -1390,23 +1390,39 @@ class BurnIn_Worker(QObject):
     
     ## BI Action function. used to execute a defined operation.        
     def BI_Action(self,Action, abort_if_fail, *args):
+        abort_if_fail = False #FT: hardcoded hack (16/10/2025), move this to __Constant.py
         retry=BI_ACTION_RETRIES
-        while retry:
-            Action(*args)
+        BI_action_start_time=datetime.now()
+        BI_action_timedelta=timedelta(seconds = 0)
+#        self.logger.info("WORKER: BI action started at "+ str(BI_action_start_time))
+#        self.logger.info("WORKER: timedelta set to "+ str(BI_action_timedelta))
+        while (retry and (BI_action_timedelta.total_seconds()< BI_ACTION_RETRY_MAX_TIME)):
+            if(True):
+                Action(*args)
+            else:#for testing
+                self.logger.info("WORKER: Executing dummy (failed) action for 5 seconds")
+                time.sleep(5)
+                self.last_op_ok=False
+            #
+            BI_action_timedelta=datetime.now()-BI_action_start_time
+#            self.logger.info("WORKER: BI action took "+ str(BI_action_timedelta.total_seconds()) +" seconds to execute so far, including retries and pauses")
             if self.SharedDict["BI_StopRequest"]:
                 self.BI_Abort("BI: aborted for user or Supervisor request")
                 return False
             if not (self.last_op_ok):
-                self.logger.warning("BI: failed to do action...new try in 10 sec")
-                time.sleep(BI_ACTION_RETRY_SLEEP)
+                if (BI_action_timedelta.total_seconds()> BI_ACTION_RETRY_MAX_TIME):
+                    self.logger.warning("BI: continuously failed to do action for longer than " +str(BI_ACTION_RETRY_MAX_TIME) + " seconds")
+                else:
+                    self.logger.warning("BI: failed to do action... new try in "+str(BI_ACTION_RETRY_SLEEP)+" seconds")
+                    time.sleep(BI_ACTION_RETRY_SLEEP)
                 retry=retry-1
             else:
                 return True
         if abort_if_fail:
-            self.BI_Abort("BI: failed to do action ("+str(BI_ACTION_RETRIES)+" times)...aborting")
+            self.BI_Abort("BI: Failed to do action "+str(BI_ACTION_RETRIES-retry)+" time(s) over " + str(BI_action_timedelta.total_seconds()) + " seconds... aborting")
             return False
         else:
-            self.logger.warning("BI: failed to do action ("+str(BI_ACTION_RETRIES)+" times)...but going ahead with test")
+            self.logger.warning("BI: Failed to do action "+str(BI_ACTION_RETRIES-retry)+" time(s) over " + str(BI_action_timedelta.total_seconds()) + " seconds... but going ahead with test")
             return True
 
     ## BI function to ramp down in temp
