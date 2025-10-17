@@ -245,9 +245,11 @@ class DB_interface():
             "temperatures": {
                 "low": session_dict["LowTemp"],
                 "high": session_dict["HighTemp"],
+                "lowRamp": session_dict["LowRamp"], 
+                "lowKeep": session_dict["LowKeep"], 
+                "highRamp": session_dict["HighRamp"], 
+                "highKeep": session_dict["HighKeep"], 
                 },
-            "underRamp": session_dict["UnderRamp"], 
-            "underKeep": session_dict["UnderKeep"], 
             "nCycles": session_dict["NCycles"],
             "test": session_dict["NCycles"],
             "modulesList": [],

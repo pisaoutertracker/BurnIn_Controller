@@ -907,9 +907,11 @@ class BurnIn_Worker(QObject):
         session_dict["Cycle"]                = 0
         session_dict["Status"]                = "Setup"
         session_dict["LowTemp"]                = self.SharedDict["BI_LowTemp"]
-        session_dict["UnderRamp"]            = self.SharedDict["BI_UnderRamp"]
-        session_dict["UnderKeep"]            = self.SharedDict["BI_UnderKeep"]
+        session_dict["LowRamp"]            = self.SharedDict["BI_LowRamp"]
+        session_dict["LowKeep"]            = self.SharedDict["BI_LowKeep"]
         session_dict["HighTemp"]            = self.SharedDict["BI_HighTemp"]
+        session_dict["HighRamp"]            = self.SharedDict["BI_HighRamp"]
+        session_dict["HighKeep"]            = self.SharedDict["BI_HighKeep"]
         session_dict["Operator"]            = self.SharedDict["BI_Operator"]
         session_dict["Description"]            = self.SharedDict["BI_Description"]
         session_dict["Session"]                = "-1"
@@ -1367,23 +1369,20 @@ class BurnIn_Worker(QObject):
     ## BI generic function to change temp
     def BI_GoSelectedTemp(self,session_dict,SelectedTemp,isCooling,PopUp=False):
 
-        TempTolerance     = BI_TEMP_TOLERANCE
-        TempRampOffset    = session_dict["UnderRamp"]
-        TempMantainOffset = session_dict["UnderKeep"]
-
+        TempTolerance   = BI_TEMP_TOLERANCE
+        TempRampOffset  = session_dict["LowRamp"] if isCooling else session_dict["HighRamp"]
+        TempKeepOffset  = session_dict["LowKeep"] if isCooling else session_dict["HighKeep"]
+        verb = "cooling" if isCooling else "heating"
+        
         self.last_op_ok= True
-        last_step=False # assume we cannot go directly to the target temperature
-        
-        nextTemp = 0.0
-        #initialise and keep if heating
-        TargetTemp = SelectedTemp+ TempRampOffset #TempMantainOffset #aim slightly above target
-        TempMargin = - TempRampOffset
-        verb="heating"
-        if isCooling:
-            TargetTemp = SelectedTemp-TempRampOffset #aim below target
-            TempMargin = TempRampOffset
-            verb="cooling"
-        
+        TargetTemp = SelectedTemp+TempRampOffset
+
+        last_step=False # enter while loop at least once
+        if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-SelectedTemp)) < TempTolerance):
+            #... unless we're already where we want to be, in which case we move to keep mode
+            last_step = True
+
+        nextTemp = session_dict["HighTemp"] #initialise to a safe value
         #cooling loops
         while (not last_step):
             try:
@@ -1394,7 +1393,7 @@ class BurnIn_Worker(QObject):
                 self.last_op_ok= False
                 return
             
-            if (TargetTemp> dewPoint):#if the temperature we aim for is above the dewpoint everything is fine and there will be no further steps; this is always true if heating
+            if (TargetTemp > dewPoint):#if the temperature we aim for is above the dewpoint everything is fine and there will be no further steps; this is always true if heating
                 nextTemp = TargetTemp
                 self.logger.info("BI: target temp above dew point - OK!")
                 last_step = True
@@ -1403,7 +1402,7 @@ class BurnIn_Worker(QObject):
                 self.logger.info("BI: target temp below dew point, going to dew point and switching to high flow.")
                 if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True, True,PopUp):
                     return
-
+                
             #set to hold temperature at the target nextTemp
             if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,nextTemp,PopUp):
                 self.last_op_ok= False
@@ -1428,9 +1427,23 @@ class BurnIn_Worker(QObject):
                         if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
                             return
                     #
-                    if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-(nextTemp+TempMargin)) < TempTolerance):
-                        #this happens when we reach SelectedTemp when heating or at the last cooling step, or TempRampOffset above target at intermediate cooling steps
-                        break
+                    if isCooling:
+                        if last_step:
+                            if (float(self.SharedDict["LastFNALBoxTemp0"].text())-SelectedTemp < TempTolerance):
+                                #this happens when we get close enough to the selected temp FROM ABOVE
+                                #not using absolute value, if the FNALBox doesn't respond and the temperature does not update, we might go past the target
+                                break
+                        else: #last_step = False
+                            if (float(self.SharedDict["LastFNALBoxTemp0"].text())-nextTemp < TempTolerance + 5.):
+                                #this happens when we get close enough to our intermediate step FROM ABOVE
+                                #remeasure the dewpoint and reevaluate the target temperature
+                                #this might be slow if threshold is set at nextTemp, but subject to user error if set to (nextTemp-TempRampOffset). We hardcode a value
+                                break
+                    else: #if heating
+                        if (SelectedTemp - float(self.SharedDict["LastFNALBoxTemp0"].text()) >  TempTolerance):
+                            #this happens when we get close enough to the selected temp FROM BELOW
+                            break
+                    #
                     if self.SharedDict["BI_StopRequest"]:
                         self.last_op_ok= False
                         return    
@@ -1455,8 +1468,9 @@ class BurnIn_Worker(QObject):
         if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
             return
         # set target temperature mantain
-        self.logger.info("BI: keep temperature ....")
-        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,SelectedTemp-TempMantainOffset if isCooling else SelectedTemp,PopUp):
+        TargetTemp = SelectedTemp+TempKeepOffset #usually if we are cooling we aim slightly lower, we might do the same for heating
+        self.logger.info("BI: Keep temperature...")
+        if not self.BI_Action(self.Ctrl_SetSp_Cmd,True,0,TargetTemp,PopUp):
             self.last_op_ok= False
             return
                
