@@ -1378,7 +1378,7 @@ class BurnIn_Worker(QObject):
         TargetTemp = SelectedTemp+TempRampOffset
 
         last_step=False # enter while loop at least once
-        if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-SelectedTemp)) < TempTolerance):
+        if (abs(float(self.SharedDict["LastFNALBoxTemp0"].text())-SelectedTemp) < TempTolerance):
             #... unless we're already where we want to be, in which case we move to keep mode
             last_step = True
 
