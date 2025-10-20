@@ -284,7 +284,7 @@ class DB_interface():
         self.logger.info("Database thermal cycle uploading. Please wait...")
                 
         #define test session for DB
-        BurninCycleName = "BurnIn_session" + session_dict["Session"] + "_cycle_" + session_dict["Cycle"] + "of" + session_dict["NCycles"]
+        BurninCycleName = "BurnIn_session" + session_dict["Session"] + "_cycle_" + str(session_dict["Cycle"]) + "of" + str(session_dict["NCycles"])
         cycle = {
             "BurninCycleName": BurninCycleName,
             "BurninCycleDate": session_dict["CycleTimestamp"],
