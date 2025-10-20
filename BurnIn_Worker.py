@@ -1179,20 +1179,22 @@ class BurnIn_Worker(QObject):
                 self.SharedDict["BI_Action"].setText("IV scan")
                 self.SharedDict["BI_TestActive"]=True
                 self.BI_Update_Status_file(session_dict)
+                self.SharedDict["BI_SUT"].setText("All selected slots") 
+                self.logger.info("BI: IV scans for all selected modules")
+                Name_list = []
                 for slot in Slot_list:
-                    session_dict["Current_ModuleID"]    = self.SharedDict["BI_ModuleIDs"][slot]
-                    session_dict["Current_ModuleHV"]    = self.SharedDict["CAEN_table"].item(slot,CTRLTABLE_HV_NAME_COL).text()
-                    self.SharedDict["BI_SUT"].setText(str(slot+1)) 
-                    self.logger.info("BI: IV scan for slot "+str(slot)+": module name "+session_dict["Current_ModuleID"])
-                    self.BI_CheckID_isOK_sig.emit(slot,0)#0 means we just started testing 
+                    self.BI_CheckID_isOK_sig.emit(slot,0)#0 means we just started testing
+                    Name_list.append(self.SharedDict["BI_ModuleIDs"][slot])
                     self.BI_Update_PowerStatus_sig.emit(slot,False,"SCAN")#isLV=False means HV
-                    if not self.BI_Action(self.BI_StartIV_Cmd,False,session_dict):
-                        return
+                #Launching parallel IV Scan
+                if not self.BI_Action(self.BI_StartIV_Cmd,False,session_dict,Name_list,HV_Channel_list):
+                    return
+                for slot in Slot_list:#This currently marks all scans as failed unless all succeed
                     if self.last_op_ok:
                         self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success
                     else:
                         self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure
-                    self.BI_Update_PowerStatus_sig.emit(-1,False,"scan")#isLV=False means HV, slot=-1 means all, update GUI-side
+                self.BI_Update_PowerStatus_sig.emit(-1,False,"scan")#isLV=False means HV, slot=-1 means all, update GUI-side
                 self.SharedDict["BI_TestActive"]=False
                         
             if (session_dict["Action"].upper()=="LV_ON"):
@@ -1488,16 +1490,16 @@ class BurnIn_Worker(QObject):
             json.dump(session_dict, outfile)
 
 
-    def BI_StartIV_Cmd(self, session_dict):
+    def BI_StartIV_Cmd(self, session_dict, HV_list, name_list):
         session=self.SharedDict["TestSession"]
-        module = session_dict["Current_ModuleID"]
-        HV_ch = session_dict["Current_ModuleHV"]
-        self.logger.info("Starting IV scan on module "+module+" on HV channel "+HV_ch+" ...")
+        modules = session_dict["ModuleIDs"]
+        self.logger.info("Starting IV scan on modules "+name_list+" with HV channels "+HV_list+" ...")
         self.last_op_ok= True
-        
-        cmd = "python3 measure_iv_curve.py --channel "+HV_ch+ " --scan-type "+ self.IV_scanType+ " --delay "+ self.IV_delay +" --settling-time "+ self.IV_settlingTime+  " --module-name "+ module +" --store-locally --upload --session " + session
+
+    
+        cmd = "python3 iv_parallel.py --channels "+','.join(HV_list)+ " --module-names "+ ','.join(name_list) + " --scan-type "+ self.IV_scanType+ " --delay "+ self.IV_delay +" --settling-time "+ self.IV_settlingTime+  " --store-locally --upload --session " + session
         self.logger.info("Executing command: " + cmd)
-        
+
         try:
             proc = subprocess.Popen(cmd.split(), cwd=self.BIcwd,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)                                    
             
@@ -1530,7 +1532,7 @@ class BurnIn_Worker(QObject):
                 self.last_op_ok= False
                 
         except Exception as e:
-            self.logger.error("Erro during IV Scan")
+            self.logger.error("Error during IV Scan")
             self.logger.error(e)
             self.last_op_ok= False
             
