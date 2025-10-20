@@ -531,7 +531,7 @@ class BurnIn_Worker(QObject):
         self.last_op_ok= True
         if PopUp:
             Channel_list.clear()
-        power = "ON" if switch else "OFF"
+        power = "On" if switch else "Off"
         if not (self.SharedDict["CAEN_updated"]):
             Warning_str = "Operation can't be performed"
             Reason_str = "CAEN infos are not updated"
@@ -610,7 +610,7 @@ class BurnIn_Worker(QObject):
         self.last_op_ok= True
         if PopUp:
             Channel_list.clear()
-        power = "ON" if switch else "OFF"
+        power = "On" if switch else "Off"
         if not (self.SharedDict["CAEN_updated"] and self.SharedDict["FNALBox_updated"]):
             Warning_str = "Operation can't be performed"
             Reason_str = "CAEN and/or FNAL infos are not updated"
