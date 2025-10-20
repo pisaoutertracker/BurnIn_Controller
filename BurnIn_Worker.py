@@ -903,29 +903,30 @@ class BurnIn_Worker(QObject):
         
         #creating parameter dictionary for the current session
         session_dict={}
-        session_dict["Step"]            = 1
-        session_dict["StepList"]            = self.SharedDict["StepList"]
-        session_dict["Action"]                = "Undef"
-        session_dict["Cycle"]                = 0
-        session_dict["Status"]                = "Setup"
-        session_dict["LowTemp"]                = self.SharedDict["BI_LowTemp"]
-        session_dict["LowRamp"]            = self.SharedDict["BI_LowRamp"]
-        session_dict["LowKeep"]            = self.SharedDict["BI_LowKeep"]
-        session_dict["HighTemp"]            = self.SharedDict["BI_HighTemp"]
-        session_dict["HighRamp"]            = self.SharedDict["BI_HighRamp"]
-        session_dict["HighKeep"]            = self.SharedDict["BI_HighKeep"]
-        session_dict["Operator"]            = self.SharedDict["BI_Operator"]
-        session_dict["Description"]            = self.SharedDict["BI_Description"]
-        session_dict["Session"]                = "-1"
-        session_dict["ActiveSlots"]            = self.SharedDict["BI_ActiveSlots"]
-        session_dict["ModuleIDs"]            = self.SharedDict["BI_ModuleIDs"]
-        session_dict["TestType"]            = "Undef"
-        session_dict["Timestamp"]            = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-        session_dict["fc7ID"]                = "Undef"
-        session_dict["Current_ModuleID"]    = "Undef"
-        session_dict["fc7Slot"]                = "Undef"
-        session_dict["Current_ModuleHV"]    = "Undef"
-        session_dict["NominalTemp"]		    = 25
+        session_dict["Step"]             = 1
+        session_dict["StepList"]         = self.SharedDict["StepList"]
+        session_dict["Action"]           = "Undef"
+        session_dict["Cycle"]            = 0
+        session_dict["Status"]           = "Setup"
+        session_dict["LowTemp"]          = self.SharedDict["BI_LowTemp"]
+        session_dict["LowRamp"]          = self.SharedDict["BI_LowRamp"]
+        session_dict["LowKeep"]          = self.SharedDict["BI_LowKeep"]
+        session_dict["HighTemp"]         = self.SharedDict["BI_HighTemp"]
+        session_dict["HighRamp"]         = self.SharedDict["BI_HighRamp"]
+        session_dict["HighKeep"]         = self.SharedDict["BI_HighKeep"]
+        session_dict["Operator"]         = self.SharedDict["BI_Operator"]
+        session_dict["Description"]      = self.SharedDict["BI_Description"]
+        session_dict["Session"]          = "-1"
+        session_dict["ActiveSlots"]      = self.SharedDict["BI_ActiveSlots"]
+        session_dict["ModuleIDs"]        = self.SharedDict["BI_ModuleIDs"]
+        session_dict["TestType"]         = "Undef"
+        session_dict["Timestamp"]        = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+        session_dict["CycleTimestamp"]   = "NoCycleNoTime"
+        session_dict["fc7ID"]            = "Undef"
+        session_dict["Current_ModuleID"] = "Undef"
+        session_dict["fc7Slot"]          = "Undef"
+        session_dict["Current_ModuleHV"] = "Undef"
+        session_dict["NominalTemp"]	 = 25
         
 		
         session_dict["NCycles"]=[item.upper() for item in session_dict["StepList"]].count("COOL")
@@ -1095,15 +1096,18 @@ class BurnIn_Worker(QObject):
             self.SharedDict["BI_Step"].setText(str(session_dict["Step"])+" of "+str(len(session_dict["StepList"])))
             
             if (session_dict["Action"].upper()=="COOL"):
-                session_dict["Cycle"]=session_dict["Cycle"]+1
-                self.logger.info("BI: thermal cycle "+str(session_dict["Cycle"]-1) + " of "+str(NCycles))
-                self.SharedDict["BI_Cycle"].setText(str(session_dict["Cycle"]-1)+" of "+str(session_dict["NCycles"]))
-                session_dict["NominalTemp"]=session_dict["LowTemp"]
-                self.BI_Update_Status_file(session_dict)
                 self.logger.info("BI: ramping down...")
                 self.SharedDict["BI_Action"].setText("Cooling")
-                self.SharedDict["BI_SUT"].setText("None") 
-                self.DB_interface.StartCycle(session_dict)				
+                self.SharedDict["BI_SUT"].setText("None")
+                session_dict["NominalTemp"] = session_dict["LowTemp"]
+                # upload a new BI cycle to DB
+                session_dict["Cycle"]          = session_dict["Cycle"]+1
+                session_dict["CycleTimestamp"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+                self.logger.info("BI: thermal cycle "+str(session_dict["Cycle"]-1) + " of "+str(NCycles))
+                self.SharedDict["BI_Cycle"].setText(str(session_dict["Cycle"]-1)+" of "+str(session_dict["NCycles"]))
+                self.DB_interface.StartCycle(session_dict) #pass the cycle start time, not the burnin timestamp
+                #
+                self.BI_Update_Status_file(session_dict)
                 if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
                     self.logger.info("BI: cooling")
                     if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["LowTemp"]):
