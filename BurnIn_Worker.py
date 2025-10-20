@@ -1490,7 +1490,7 @@ class BurnIn_Worker(QObject):
             json.dump(session_dict, outfile)
 
 
-    def BI_StartIV_Cmd(self, session_dict, HV_list, name_list):
+    def BI_StartIV_Cmd(self, session_dict, name_list, HV_list):
         session=self.SharedDict["TestSession"]
         modules = session_dict["ModuleIDs"]
         self.logger.info("Starting IV scan on modules "+','.join(name_list)+" with HV channels "+','.join(HV_list)+" ...")
