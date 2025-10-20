@@ -1493,7 +1493,7 @@ class BurnIn_Worker(QObject):
     def BI_StartIV_Cmd(self, session_dict, HV_list, name_list):
         session=self.SharedDict["TestSession"]
         modules = session_dict["ModuleIDs"]
-        self.logger.info("Starting IV scan on modules "+name_list+" with HV channels "+HV_list+" ...")
+        self.logger.info("Starting IV scan on modules "+','.join(name_list)+" with HV channels "+','.join(HV_list)+" ...")
         self.last_op_ok= True
 
     
