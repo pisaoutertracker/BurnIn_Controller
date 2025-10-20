@@ -531,7 +531,7 @@ class BurnIn_Worker(QObject):
         self.last_op_ok= True
         if PopUp:
             Channel_list.clear()
-        power = "On" if switch else "Off"
+        power = "ON" if switch else "OFF"
         if not (self.SharedDict["CAEN_updated"]):
             Warning_str = "Operation can't be performed"
             Reason_str = "CAEN infos are not updated"
