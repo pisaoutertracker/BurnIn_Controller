@@ -860,6 +860,7 @@ class BurnIn_Worker(QObject):
                 found_HV_ON = True
                 self.logger.info("WORKER: Slot " + " HV is on after CheckID for some reason. Turning off.")
         if found_HV_ON:
+            self.BI_Update_PowerStatus_sig.emit(-2,False,"OFF_dummy")#isLV=False means HV,slot=-2 means all, but command only started   
             self.SharedDict["BI_Action"].setText("Stop HVs")
             self.Ctrl_PowerHV_Cmd(False,HV_Channel_list,PopUp)
             if not self.last_op_ok:
@@ -869,7 +870,8 @@ class BurnIn_Worker(QObject):
             for row in Slot_list:
                 if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
                     return self.BI_CheckIDs_failed_terminate("Found HVs ON after CheckID and failed to turn them off.")
-        
+            self.BI_Update_PowerStatus_sig.emit(-1,False,"OFF_dummy")#isLV=False means HV,slot=-1 means all, but command only started   
+                
         #stop LV
         self.SharedDict["BI_Action"].setText("Stop LVs")
         self.BI_Update_PowerStatus_sig.emit(-2,True,"OFF_dummy")#isLV=True means LV,slot=-2 means all, but command only started
