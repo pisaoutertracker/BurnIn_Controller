@@ -1105,10 +1105,11 @@ class BurnIn_Worker(QObject):
                 self.SharedDict["BI_SUT"].setText("None") 
                 self.DB_interface.StartCycle(session_dict)				
                 if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
+                    self.logger.info("BI: cooling")
                     if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["LowTemp"]):
-                        self.logger.info("BI: cooling")
                         return
                 else:
+                    self.logger.info("BI: heating (to low temp, weird)")
                     if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["LowTemp"]):
                         return
                 
@@ -1123,6 +1124,7 @@ class BurnIn_Worker(QObject):
                     if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["HighTemp"]):
                         return
                 else:
+                    self.logger.info("BI: cooling (to high temp, weird)")
                     if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["HighTemp"]):
                         return
                 
@@ -1442,7 +1444,7 @@ class BurnIn_Worker(QObject):
                                 #this might be slow if threshold is set at nextTemp, but subject to user error if set to (nextTemp-TempRampOffset). We hardcode a value
                                 break
                     else: #if heating
-                        if (SelectedTemp - float(self.SharedDict["LastFNALBoxTemp0"].text()) >  TempTolerance):
+                        if (SelectedTemp - float(self.SharedDict["LastFNALBoxTemp0"].text()) <  TempTolerance):
                             #this happens when we get close enough to the selected temp FROM BELOW
                             break
                     #
