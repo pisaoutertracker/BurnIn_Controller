@@ -1,7 +1,7 @@
 import sys, os
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import QMessageBox
+#from PyQt5.QtWidgets import QMessageBox
 import time
 from datetime import datetime,timedelta
 import subprocess
@@ -1607,12 +1607,12 @@ class BurnIn_Worker(QObject):
                     
     
     @pyqtSlot(bool)                
-    def MT_StartTest_Cmd(self, dry=False, PupUp=False):
+    def MT_StartTest_Cmd(self, dry=False, PopUp=False):
             self.logger.info("Starting module test...Please wait till completion")
-            if PupUp:
-                msg = QMessageBox()
-                msg.setWindowTitle("Module test ongoing. Please wait...")
-                msg.show()
+            Warning_str = "Please wait..."
+            Reason_str = "Module test ongoing."
+            if PopUp:
+                self.Request_msg.emit(Warning_str,Reason_str)
             session=self.SharedDict["TestSession"]
             if dry:
                 result = subprocess.run(["python3", "moduleTest.py", "--board", "fc7ot2", "--slot", "0" ,"--module", "PS_26_05-IPG_00102",  "--session", session, "--useExistingModuleTest","T2023_12_04_16_26_11_224929"],
