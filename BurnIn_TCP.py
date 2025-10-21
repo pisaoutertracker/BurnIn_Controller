@@ -35,6 +35,8 @@ class BurnIn_TCP():
             try:
                 self.logger.info(self.moduleName + ": Connecting to device...")
                 self.TCPSock = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+                #timeout 0.5 sec
+                self.TCPSock.settimeout(0.5)
                 self.TCPSock.connect((self.Addr,int(self.Port))) 
                 self.interfaces.clear()
                 self.interfaces.append(self.TCPSock)       # [self.UDPSock,self.TCPSock]
@@ -66,6 +68,15 @@ class BurnIn_TCP():
                         if self.moduleName == "Julabo":
                             return self.buffer[:-2]
                         elif self.moduleName == "CAENController":
+                            print("CAEN",self.buffer[8:])
+                            more = True
+                            while more :
+                                try:
+                                    more=self.readTCP(2048).decode()
+                                    self.buffer += more
+                                #return on timeout
+                                except socket.timeout:
+                                    more = False      
                             return self.buffer[8:]
                         elif self.moduleName == "FNALBox":
                             reply= reply + self.buffer
