@@ -1110,13 +1110,12 @@ class BurnIn_Worker(QObject):
                 self.BI_Update_Status_file(session_dict)
                 if float(self.SharedDict["LastFNALBoxTemp0"].text()) > session_dict["LowTemp"]:  #expected
                     self.logger.info("BI: cooling")
-                    if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["LowTemp"]):
-                        return
                 else:
-                    self.logger.info("BI: heating (to low temp, weird)")
-                    if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["LowTemp"]):
-                        return
-                
+                    self.logger.info('BI: "cooling" to a higher temperature')
+                if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["LowTemp"]):
+                    return
+
+                    
             if (session_dict["Action"].upper()=="HEAT"):
                 self.logger.info("BI: going to high temp")
                 self.SharedDict["BI_Action"].setText("Heating")
@@ -1125,12 +1124,11 @@ class BurnIn_Worker(QObject):
                 self.BI_Update_Status_file(session_dict)
                 if float(self.SharedDict["LastFNALBoxTemp0"].text()) < session_dict["HighTemp"]:  #expected
                     self.logger.info("BI: heating")
-                    if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["HighTemp"]):
-                        return
                 else:
-                    self.logger.info("BI: cooling (to high temp, weird)")
-                    if not self.BI_Action(self.BI_GoLowTemp,True,session_dict,session_dict["HighTemp"]):
-                        return
+                    self.logger.info('BI: "heating" to a lower temperature')
+                if not self.BI_Action(self.BI_GoHighTemp,True,session_dict,session_dict["HighTemp"]):
+                    return
+
                 
             if (session_dict["Action"].upper()[0:3]=="DAQ"):
                 self.logger.info("BI: testing...")
