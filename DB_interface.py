@@ -297,7 +297,31 @@ class DB_interface():
         
 		
         uploadResponse=self.uploadCycleToDB(cycle)
-		
+	#now also update for each module the list of cycles it has undergone
+        for moduleID in session_dict["ModuleIDs"]:
+            if moduleID=="" or moduleID==None or moduleID=="no connection":
+                continue
+            api_url = "http://%s:%d/modules/%s"%(self.Addr, int(self.Port), moduleID)
+            #get current list of cycles
+            response = requests.get(api_url)
+            if response.status_code == 200:
+                self.logger.info("Module "+ moduleID+ " info successfully pulled.")
+                jsonResponse=response.json()
+                self.logger.debug (jsonResponse)
+                moduleCycles = jsonResponse.get("burninCycles", [])
+                moduleCycles.append(BurninCycleName)
+                #update the list of cycles
+                data = { "burninCycles": moduleCycles }
+                response = requests.put(api_url, json=data)
+                if response.status_code == 200:
+                    self.logger.info("Module "+ moduleID+ " burninCycles successfully updated.")
+                    jsonResponse=response.json()
+                    self.logger.debug (jsonResponse)
+                else:
+                    self.logger.error("Module "+ moduleID+ " burninCycles update failed. Status code:%d", response.status_code)
+            else:
+                self.logger.error("Module "+ moduleID+ " info pull failed. Status code:%d", response.status_code)
+
         if uploadResponse=="timeout": #if it times out, display a dummy status
             self.logger.error("DATABASE    : Cycle loading timed out!")
         else:
