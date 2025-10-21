@@ -6,6 +6,7 @@ import pyqtgraph as pg
 import datetime
 
 from BurnIn_TCP import *
+from PyQt5.QtWidgets import QMessageBox
 
 from BurnIn_Worker import *
 from BurnIn_Monitor import *

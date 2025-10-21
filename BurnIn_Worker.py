@@ -1,15 +1,11 @@
 import sys, os
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import QObject, pyqtSlot, pyqtSignal
-#from PyQt5.QtWidgets import QMessageBox
 import time
 from datetime import datetime,timedelta
 import subprocess
 from __Constant import *
 import json
-
-
-
 
 ## Class implementation for the Worker module of the GUI controller.
 #
@@ -831,7 +827,7 @@ class BurnIn_Worker(QObject):
         self.SharedDict["BI_Status"].setText("CheckingIDs")
         self.SharedDict["BI_Action"].setText("Testing")
         for slot in Slot_list:
-            self.SharedDict["BI_SUT"].setText(str(slot))
+            self.SharedDict["BI_SUT"].setText(str(slot+1))
             session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
             session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
             session_dict["Current_ModuleID"]    = self.SharedDict["BI_ModuleIDs"][slot]
@@ -926,11 +922,10 @@ class BurnIn_Worker(QObject):
         session_dict["Current_ModuleID"] = "Undef"
         session_dict["fc7Slot"]          = "Undef"
         session_dict["Current_ModuleHV"] = "Undef"
-        session_dict["NominalTemp"]	 = 25
-        
-		
-        session_dict["NCycles"]=[item.upper() for item in session_dict["StepList"]].count("COOL")
-        
+        session_dict["WorkingTemp"]	 = 20
+        session_dict["ModuleFailures"]   = [0]*10
+    
+	session_dict["NCycles"] = [item.upper() for item in session_dict["StepList"]].count("COOL")    
         
         #check if file session already exists (aka a session was stopped or crashed)
         if (os.path.exists("Session.json")):
@@ -968,7 +963,7 @@ class BurnIn_Worker(QObject):
                     self.BI_Abort("Error while recovering session info. Please start new session")
                     return
             else:
-                self.logger.info("Prevoius session overrided. Starting new session")
+                self.logger.info("Previous session overridden. Starting new session")
                 if len(session_dict["StepList"])==0:
                     self.BI_Abort("Empty cycle description")
                     return
@@ -1057,38 +1052,12 @@ class BurnIn_Worker(QObject):
         if not self.BI_Action(self.Ctrl_PowerJulabo_Cmd,True,True,PopUp):
             return
         
-        ###start LV
-        #self.SharedDict["BI_Action"].setText("Start LVs")
-        #if not self.BI_Action(self.Ctrl_PowerLV_Cmd,True,True,LV_Channel_list,PopUp):
-        #    return
-        #time.sleep(BI_SLEEP_AFTER_LVSET)
-        #
-        ##check all LVs are ON
-        #for row in Slot_list:
-        #    if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="ON"):
-        #        self.BI_Abort("BI aborted: some LVs was not turned ON")
-        #        return
-        #
-        ##start HV
-        #self.SharedDict["BI_Action"].setText("Start HVs")
-        #if not self.BI_Action(self.Ctrl_PowerHV_Cmd,True,True,HV_Channel_list,PopUp):
-        #    return
-        #
-        #time.sleep(BI_SLEEP_AFTER_HVSET)
-        ##check all HVs are ON
-        #for row in Slot_list:
-        #    if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="ON"):
-        #        self.BI_Abort("BI aborted: some HVs was not turned ON")
-        #        return
-            
-        
         session_dict["Status"] = "Cycling"
         self.SharedDict["BI_Status"].setText(session_dict["Status"])
 
-        NCycles    = session_dict["NCycles"]
         ######cycle start
         if (session_dict["Status"]=="Recovery"):
-            self.logger.info("BI: recovered from step "+session_dict["Step"]+", thermal cycle "+str(session_dict["Cycle"]) + " of "+str(NCycles))
+            self.logger.info("BI: recovered from step "+session_dict["Step"]+", thermal cycle "+str(session_dict["Cycle"]) + " of "+str(session_dict["NCycles"]))
         
         while session_dict["Step"]-1 < len(session_dict["StepList"]):
         
@@ -1099,11 +1068,11 @@ class BurnIn_Worker(QObject):
                 self.logger.info("BI: ramping down...")
                 self.SharedDict["BI_Action"].setText("Cooling")
                 self.SharedDict["BI_SUT"].setText("None")
-                session_dict["NominalTemp"] = session_dict["LowTemp"]
+                session_dict["WorkingTemp"] = session_dict["LowTemp"]
                 # upload a new BI cycle to DB
                 session_dict["Cycle"]          = session_dict["Cycle"]+1
                 session_dict["CycleTimestamp"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
-                self.logger.info("BI: thermal cycle "+str(session_dict["Cycle"]-1) + " of "+str(NCycles))
+                self.logger.info("BI: thermal cycle "+str(session_dict["Cycle"]-1) + " of "+str(session_dict["NCycles"]))
                 self.SharedDict["BI_Cycle"].setText(str(session_dict["Cycle"]-1)+" of "+str(session_dict["NCycles"]))
                 self.DB_interface.StartCycle(session_dict) #pass the cycle start time, not the burnin timestamp
                 #
@@ -1120,7 +1089,7 @@ class BurnIn_Worker(QObject):
                 self.logger.info("BI: going to high temp")
                 self.SharedDict["BI_Action"].setText("Heating")
                 self.SharedDict["BI_SUT"].setText("None") 
-                session_dict["NominalTemp"]=session_dict["HighTemp"]
+                session_dict["WorkingTemp"]=session_dict["HighTemp"]
                 self.BI_Update_Status_file(session_dict)
                 if float(self.SharedDict["LastFNALBoxTemp0"].text()) < session_dict["HighTemp"]:  #expected
                     self.logger.info("BI: heating")
@@ -1271,7 +1240,7 @@ class BurnIn_Worker(QObject):
         self.SharedDict["BI_Status"].setText("Stopping")
         self.SharedDict["BI_SUT"].setText("None") 
         
-		#stop HV
+	#stop HV
         self.SharedDict["BI_Action"].setText("Stop HVs")
         HV_mod=False
         for row in Slot_list:
@@ -1284,7 +1253,7 @@ class BurnIn_Worker(QObject):
             #check HV stop
             for row in Slot_list:
             	if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
-            		self.BI_Abort("BI aborted: some LVs was not turned OFF")
+            		self.BI_Abort("BI aborted: some HVs was not turned OFF")
             		return
             
         
@@ -1301,7 +1270,7 @@ class BurnIn_Worker(QObject):
             #check LV stop    
             for row in Slot_list:
                 if(self.SharedDict["CAEN_table"].item(row,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
-                    self.BI_Abort("BI aborted: some HVs was not turned OFF")
+                    self.BI_Abort("BI aborted: some LVs was not turned OFF")
                     return
                 
         #put JULABO to 20 degree    
@@ -1359,11 +1328,46 @@ class BurnIn_Worker(QObject):
                 retry=retry-1
             else:
                 return True
+        #steps below occur if the Action fails even after retries
         if abort_if_fail:
             self.BI_Abort("BI: Failed to do action "+str(BI_ACTION_RETRIES-retry)+" time(s) over " + str(BI_action_timedelta.total_seconds()) + " seconds... aborting.")
             return False
         else:
             self.logger.warning("BI: Failed to do action "+str(BI_ACTION_RETRIES-retry)+" time(s) over " + str(BI_action_timedelta.total_seconds()) + " seconds. Moving to next action.")
+            #Check if the failure was caused by one particular module
+            if (self.SharedDict["BI_SUT"] is not "None"):
+                failed_slot = int(self.SharedDict["BI_SUT"])-1
+                session_dict["ModuleFailures"][failed_slot] +=1
+                if (session_dict["ModuleFailures"][failed_slot] >= BI_ACTION_FAILURE_EXCLUDE):                    
+                    #slot has failed too many times, exclude it
+                    Slot_list.remove(failed_slot)
+                    failed_slot_LV = self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_LV_NAME_COL).text()
+                    failed_slot_HV = self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_HV_NAME_COL).text()
+                    LV_Channel_list.remove(failed_slot_LV)
+                    HV_Channel_list.remove(failed_slot_HV)
+                    session_dict["ActiveSlots"][failed_slot] = False #FT: not sure if necessary
+                    #turn off HV (try 3 times)
+                    self.SharedDict["BI_Action"].setText("Stopping failed module HV")
+                    for i in range(3):
+                        if(self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
+                            self.Ctrl_PowerHV_Cmd(False,[failed_slot_HV],PopUp)
+                            time.sleep(BI_SLEEP_AFTER_HVSET)
+                        else:
+                            break
+                    if(self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
+            		self.BI_Abort("BI aborted: failed to turn off faulty module HV")
+            		return
+                    #turn off LV too (try 3 times)
+                    self.SharedDict["BI_Action"].setText("Stopping failed module LV")
+                    for i in range(3):
+                        if(self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
+                            self.Ctrl_PowerLV_Cmd(False,[failed_slot_LV],PopUp)
+                            time.sleep(BI_SLEEP_AFTER_LVSET)
+                        else:
+                            break
+                    if(self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
+            		self.BI_Abort("BI aborted: failed to turn off faulty module LV")
+            		return
             return True
 
     ## BI function to ramp down in temp
