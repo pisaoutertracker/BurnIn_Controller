@@ -1342,7 +1342,7 @@ class BurnIn_Worker(QObject):
                 failed_slot = int(self.SharedDict["BI_SUT"].text())-1
                 self.SharedDict["ModuleFailures"][failed_slot] +=1
                 if (self.SharedDict["ModuleFailures"][failed_slot] >= BI_ACTION_FAILURE_EXCLUDE):                    
-                    #slot has failed too many times, exclude it
+                    self.logger.warning("BI: Slot "+failed_slot+" accrued " + str(self.SharedDict["ModuleFailures"][failed_slot]) + " failures; excluding it from test.")                    #slot has failed too many times, exclude it
                     self.SharedDict["BI_ActiveSlots"].remove(failed_slot) #verify if this is needed, might break things
                     failed_slot_LV = self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_LV_NAME_COL).text()
                     failed_slot_HV = self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_HV_NAME_COL).text()
@@ -1350,6 +1350,7 @@ class BurnIn_Worker(QObject):
                     HV_Channel_list.remove(failed_slot_HV)
                     #turn off HV (try 3 times)
                     self.SharedDict["BI_Action"].setText("Stopping failed module HV")
+                    self.logger.info("BI: Stopping failed module HV")
                     for i in range(3):
                         if(self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_HV_STAT_COL).text()!="OFF"):
                             self.Ctrl_PowerHV_Cmd(False,[failed_slot_HV],PopUp)
@@ -1361,6 +1362,7 @@ class BurnIn_Worker(QObject):
                         return
                     #turn off LV too (try 3 times)
                     self.SharedDict["BI_Action"].setText("Stopping failed module LV")
+                    self.logger.info("BI: Stopping failed module LV")
                     for i in range(3):
                         if(self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_LV_STAT_COL).text()!="OFF"):
                             self.Ctrl_PowerLV_Cmd(False,[failed_slot_LV],PopUp)
