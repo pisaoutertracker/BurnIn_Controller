@@ -403,7 +403,6 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_HighRamp"]=self.BI_HighTemp_Overshoot_dsb.value()
         self.SharedDict["BI_HighKeep"]=self.BI_HighTemp_Keep_dsb.value()
 
-
         self.SharedDict["BI_ActiveSlots"]=[]
         self.SharedDict["BI_ModuleIDs"]=[]
         self.SharedDict["BI_Completed_Send_Signal"]=False        
@@ -413,6 +412,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["Input"]=0.0
         self.SharedDict["Ctrl_LowerTemp"]=999.0
         self.SharedDict["Ctrl_HigherTemp"]=-999.0
+        self.SharedDict["ModuleFailures"] = [0]*10
         
         self.SharedDict["DewPoint_arr"]=self.DewPoint_arr
         self.SharedDict["Temp_arr"]=self.Temp_arr

@@ -923,7 +923,6 @@ class BurnIn_Worker(QObject):
         session_dict["fc7Slot"]          = "Undef"
         session_dict["Current_ModuleHV"] = "Undef"
         session_dict["WorkingTemp"]      = 20
-        session_dict["ModuleFailures"]   = [0]*10
 
         session_dict["NCycles"] = [item.upper() for item in session_dict["StepList"]].count("COOL")    
         
@@ -1118,6 +1117,10 @@ class BurnIn_Worker(QObject):
                         self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success
                     else:
                         self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure
+                        if (self.SharedDict["ModuleFailures"][slot] >= BI_ACTION_FAILURE_EXCLUDE): #too many failures
+                            Slot_list.remove(slot)
+                        
+                        
                 self.SharedDict["BI_TestActive"]=False
                 session_dict["TestType"]="Undef"
 
@@ -1337,15 +1340,14 @@ class BurnIn_Worker(QObject):
             #Check if the failure was caused by one particular module
             if (self.SharedDict["BI_SUT"].text().isnumeric()):
                 failed_slot = int(self.SharedDict["BI_SUT"].text())-1
-                session_dict["ModuleFailures"][failed_slot] +=1
-                if (session_dict["ModuleFailures"][failed_slot] >= BI_ACTION_FAILURE_EXCLUDE):                    
+                self.SharedDict["ModuleFailures"][failed_slot] +=1
+                if (self.SharedDict["ModuleFailures"][failed_slot] >= BI_ACTION_FAILURE_EXCLUDE):                    
                     #slot has failed too many times, exclude it
-                    Slot_list.remove(failed_slot)
+                    self.SharedDict["BI_ActiveSlots"].remove(failed_slot) #verify if this is needed, might break things
                     failed_slot_LV = self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_LV_NAME_COL).text()
                     failed_slot_HV = self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_HV_NAME_COL).text()
                     LV_Channel_list.remove(failed_slot_LV)
                     HV_Channel_list.remove(failed_slot_HV)
-                    session_dict["ActiveSlots"][failed_slot] = False #FT: not sure if necessary
                     #turn off HV (try 3 times)
                     self.SharedDict["BI_Action"].setText("Stopping failed module HV")
                     for i in range(3):
