@@ -1117,8 +1117,8 @@ class BurnIn_Worker(QObject):
                         self.BI_CheckID_isOK_sig.emit(slot,1)#1 means success
                     else:
                         self.BI_CheckID_isOK_sig.emit(slot,2)#2 means failure
-                        if (self.SharedDict["ModuleFailures"][slot] >= BI_ACTION_FAILURE_EXCLUDE): #too many failures
-                            Slot_list.remove(slot)
+                     #   if (self.SharedDict["ModuleFailures"][slot] >= BI_ACTION_FAILURE_EXCLUDE): #too many failures
+                     #       Slot_list.remove(slot)
                         
                         
                 self.SharedDict["BI_TestActive"]=False
@@ -1341,9 +1341,11 @@ class BurnIn_Worker(QObject):
             if (self.SharedDict["BI_SUT"].text().isnumeric()):
                 failed_slot = int(self.SharedDict["BI_SUT"].text())-1
                 self.SharedDict["ModuleFailures"][failed_slot] +=1
-                if (self.SharedDict["ModuleFailures"][failed_slot] >= BI_ACTION_FAILURE_EXCLUDE):                    
-                    self.logger.warning("BI: Slot "+failed_slot+" accrued " + str(self.SharedDict["ModuleFailures"][failed_slot]) + " failures; excluding it from test.")                    #slot has failed too many times, exclude it
-                    self.SharedDict["BI_ActiveSlots"].remove(failed_slot) #verify if this is needed, might break things
+                if False and (self.SharedDict["ModuleFailures"][failed_slot] >= BI_ACTION_FAILURE_EXCLUDE): #disabled manually
+                    self.logger.warning("BI: Slot "+failed_slot+" accrued " + str(self.SharedDict["ModuleFailures"][failed_slot]) + " failures; excluding it from test.")
+                    #slot has failed too many times, exclude it
+                    ##                    self.SharedDict["BI_ActiveSlots"].remove(failed_slot) #verify if this is needed, might break things
+
                     failed_slot_LV = self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_LV_NAME_COL).text()
                     failed_slot_HV = self.SharedDict["CAEN_table"].item(failed_slot,CTRLTABLE_HV_NAME_COL).text()
                     LV_Channel_list.remove(failed_slot_LV)
