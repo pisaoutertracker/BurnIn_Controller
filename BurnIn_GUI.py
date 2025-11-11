@@ -6,6 +6,7 @@ import pyqtgraph as pg
 import datetime
 
 from BurnIn_TCP import *
+from PyQt5.QtWidgets import QMessageBox
 
 from BurnIn_Worker import *
 from BurnIn_Monitor import *
@@ -396,9 +397,12 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_Operator"]=self.BI_Operator_line.text()
         self.SharedDict["BI_Description"]=self.BI_Desc_line.toPlainText()        
         self.SharedDict["BI_LowTemp"]= self.BI_LowTemp_dsb.value()
+        self.SharedDict["BI_LowRamp"]=self.BI_LowTemp_Overshoot_dsb.value()
+        self.SharedDict["BI_LowKeep"]=self.BI_LowTemp_Keep_dsb.value()
         self.SharedDict["BI_HighTemp"]= self.BI_HighTemp_dsb.value()
-        self.SharedDict["BI_UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
-        self.SharedDict["BI_UnderKeep"]=self.BI_UnderKeepTemp_dsb.value()
+        self.SharedDict["BI_HighRamp"]=self.BI_HighTemp_Overshoot_dsb.value()
+        self.SharedDict["BI_HighKeep"]=self.BI_HighTemp_Keep_dsb.value()
+
         self.SharedDict["BI_ActiveSlots"]=[]
         self.SharedDict["BI_ModuleIDs"]=[]
         self.SharedDict["BI_Completed_Send_Signal"]=False        
@@ -408,6 +412,7 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["Input"]=0.0
         self.SharedDict["Ctrl_LowerTemp"]=999.0
         self.SharedDict["Ctrl_HigherTemp"]=-999.0
+        self.SharedDict["ModuleFailures"] = [0]*10
         
         self.SharedDict["DewPoint_arr"]=self.DewPoint_arr
         self.SharedDict["Temp_arr"]=self.Temp_arr
@@ -679,9 +684,11 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.SharedDict["BI_Operator"]=self.BI_Operator_line.text()
         self.SharedDict["BI_Description"]=self.BI_Desc_line.toPlainText()        
         self.SharedDict["BI_LowTemp"]= self.BI_LowTemp_dsb.value()
+        self.SharedDict["BI_LowRamp"]=self.BI_LowTemp_Overshoot_dsb.value()
+        self.SharedDict["BI_LowKeep"]=self.BI_LowTemp_Keep_dsb.value()
         self.SharedDict["BI_HighTemp"]= self.BI_HighTemp_dsb.value()
-        self.SharedDict["BI_UnderRamp"]=self.BI_UnderRampTemp_dsb.value()
-        self.SharedDict["BI_UnderKeep"]=self.BI_UnderKeepTemp_dsb.value()
+        self.SharedDict["BI_HighRamp"]=self.BI_HighTemp_Overshoot_dsb.value()
+        self.SharedDict["BI_HighKeep"]=self.BI_HighTemp_Keep_dsb.value()
         self.SharedDict["BI_ActiveSlots"]=[]
         self.SharedDict["BI_ModuleIDs"]=[]
         self.SharedDict["BI_fc7IDs"]=[]
@@ -710,9 +717,11 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
         self.BI_Operator_line.setText(session_dict["Operator"])
         self.BI_Desc_line.setPlainText(session_dict["Description"])        
         self.BI_LowTemp_dsb.setValue(session_dict["LowTemp"])
+        self.BI_LowTemp_Overshoot_dsb.setValue(session_dict["LowRamp"])
+        self.BI_LowTemp_Keep_dsb.setValue(session_dict["LowKeep"])
         self.BI_HighTemp_dsb.setValue(session_dict["HighTemp"])
-        self.BI_UnderRampTemp_dsb.setValue(session_dict["UnderRamp"])
-        self.BI_UnderKeepTemp_dsb.setValue(session_dict["UnderKeep"])
+        self.BI_HighTemp_Overshoot_dsb.setValue(session_dict["HighRamp"])
+        self.BI_HighTemp_Keep_dsb.setValue(session_dict["HighKeep"])
         for idx,cb in enumerate(self.Module_cbs):
             cb.setChecked(session_dict["ActiveSlots"][idx])
         for idx,ID in enumerate(self.ModuleId_lines):
@@ -779,15 +788,26 @@ class BurnIn_GUI(QtWidgets.QMainWindow):
                 self.Module_cbs[i].setChecked(True)
                 self.ModuleId_lines[i].setText(session_fromDB["modulesList"][i])
         
-        if "underRamp" in session_fromDB.keys():
-            self.BI_UnderRampTemp_dsb.setValue(session_fromDB["underRamp"])
+        if "lowRamp" in session_fromDB.keys():
+            self.BI_LowTemp_Overshoot_dsb.setValue(session_fromDB["lowRamp"])
         else:
-            self.logger.warning("UnderRamp parameter not found in session JSON")
+            self.logger.warning("LowRamp parameter not found in session JSON")
         
-        if "underKeep" in session_fromDB.keys():
-            self.BI_UnderKeepTemp_dsb.setValue(session_fromDB["underKeep"])
+        if "lowKeep" in session_fromDB.keys():
+            self.BI_LowTemp_Keep_dsb.setValue(session_fromDB["lowKeep"])
         else:
-            self.logger.warning("UnderKeep parameter not found in session JSON")
+            self.logger.warning("LowKeep parameter not found in session JSON")
+
+        if "highRamp" in session_fromDB.keys():
+            self.BI_HighTemp_Overshoot_dsb.setValue(session_fromDB["highRamp"])
+        else:
+            self.logger.warning("HighRamp parameter not found in session JSON")
+        
+        if "highKeep" in session_fromDB.keys():
+            self.BI_HighTemp_Keep_dsb.setValue(session_fromDB["highKeep"])
+        else:
+            self.logger.warning("HighKeep parameter not found in session JSON")
+            
             
         if "stepList" in session_fromDB.keys():
             delimiter = "\n" # Define a delimiter

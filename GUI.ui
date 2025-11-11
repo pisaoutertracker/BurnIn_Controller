@@ -57,7 +57,6 @@
               <property name="font">
                <font>
                 <pointsize>9</pointsize>
-                <weight>50</weight>
                 <bold>false</bold>
                </font>
               </property>
@@ -65,113 +64,202 @@
                <string>BurnIn Session Settings</string>
               </property>
               <layout class="QGridLayout" name="gridLayout_11">
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_70">
-                 <property name="text">
-                  <string>Undershoot keep (C°):</string>
-                 </property>
-                </widget>
+               <item row="0" column="1">
+                <layout class="QGridLayout" name="gridLayout_17">
+                 <item row="0" column="1">
+                  <widget class="QLabel" name="label_66">
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                     <bold>false</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>HEAT</string>
+                   </property>
+                   <property name="indent">
+                    <number>4</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="label_67">
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                     <bold>false</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>COOL</string>
+                   </property>
+                   <property name="indent">
+                    <number>4</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="2">
+                  <widget class="QDoubleSpinBox" name="BI_LowTemp_Keep_dsb">
+                   <property name="minimum">
+                    <double>-10.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>-3.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="1">
+                  <widget class="QDoubleSpinBox" name="BI_HighTemp_Keep_dsb">
+                   <property name="minimum">
+                    <double>-10.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>10.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>3.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="2">
+                  <widget class="QDoubleSpinBox" name="BI_LowTemp_Overshoot_dsb">
+                   <property name="minimum">
+                    <double>-20.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>0.000000000000000</double>
+                   </property>
+                   <property name="singleStep">
+                    <double>1.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>-10.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QDoubleSpinBox" name="BI_HighTemp_Overshoot_dsb">
+                   <property name="maximum">
+                    <double>20.000000000000000</double>
+                   </property>
+                   <property name="singleStep">
+                    <double>1.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>5.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="0">
+                  <widget class="QLabel" name="label_70">
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Keep Offset (C°):</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_69">
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Ramp Overshoot (C°):</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QDoubleSpinBox" name="BI_HighTemp_dsb">
+                   <property name="minimum">
+                    <double>-50.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>30.000000000000000</double>
+                   </property>
+                   <property name="singleStep">
+                    <double>1.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>20.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QDoubleSpinBox" name="BI_LowTemp_dsb">
+                   <property name="minimum">
+                    <double>-40.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>20.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>-30.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_13">
+                   <property name="maximumSize">
+                    <size>
+                     <width>100</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>Target Temp (C°):</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item row="1" column="1">
-                <widget class="QDoubleSpinBox" name="BI_HighTemp_dsb">
-                 <property name="minimum">
-                  <double>-50.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>30.000000000000000</double>
-                 </property>
-                 <property name="singleStep">
-                  <double>1.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>10.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_67">
-                 <property name="text">
-                  <string>High Temp (C°):</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QDoubleSpinBox" name="BI_UnderRampTemp_dsb">
-                 <property name="singleStep">
-                  <double>1.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>10.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="1">
-                <widget class="QLineEdit" name="BI_Operator_line">
-                 <property name="text">
-                  <string>PisaTeam</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="0">
-                <widget class="QLabel" name="label_81">
-                 <property name="text">
-                  <string>Operator:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QDoubleSpinBox" name="BI_LowTemp_dsb">
-                 <property name="minimum">
-                  <double>-40.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>20.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>-30.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QDoubleSpinBox" name="BI_UnderKeepTemp_dsb">
-                 <property name="value">
-                  <double>3.000000000000000</double>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_69">
-                 <property name="text">
-                  <string>Undershoot Ramp (C°):</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_66">
-                 <property name="text">
-                  <string>Low temp (C°):</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="1">
-                <widget class="QPlainTextEdit" name="BI_Desc_line">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="plainText">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="label_83">
-                 <property name="text">
-                  <string>Description:</string>
-                 </property>
-                </widget>
+                <layout class="QGridLayout" name="gridLayout_18">
+                 <item row="0" column="1">
+                  <widget class="QLineEdit" name="BI_Operator_line">
+                   <property name="text">
+                    <string>PisaTeam</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QPlainTextEdit" name="BI_Desc_line">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="plainText">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_83">
+                   <property name="text">
+                    <string>Description:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_81">
+                   <property name="text">
+                    <string>Operator:</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
               </layout>
              </widget>
@@ -197,19 +285,6 @@
              </widget>
             </item>
             <item>
-             <spacer name="verticalSpacer_10">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
              <widget class="QGroupBox" name="groupBox_16">
               <property name="title">
                <string>Burn-In control</string>
@@ -222,7 +297,6 @@
                    <property name="font">
                     <font>
                      <pointsize>9</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -242,7 +316,6 @@
                    <property name="font">
                     <font>
                      <pointsize>9</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                      <kerning>false</kerning>
                     </font>
@@ -281,7 +354,6 @@
                    <property name="font">
                     <font>
                      <pointsize>9</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -1653,7 +1725,6 @@ addStep(&quot;Heat&quot;)</string>
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
-                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -2056,7 +2127,6 @@ addStep(&quot;Heat&quot;)</string>
                  <property name="font">
                   <font>
                    <pointsize>9</pointsize>
-                   <weight>75</weight>
                    <bold>true</bold>
                   </font>
                  </property>
@@ -3204,7 +3274,6 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -3221,7 +3290,6 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -3685,7 +3753,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3696,7 +3763,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3707,7 +3773,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3718,7 +3783,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3729,7 +3793,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3740,7 +3803,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3751,7 +3813,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3762,7 +3823,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3773,7 +3833,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3784,7 +3843,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3795,7 +3853,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3806,7 +3863,6 @@ addStep(&quot;Heat&quot;)</string>
               </property>
               <property name="font">
                <font>
-                <weight>75</weight>
                 <bold>true</bold>
                </font>
               </property>
@@ -3857,7 +3913,6 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -3874,7 +3929,6 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -3919,7 +3973,6 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -3933,7 +3986,6 @@ addStep(&quot;Heat&quot;)</string>
                <property name="font">
                 <font>
                  <pointsize>9</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -4127,7 +4179,7 @@ addStep(&quot;Heat&quot;)</string>
      <x>0</x>
      <y>0</y>
      <width>1316</width>
-     <height>20</height>
+     <height>24</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
@@ -4184,12 +4236,6 @@ addStep(&quot;Heat&quot;)</string>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>BI_LowTemp_dsb</tabstop>
-  <tabstop>BI_HighTemp_dsb</tabstop>
-  <tabstop>BI_UnderRampTemp_dsb</tabstop>
-  <tabstop>BI_UnderKeepTemp_dsb</tabstop>
-  <tabstop>BI_Operator_line</tabstop>
-  <tabstop>BI_Desc_line</tabstop>
   <tabstop>BI_Mod0_cb</tabstop>
   <tabstop>BI_Mod1_cb</tabstop>
   <tabstop>BI_Mod2_cb</tabstop>

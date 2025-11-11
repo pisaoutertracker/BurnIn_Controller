@@ -245,9 +245,11 @@ class DB_interface():
             "temperatures": {
                 "low": session_dict["LowTemp"],
                 "high": session_dict["HighTemp"],
+                "lowRamp": session_dict["LowRamp"], 
+                "lowKeep": session_dict["LowKeep"], 
+                "highRamp": session_dict["HighRamp"], 
+                "highKeep": session_dict["HighKeep"], 
                 },
-            "underRamp": session_dict["UnderRamp"], 
-            "underKeep": session_dict["UnderKeep"], 
             "nCycles": session_dict["NCycles"],
             "test": session_dict["NCycles"],
             "modulesList": [],
@@ -282,10 +284,10 @@ class DB_interface():
         self.logger.info("Database thermal cycle uploading. Please wait...")
                 
         #define test session for DB
-        BurninCycleName = "BurnIn_gui_" + session_dict["Timestamp"]
+        BurninCycleName = "BurnIn_" + session_dict["Session"] + "_cycle_" + str(session_dict["Cycle"]) + "of" + str(session_dict["NCycles"])
         cycle = {
             "BurninCycleName": BurninCycleName,
-            "BurninCycleDate": session_dict["Timestamp"],
+            "BurninCycleDate": session_dict["CycleTimestamp"],
             "BurninCycleModules": session_dict["ModuleIDs"],
             "BurninCycleTemperatures": {
                 "low": session_dict["LowTemp"],
@@ -295,7 +297,31 @@ class DB_interface():
         
 		
         uploadResponse=self.uploadCycleToDB(cycle)
-		
+	#now also update for each module the list of cycles it has undergone
+        for moduleID in session_dict["ModuleIDs"]:
+            if moduleID=="" or moduleID==None or moduleID=="no connection":
+                continue
+            api_url = "http://%s:%d/modules/%s"%(self.Addr, int(self.Port), moduleID)
+            #get current list of cycles
+            response = requests.get(api_url)
+            if response.status_code == 200:
+                self.logger.info("Module "+ moduleID+ " info successfully pulled.")
+                jsonResponse=response.json()
+                self.logger.debug (jsonResponse)
+                moduleCycles = jsonResponse.get("burninCycles", [])
+                moduleCycles.append(BurninCycleName)
+                #update the list of cycles
+                data = { "burninCycles": moduleCycles }
+                response = requests.put(api_url, json=data)
+                if response.status_code == 200:
+                    self.logger.info("Module "+ moduleID+ " burninCycles successfully updated.")
+                    jsonResponse=response.json()
+                    self.logger.debug (jsonResponse)
+                else:
+                    self.logger.error("Module "+ moduleID+ " burninCycles update failed. Status code:%d", response.status_code)
+            else:
+                self.logger.error("Module "+ moduleID+ " info pull failed. Status code:%d", response.status_code)
+
         if uploadResponse=="timeout": #if it times out, display a dummy status
             self.logger.error("DATABASE    : Cycle loading timed out!")
         else:
