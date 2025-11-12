@@ -1108,7 +1108,7 @@ class BurnIn_Worker(QObject):
                 start_slot_index = 0
                 if session_dict["Current_Slot"] >= 0 and session_dict["Current_Slot"] in Slot_list:
                     # Resume from the last tested slot (skip already completed modules)
-                    start_slot_index = Slot_list.index(session_dict["Current_Slot"]) + 1
+                    start_slot_index = Slot_list.index(session_dict["Current_Slot"])
                     self.logger.info("BI: Resuming module testing from slot index %d (slot %d)" % (start_slot_index, Slot_list[start_slot_index] if start_slot_index < len(Slot_list) else -1))
                 for slot_index in range(start_slot_index, len(Slot_list)):
                     slot = Slot_list[slot_index]
