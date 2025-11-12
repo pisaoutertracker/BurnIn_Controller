@@ -922,6 +922,7 @@ class BurnIn_Worker(QObject):
         session_dict["Current_ModuleID"] = "Undef"
         session_dict["fc7Slot"]          = "Undef"
         session_dict["Current_ModuleHV"] = "Undef"
+        session_dict["Current_Slot"]     = -1
         session_dict["WorkingTemp"]      = 20
 
         session_dict["NCycles"] = [item.upper() for item in session_dict["StepList"]].count("COOL")    
@@ -1103,10 +1104,18 @@ class BurnIn_Worker(QObject):
                 self.SharedDict["BI_Action"].setText(session_dict["Action"][4:]+"  Module test")
                 self.SharedDict["BI_TestActive"]=True
                 session_dict["TestType"]=session_dict["Action"][4:]
-                for slot in Slot_list:
+                # Determine starting slot index for recovery
+                start_slot_index = 0
+                if session_dict["Current_Slot"] >= 0 and session_dict["Current_Slot"] in Slot_list:
+                    # Resume from the last tested slot (skip already completed modules)
+                    start_slot_index = Slot_list.index(session_dict["Current_Slot"])
+                    self.logger.info("BI: Resuming module testing from slot index %d (slot %d)" % (start_slot_index, Slot_list[start_slot_index] if start_slot_index < len(Slot_list) else -1))
+                for slot_index in range(start_slot_index, len(Slot_list)):
+                    slot = Slot_list[slot_index]
                     session_dict["fc7ID"]=self.SharedDict["BI_fc7IDs"][slot]
                     session_dict["fc7Slot"]=self.SharedDict["BI_fc7Slots"][slot]
                     session_dict["Current_ModuleID"]    = self.SharedDict["BI_ModuleIDs"][slot]
+                    session_dict["Current_Slot"] = slot
                     self.BI_Update_Status_file(session_dict)
                     self.SharedDict["BI_SUT"].setText(str(slot+1)) 
                     self.logger.info("BI: testing BI slot "+str(slot)+": module name "+session_dict["Current_ModuleID"]+", fc7 slot "+session_dict["fc7Slot"]+",board "+session_dict["fc7ID"])
@@ -1123,6 +1132,7 @@ class BurnIn_Worker(QObject):
                         
                 self.SharedDict["BI_TestActive"]=False
                 session_dict["TestType"]="Undef"
+                session_dict["Current_Slot"]=-1  # Reset after completing all modules in this step
 
             if (session_dict["Action"].upper()[0:4]=="WAIT"):
                 try:
