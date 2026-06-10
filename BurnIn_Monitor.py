@@ -326,6 +326,9 @@ class BurnIn_Monitor(QObject):
                             self.logger.warning(e)
                             self.logger.warning("MONITOR: error splitting FNAL reply "+reply)
                             self.FNALBoxCycleOK = False
+                            ## print expception for debugging
+                            import traceback
+                            traceback.print_exc()
                     self.SharedDict["LastFNALBoxMsgTS"].setText(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
                 else:
                     self.FNALBoxCycleOK = False
