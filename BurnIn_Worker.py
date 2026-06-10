@@ -1454,21 +1454,43 @@ class BurnIn_Worker(QObject):
                         self.logger.info("BI: setting high flow....")    
                         if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True,True,PopUp):
                             return
+
+                    ## take the OW temperatures of the SELECTED slots as reference
+                    active_slots = self.SharedDict.get("BI_ActiveSlots", [])
+                    ow_temps = [float(self.SharedDict[f"LastFNALBoxOW{i}"].text()) 
+                                for i, is_active in enumerate(active_slots) if is_active]
+                    
+                    ## if no active slot, use Temp0 as reference and issue a warning
+                    if not any(active_slots):
+                        self.logger.warning("BI: You are running the burn in test without any active slot! Please check your settings. Using Temp0 as reference for temperature checks.")
+                        ow_temps = [float(self.SharedDict["LastFNALBoxTemp0"].text())]
+
+                    ## computer the average and spread of the OW temperatures, and issue a warning if the spread is above a threshold
+                    ow_temps_avg = sum(ow_temps)/len(ow_temps) if len(ow_temps)>0 else 0
+                    ow_temps_spread_max = max(abs(temp - ow_temps_avg) for temp in ow_temps) if len(ow_temps)>0 else 0
+                    if ow_temps_spread_max > OW_TEMP_SPREAD_THR:
+                        self.logger.warning(f"BI: OW temperature spread above threshold! Spread: {ow_temps_spread_max}, Threshold: {OW_TEMP_SPREAD_THR}, ow_temps: {ow_temps}, active_slots: {active_slots}")
+                    self.logger.debug(f"BI: OW temperatures: avg={ow_temps_avg}, spread={ow_temps_spread_max}")
+
                     #
+                    ## use the average of the OW temperatures as reference for checks
                     if isCooling:
                         if last_step:
-                            if (float(self.SharedDict["LastFNALBoxTemp0"].text())-SelectedTemp < TempTolerance):
+#                            if (float(self.SharedDict["LastFNALBoxTemp0"].text())-SelectedTemp < TempTolerance):
+                            if (ow_temps_avg-SelectedTemp < TempTolerance):
                                 #this happens when we get close enough to the selected temp FROM ABOVE
                                 #not using absolute value, if the FNALBox doesn't respond and the temperature does not update, we might go past the target
                                 break
                         else: #last_step = False
-                            if (float(self.SharedDict["LastFNALBoxTemp0"].text())-nextTemp < TempTolerance + 5.):
+ #                           if (float(self.SharedDict["LastFNALBoxTemp0"].text())-nextTemp < TempTolerance + 5.):
+                            if (ow_temps_avg-nextTemp < TempTolerance + 5.):
                                 #this happens when we get close enough to our intermediate step FROM ABOVE
                                 #remeasure the dewpoint and reevaluate the target temperature
                                 #this might be slow if threshold is set at nextTemp, but subject to user error if set to (nextTemp-TempRampOffset). We hardcode a value
                                 break
                     else: #if heating
-                        if (SelectedTemp - float(self.SharedDict["LastFNALBoxTemp0"].text()) <  TempTolerance):
+  #                      if (SelectedTemp - float(self.SharedDict["LastFNALBoxTemp0"].text()) <  TempTolerance):
+                        if (SelectedTemp - ow_temps_avg <  TempTolerance):
                             #this happens when we get close enough to the selected temp FROM BELOW
                             break
                     #
