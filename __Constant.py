@@ -30,8 +30,11 @@ BI_ACTION_RETRIES = 10
 BI_ACTION_FAILURE_EXCLUDE = 3
 BI_ACTION_RETRY_MAX_TIME = 600
 BI_ACTION_RETRY_SLEEP = 10
+BI_MIN_RH_PERCENTAGE = 0.10 # during BI, humidity should stay below 10% (see QC_for_Preproduction_and_Production_v6.pdf)
+BI_DEWPOINT_MARGIN = 5 # during BI, the target temperature should be at least 5C above the dew point (see QC_for_Preproduction_and_Production_v6.pdf)
 TEST_PROCESS_SLEEP = 5
 BI_HIGHFLOW_THRESHOLD = -50
+OW_TEMP_SPREAD_THR = 1.0
 
 NUM_BI_SLOTS = 10
 

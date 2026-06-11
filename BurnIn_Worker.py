@@ -6,6 +6,35 @@ from datetime import datetime,timedelta
 import subprocess
 from __Constant import *
 import json
+import math
+
+def computeTempFromTargetRH(dewPoint: float, targetRH: float = 0.10) -> float:
+    """
+    Calculates the temperature required to achieve a specific target relative humidity 
+    for a given dew point using the Magnus-Tetens formula.
+    
+    :param dewPoint: The current dew point temperature in Celsius.
+    :param targetRH: The desired relative humidity percentage (e.g., 10.0 for 10%).
+    :return: The calculated temperature in Celsius.
+    """
+    # Safeguard against mathematically invalid relative humidity inputs
+    if targetRH <= 0 or targetRH > 100:
+        raise ValueError("Target relative humidity must be between 0% (exclusive) and 100% (inclusive).")
+        
+    # Magnus-Tetens constants for water vapor
+    a = 17.625
+    b = 243.04
+    
+    # Saturated vapor pressure parameter at the dew point
+    alpha_dp = (a * dewPoint) / (b + dewPoint)
+    
+    # Rearranged equation variable
+    K = alpha_dp - math.log(targetRH)
+    
+    # Solve for the target temperature
+    targetTemp = (K * b) / (a - K)
+    
+    return targetTemp
 
 ## Class implementation for the Worker module of the GUI controller.
 #
@@ -1421,13 +1450,16 @@ class BurnIn_Worker(QObject):
                 self.last_op_ok= False
                 return
             
-            if (TargetTemp > dewPoint):#if the temperature we aim for is above the dewpoint everything is fine and there will be no further steps; this is always true if heating
+            minTempAllowed = max(computeTempFromTargetRH(dewPoint,BI_MIN_RH_PERCENTAGE), dewPoint+BI_DEWPOINT_MARGIN)
+            print (f"BI: dew point: {dewPoint:.2f}°C, minimum allowed temperature: {minTempAllowed:.2f}°C, target temperature: {TargetTemp:.2f}°C")
+            print (f"BI: computed minimum allowed temperature from dew point and RH: {computeTempFromTargetRH(dewPoint,BI_MIN_RH_PERCENTAGE):.2f}°C, minimum allowed temperature from dew point margin: {dewPoint+BI_DEWPOINT_MARGIN:.2f}°C")
+            if (TargetTemp > minTempAllowed):#if the temperature we aim for is allowed given the dew point, we can go there directly
                 nextTemp = TargetTemp
-                self.logger.info("BI: target temp above dew point - OK!")
+                self.logger.info(f"BI: target temp {TargetTemp:.2f}°C is above minimum allowed temperature {minTempAllowed:.2f}°C, going directly to target temp.")
                 last_step = True
-            else: #if not, we aim slightly above the dewpoint and rise flow (FT: should this really be hardcoded?)
-                nextTemp = dewPoint+1
-                self.logger.info("BI: target temp below dew point, going to dew point and switching to high flow.")
+            else: #if not, we need to do an intermediate step at the minimum allowed temperature, switch to high flow and reevaluate the dew point there
+                nextTemp = minTempAllowed
+                self.logger.info(f"BI: target temp {TargetTemp:.2f}°C is below minimum allowed temperature {minTempAllowed:.2f}°C, going to minimum allowed temp {minTempAllowed:.2f}°C and switching to high flow.")
                 if not self.BI_Action(self.Ctrl_SetHighFlow_Cmd,True, True,PopUp):
                     return
                 
@@ -1439,7 +1471,7 @@ class BurnIn_Worker(QObject):
             #while changing temperature, check if we reach the target and adjust the flow
             while(True):
                 try:
-                    self.logger.info("BI: %s to target temperature..."%(verb))
+                    self.logger.info(f"BI: {verb} to target temperature {SelectedTemp:.2f}°C, current temperature {self.SharedDict['LastFNALBoxTemp0'].text()}°C, next intermediate target {nextTemp:.2f}°C.")
                     dewPoint = float(self.SharedDict["Ctrl_IntDewPoint"].text())
                     #dry airflow increases heat and lowers humidity
                     #I want high flow when warming up or when the dew point is too high during the cooling phase
@@ -1491,7 +1523,7 @@ class BurnIn_Worker(QObject):
                             if (SelectedTemp - ow_temps_avg <  TempTolerance):
                                 #this happens when we get close enough to the selected temp FROM BELOW
                                 break
-                    else: ## if the OW temperatures are not consistent, use Temp0 as reference and issue a warning
+                    else: ## if the OW temperatures are not consistent, issue a warning and wait
                         self.logger.warning(f"BI: OW temperature spread above threshold! Spread: {ow_temps_spread_max:.2f}, ow_temps: {ow_temps}, active_slots: {active_slots}. I will not move to the next step until the spread is reduced below {OW_TEMP_SPREAD_THR}.")
                     #
                     if self.SharedDict["BI_StopRequest"]:
