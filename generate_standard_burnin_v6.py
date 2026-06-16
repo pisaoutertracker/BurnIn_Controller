@@ -54,7 +54,7 @@ TEST_SCHEDULE = {
     'warm-0':  ['ScanIV', 'PSquickTest'],
     'cold-0':  ['ScanIV', 'PSquickTest'],
     'cold-4':  ['ScanIV', 'PSquickTest'],
-    'cold-8':  ['ScanIV', 'ScanIV', 'PSfullTest', 'PSquickTest'],
+    'cold-8':  ['ScanIV', 'PSfullTest', 'ScanIV', 'PSquickTest'],
     'cold-12': ['ScanIV', 'PSquickTest'],
     'cold-16': ['ScanIV', 'PSfullTest'],
     'warm-17': ['ScanIV', 'PSquickTest']
@@ -108,8 +108,6 @@ Use a ramp speed of 10 V/s.
 
     def emit_vtrxoff_scaniv(indent=0):
         """LV_on / HV_off  →  [DAQ:vtrxoff]  →  ScanIV  →  HV_off / LV_off  →  Wait  →  LV_on / HV_on"""
-        s("LV_on",        indent)
-        s("HV_off",       indent)
         if INCLUDE_VTRXOFF:
             s("DAQ:vtrxoff",  indent)
         s("ScanIV",       indent)
@@ -117,15 +115,18 @@ Use a ramp speed of 10 V/s.
         s("LV_off",       indent)
         s(f"Wait:{WAIT_AFTER_SCANIV_MINUTES * 60}", indent)
         s("LV_on",        indent)
-        s("HV_on",        indent)
 
     def emit_fulltest(indent=0):
         """DAQ:PSfullTest"""
+        s("HV_on",       indent)
         s("DAQ:PSfullTest", indent)
+        s("HV_off",       indent)
 
     def emit_quicktest(indent=0):
         """DAQ:PSquickTest"""
+        s("HV_on",       indent)
         s("DAQ:PSquickTest", indent)
+        s("HV_off",       indent)
 
     def emit_stop_tests(stop_name, indent=0):
         """Emit all tests mapped to the current stop according to TEST_SCHEDULE."""
@@ -161,7 +162,7 @@ Use a ramp speed of 10 V/s.
 
     section("Initialization")
     s("LV_on")
-    s("HV_on")
+    s("HV_off")
 
     for i in range(MAX_CYCLE + 1):
         warm_name = f"warm-{i}"

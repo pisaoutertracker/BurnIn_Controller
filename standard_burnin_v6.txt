@@ -20,7 +20,7 @@ Use a ramp speed of 10 V/s.
 # Initialization
 # ────────────────────────────────────────────────────────────
 addStep("LV_on")
-addStep("HV_on")
+addStep("HV_off")
 
 # ────────────────────────────────────────────────────────────
 # warm-0 — [ ScanIV, PSquickTest ]
@@ -29,18 +29,17 @@ addStep("Heat")
 addStep("Wait:600")
 
 # ScanIV
-addStep("LV_on")
-addStep("HV_off")
 addStep("DAQ:vtrxoff")
 addStep("ScanIV")
 addStep("HV_off")
 addStep("LV_off")
 addStep("Wait:1200")
 addStep("LV_on")
-addStep("HV_on")
 
 # PSquickTest
+addStep("HV_on")
 addStep("DAQ:PSquickTest")
+addStep("HV_off")
 
 # ────────────────────────────────────────────────────────────
 # cold-0 — [ ScanIV, PSquickTest ]
@@ -49,18 +48,17 @@ addStep("Cool")
 addStep("Wait:600")
 
 # ScanIV
-addStep("LV_on")
-addStep("HV_off")
 addStep("DAQ:vtrxoff")
 addStep("ScanIV")
 addStep("HV_off")
 addStep("LV_off")
 addStep("Wait:1200")
 addStep("LV_on")
-addStep("HV_on")
 
 # PSquickTest
+addStep("HV_on")
 addStep("DAQ:PSquickTest")
+addStep("HV_off")
 
 # ────────────────────────────────────────────────────────────
 # warm-1 — [  ]
@@ -111,18 +109,17 @@ addStep("Cool")
 addStep("Wait:600")
 
 # ScanIV
-addStep("LV_on")
-addStep("HV_off")
 addStep("DAQ:vtrxoff")
 addStep("ScanIV")
 addStep("HV_off")
 addStep("LV_off")
 addStep("Wait:1200")
 addStep("LV_on")
-addStep("HV_on")
 
 # PSquickTest
+addStep("HV_on")
 addStep("DAQ:PSquickTest")
+addStep("HV_off")
 
 # ────────────────────────────────────────────────────────────
 # warm-5 — [  ]
@@ -167,38 +164,36 @@ addStep("Heat")
 addStep("Wait:600")
 
 # ────────────────────────────────────────────────────────────
-# cold-8 — [ ScanIV, ScanIV, PSfullTest, PSquickTest ]
+# cold-8 — [ ScanIV, PSfullTest, ScanIV, PSquickTest ]
 # ────────────────────────────────────────────────────────────
 addStep("Cool")
 addStep("Wait:600")
 
 # ScanIV 1/2
-addStep("LV_on")
-addStep("HV_off")
 addStep("DAQ:vtrxoff")
 addStep("ScanIV")
 addStep("HV_off")
 addStep("LV_off")
 addStep("Wait:1200")
 addStep("LV_on")
-addStep("HV_on")
-
-# ScanIV 2/2
-addStep("LV_on")
-addStep("HV_off")
-addStep("DAQ:vtrxoff")
-addStep("ScanIV")
-addStep("HV_off")
-addStep("LV_off")
-addStep("Wait:1200")
-addStep("LV_on")
-addStep("HV_on")
 
 # PSfullTest
+addStep("HV_on")
 addStep("DAQ:PSfullTest")
+addStep("HV_off")
+
+# ScanIV 2/2
+addStep("DAQ:vtrxoff")
+addStep("ScanIV")
+addStep("HV_off")
+addStep("LV_off")
+addStep("Wait:1200")
+addStep("LV_on")
 
 # PSquickTest
+addStep("HV_on")
 addStep("DAQ:PSquickTest")
+addStep("HV_off")
 
 # ────────────────────────────────────────────────────────────
 # warm-9 — [  ]
@@ -249,18 +244,17 @@ addStep("Cool")
 addStep("Wait:600")
 
 # ScanIV
-addStep("LV_on")
-addStep("HV_off")
 addStep("DAQ:vtrxoff")
 addStep("ScanIV")
 addStep("HV_off")
 addStep("LV_off")
 addStep("Wait:1200")
 addStep("LV_on")
-addStep("HV_on")
 
 # PSquickTest
+addStep("HV_on")
 addStep("DAQ:PSquickTest")
+addStep("HV_off")
 
 # ────────────────────────────────────────────────────────────
 # warm-13 — [  ]
@@ -311,18 +305,17 @@ addStep("Cool")
 addStep("Wait:600")
 
 # ScanIV
-addStep("LV_on")
-addStep("HV_off")
 addStep("DAQ:vtrxoff")
 addStep("ScanIV")
 addStep("HV_off")
 addStep("LV_off")
 addStep("Wait:1200")
 addStep("LV_on")
-addStep("HV_on")
 
 # PSfullTest
+addStep("HV_on")
 addStep("DAQ:PSfullTest")
+addStep("HV_off")
 
 # ────────────────────────────────────────────────────────────
 # warm-17 (final stop) — [ ScanIV, PSquickTest ]
@@ -331,15 +324,14 @@ addStep("Heat")
 addStep("Wait:600")
 
 # ScanIV
-addStep("LV_on")
-addStep("HV_off")
 addStep("DAQ:vtrxoff")
 addStep("ScanIV")
 addStep("HV_off")
 addStep("LV_off")
 addStep("Wait:1200")
 addStep("LV_on")
-addStep("HV_on")
 
 # PSquickTest
+addStep("HV_on")
 addStep("DAQ:PSquickTest")
+addStep("HV_off")
